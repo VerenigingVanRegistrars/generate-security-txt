@@ -233,19 +233,17 @@ class Generate_Security_Txt_Admin {
                     $securitytxt_expire = reset($securitytxt_expire);
 
                 // If expiration date is not available or not in the correct format, return
-                if (!$securitytxt_expire || !is_string($securitytxt_expire))
+                if (empty($securitytxt_expire) || !is_string($securitytxt_expire))
                     return;
 
                 // Convert expiration date to DateTime object
                 $securitytxt_expire_date = DateTime::createFromFormat("Y-m-d\TH:i:s.u\Z", $securitytxt_expire);
 
-                // Calculate the date for tomorrow
-                $tomorrow = new DateTime('tomorrow');
+                // Calculate the date for today
+                $today = new DateTime('now');
 
-                // Check if expiration date is within a day of tomorrow's date
-                $diff = $tomorrow->diff($securitytxt_expire_date);
-
-                if ($diff->days <= 1) {
+                // Check if expiration date is within 1 day or has passed
+                if ($securitytxt_expire_date <= $today->modify('+1 day')) {
                     echo '<div id="securitytxtNoticeExpiry" class="notice notice-error">
                         <p>' . sprintf(__('Regenerate your security.txt, the expirydate is very soon or has passed. <a href="%s">Click here</a> to do so.', Generate_Security_Txt_i18n::TEXT_DOMAIN), admin_url('tools.php?page=security_txt_generator')) . '</p>
                     </div>';
@@ -280,10 +278,8 @@ class Generate_Security_Txt_Admin {
                 $oneMonthLater = $oneMonthLater->modify('+1 month');
 
                 // Compare the provided date with one month later
-                if ($securitytxt_expire < $oneMonthLater) {
+                if ($securitytxt_expire < $currentDate) {
                     // File is expired
-                    $status_type = 'no';
-                    $status_color = 'red';
                     $status_text = sprintf(__('Security.txt expired on %s. Regenerate the file below.', Generate_Security_Txt_i18n::TEXT_DOMAIN), $securitytxt_expire->format('Y-m-d'));
                 } elseif ($securitytxt_expire < $oneMonthLater) {
                     // File will expire soon
@@ -294,7 +290,7 @@ class Generate_Security_Txt_Admin {
                     // File will not expire soon
                     $status_type = 'yes';
                     $status_color = 'green';
-                    $status_text = sprintf(__('Security.txt is valid', Generate_Security_Txt_i18n::TEXT_DOMAIN));
+                    $status_text = __('Security.txt is valid', Generate_Security_Txt_i18n::TEXT_DOMAIN);
                 }
             }
         }
@@ -875,7 +871,8 @@ class Generate_Security_Txt_Admin {
             // Get the current date
             $current_date = new DateTime();
             // Add 11 months to the current date
-            $future_date = $current_date->modify('+11 months');
+            $future_date = $current_date->modify('+12 months');
+            $future_date->modify('-1 day');
             // Format the future date
             $formatted_date = $future_date->format('Y-m-d');
 
