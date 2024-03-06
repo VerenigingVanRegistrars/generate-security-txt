@@ -1,0 +1,580 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}
+
+.validate {
+  &.invalid,
+  &.invalid:focus {
+	border:     1px solid #d31f1f;
+	box-shadow: 0 0 0 1px #d31f1f;
+	outline:    2px solid transparent;
+  }
+
+  &.waiting,
+  &.waiting:focus,
+  &:focus {
+	border:     1px solid #2271b1;
+	box-shadow: 0 0 0 1px #2271b1;
+	outline:    2px solid transparent;
+  }
+
+  &.valid,
+  &.valid:focus {
+	border:     1px solid #008000;
+	box-shadow: 0 0 0 1px #008000;
+	outline:    2px solid transparent;
+  }
+}
+
+.validated,
+.invalidated {
+  position: relative;
+
+  &:after {
+	font-family:             dashicons;
+	display:                 inline-block;
+	font-weight:             400;
+	font-style:              normal;
+	speak:                   never;
+	text-decoration:         inherit;
+	text-transform:          none;
+	text-rendering:          auto;
+	-webkit-font-smoothing:  antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	width:                   38px;
+	height:                  38px;
+	font-size:               28px;
+	vertical-align:          top;
+	text-align:              center;
+	transition:              color .1s ease-in;
+	content:                 "\f147";
+	color:                   #008000;
+	position:                absolute;
+	top:                     10px;
+	right:                   55px;
+	line-height:             20px;
+  }
+
+  &.securitytxt-removable:after {
+	right: 55px;
+  }
+
+  &:first-of-type:after {
+	right: 0;
+  }
+}
+
+.invalidated:after {
+  color:   #d31f1f;
+  content: "\f158";
+}
+
+.tools_page_security_txt_generator #wpcontent,
+.tools_page_security_txt_generator.auto-fold #wpcontent {
+  padding-left: 0;
+}
+
+.securitytxt-body {
+  max-width: 800px;
+  margin:    0 auto;
+
+  .table-footer {
+	text-align: center;
+	display: block;
+	margin-top: 4px;
+  }
+}
+
+.securitytxt-body .securitytxt-topbutton {
+  margin-left: 10px;
+
+  .dashicons {
+	margin:    5px -5px 0 3px;
+	font-size: 16px;
+  }
+}
+
+.securitytxt-body .securitytxt-topbutton,
+.securitytxt-body .button {
+
+  &.disabled {
+	pointer-events: none;
+  }
+}
+
+.wp-core-ui .securitytxt-body .button-primary {
+  background:   #F9861C;
+  border-color: #F9861C;
+
+  &.focus,
+  &.hover,
+  &:focus,
+  &:hover {
+	background:   #F9861C;
+	border-color: #F9861C;
+  }
+
+  &.focus,
+  &:focus {
+	box-shadow: 0 0 0 1px #fff, 0 0 0 3px #F9861C;
+  }
+}
+
+.securitytxt-button-loader {
+  top:          4px;
+  position:     relative;
+  margin-right: 3px;
+}
+
+.button-danger {
+
+}
+
+.securitytxt-header {
+  text-align:    center;
+  margin:        0 0 1rem;
+  background:    #fff;
+  border-bottom: 1px solid #dcdcde;
+
+  h1 {
+	display:     inline-block;
+	font-weight: 600;
+	margin:      0 .8rem 1rem;
+	font-size:   23px;
+	padding:     9px 0 4px;
+	line-height: 1.3;
+  }
+}
+
+.securitytxt-section-title {
+  margin-top: 40px;
+}
+
+.securitytxt-status {
+  border-radius: 15px;
+  height:        29px;
+  width:         29px;
+  margin-right:  5px;
+  box-sizing:    border-box;
+
+  > img {
+	margin: 3px;
+  }
+
+  &.green {
+	border: 2px #008000 solid;
+	color:  #008000;
+  }
+
+  &.yellow {
+	border: 2px #dba617 solid;
+	color:  #dba617;
+  }
+
+  &.red {
+	border: 2px #d31f1f solid;
+	color:  #d31f1f;
+  }
+
+  .dashicons {
+	width:       100%;
+	height:      100%;
+	font-size:   26px;
+	line-height: 26px;
+
+	&.dashicons-yes {
+	  margin-left: -2px;
+
+	  &:before {
+		color: #008000;
+	  }
+	}
+
+	&.dashicons-no {
+	  font-size:   24px;
+	}
+
+	&.dashicons-ellipsis {
+    	font-size: 17px;
+	}
+  }
+}
+
+.securitytxt-refresh {
+    margin-left: 5px;
+    opacity: 0.5;
+}
+
+.securitytxt-title-section {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  clear:           both;
+  padding-top:     8px;
+}
+
+.securitytxt-status-label {
+  font-weight: 600;
+  line-height: 20px;
+  margin-left: .3rem
+}
+
+.securitytxt-status-wrapper {
+  margin-bottom: 1rem;
+}
+
+.securitytxt-tabs-wrapper {
+  display:               -ms-inline-grid;
+  -ms-grid-columns:      1fr 1fr 1fr 1fr;
+  vertical-align:        top;
+  display:               inline-grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+
+  &.tab-count-1 {
+	-ms-grid-columns:      1fr;
+	grid-template-columns: 1fr;
+  }
+
+  &.tab-count-2 {
+	-ms-grid-columns:      1fr 1fr;
+	grid-template-columns: 1fr 1fr;
+  }
+
+  &.tab-count-3 {
+	-ms-grid-columns:      1fr 1fr 1fr;
+	grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.securitytxt-tab {
+  display:         block;
+  text-decoration: none;
+  color:           inherit;
+  padding:         0.5rem 1rem 1rem;
+  margin:          0 1rem;
+  transition:      box-shadow .5s ease-in-out;
+
+  &.active {
+	box-shadow:  inset 0 -3px #3582c4;
+	font-weight: 600;
+  }
+
+  &:first-child {
+	-ms-grid-column: 1;
+  }
+}
+
+.securitytxt-form,
+.securitytxt-container {
+  border:        1px solid #c3c4c7;
+  background:    #fff;
+  margin-bottom: 1rem;
+}
+
+.securitytxt-container {
+  padding: 1em 1.5em 0.5em 1.5em;
+}
+
+.securitytxt-form-heading {
+  //border-top: 1px solid #c3c4c7;
+  font-size:           inherit;
+  line-height:         inherit;
+  font-weight:         600;
+
+  background:          #fff;
+  border:              0;
+  color:               #2c3338;
+  display:             flex;
+  margin:              0;
+  padding:             1em 1.5em 0 1.5em;
+  min-height:          30px;
+  position:            relative;
+  text-align:          left;
+  //width: 100%;
+  align-items:         center;
+  justify-content:     space-between;
+  -webkit-user-select: auto;
+  user-select:         auto;
+
+  label {
+	margin-right: auto;
+  }
+}
+
+.securitytxt-privatekey-container {
+  display:        flex;
+  flex-direction: column;
+}
+
+.securitytxt-actionlist {
+  li {
+	display:       flex;
+	margin-bottom: 12px;
+    flex-wrap: wrap;
+
+	img {
+	  margin-right: 5px;
+	  margin-left:  5px;
+	  max-height:   20px;
+	}
+
+	.dashicons {
+	  font-size:   30px;
+	  line-height: 20px;
+	  width:       30px;
+	}
+
+	.dashicons-yes {
+	  color: #008000;
+	}
+
+	.dashicons-smiley {
+	  font-size: 24px;
+	}
+
+	code {
+	  font-size: 12px;
+	  margin:    -3px 5px 0;
+	}
+  }
+}
+
+.securitytxt-form-field {
+  margin:     0;
+  padding:    1em 1.5em 0.5em 1.5em;
+  background: #fff;
+  //border-bottom: 1px solid #c3c4c7;
+
+
+  input {
+	box-shadow:        none;
+	font-family:       inherit;
+	font-size:         16px;
+	line-height:       inherit;
+	margin:            0 0 0.3rem 0;
+	min-height:        auto;
+	padding:           2px calc(8px);
+	border-radius:     0;
+	border:            1px solid #8c8f94;
+	background-color:  #fff;
+	color:             #2c3338;
+	display:           flex;
+	-webkit-box-align: center;
+	align-items:       center;
+	flex-direction:    row;
+	gap:               calc(8px);
+	-webkit-box-pack:  justify;
+	justify-content:   space-between;
+	width:             100%;
+	height:            38px;
+
+	&.securitytxt-readonly {
+	  color:            #777; /* Gray text color */
+	  background-color: #f5f5f5; /* Light gray background */
+	}
+
+	&.securitytxt-disabled {
+	  cursor: text; /* Set cursor to text */
+	  pointer-events: none; /* Disable pointer events */
+	}
+  }
+}
+
+.securitytxt-form-input {
+  display:        flex;
+  flex-direction: row;
+}
+
+.securitytxt-body .badge {
+  padding:     0.1rem 0.5rem 0.15rem;
+  color:       #ffffff;
+  font-weight: 600;
+  margin-left: 0.2rem;
+
+  &.blue {
+	border:     1px solid #72aee6;
+	background: #72aee6;
+  }
+
+  &.red {
+	border:     1px solid #d31f1f;
+	background: #d31f1f;
+  }
+
+  &.orange {
+	border:     1px solid #FF9D39;
+	background: #FF9D39;
+  }
+}
+
+.px-15em {
+  padding-right: 1.5em;
+  padding-left:  1.5em;
+}
+
+.securitytxt-submit-wrapper {
+  display:         flex;
+  flex-direction:  column;
+  justify-content: center;
+  margin:          10px auto;
+  text-align:      center;
+}
+
+.securitytxt-body {
+
+  .securitytxt-submit-button {
+
+	&.securitytxt-remove {
+	  padding:     3px 13px;
+	  line-height: 30px;
+	  height:      38px;
+	  margin-left: 6px;
+	  text-align:  center;
+	}
+  }
+}
+
+.securitytxt-code {
+  margin:    0 auto 10px auto;
+  width:     420px;
+  max-width: 100%;
+}
+
+.securitytxt-key {
+  margin-top:    1.5em;
+  margin-bottom: 0;
+  width:         100%;
+  border-radius: 0;
+}
+
+.securitytxt-contents {
+  margin-top:    1.5em;
+  margin-bottom: 1.5em;
+  width:         100%;
+  border-radius: 0;
+}
+
+.securitytxt-footer {
+  margin-top:     50px;
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+}
+
+.securitytxt-footer-text {
+  color: #999999;
+}
+
+.securitytxt-footer-img {
+  max-width: 220px;
+}
+
+.securitytxt-body .badge {
+  padding:     0.1rem 0.5rem 0.15rem;
+  color:       #ffffff;
+  font-weight: 600;
+
+  &.blue {
+	border:     1px solid #72aee6;
+	background: #72aee6;
+  }
+
+  &.red {
+	border:     1px solid #d31f1f;
+	background: #d31f1f;
+  }
+
+  &.orange {
+	border:     1px solid #FF9D39;
+	background: #FF9D39;
+  }
+
+  &.neutral {
+	border: 1px solid #4F4F4F;
+	color:  #4F4F4F;
+  }
+}
+
+.securitytxt-submit-wrapper {
+  margin:     10px auto;
+  text-align: center;
+}
+
+.securitytxt-body {
+  .securitytxt-submit-button {
+	padding:       6px 18px;
+	font-size:     15px;
+	margin-bottom: 5px;
+
+	.dashicons {
+	  line-height: 30px;
+	}
+  }
+
+  .securitytxt-show-advanced {
+	padding:   6px 18px;
+	font-size: 15px;
+	margin:    0 auto 20px;
+	display:   block;
+
+	.dashicons {
+	  line-height: 34px;
+	}
+  }
+
+  select + .securitytxt-description {
+	margin-left: 5px;
+  }
+}
+
+.securitytxt-transition {
+  transition: background-color 0.1s ease-out; /* CSS transition for the background color */
+}
+
+.securitytxt-description {
+  color: #646970;
+}
+
+.securitytxt-notify {
+  background:        #fff;
+  border:            1px solid #c3c4c7;
+  border-left-width: 1px;
+  border-left-color: rgb(195, 196, 199);
+  border-left-width: 4px;
+  box-shadow:        0 1px 1px rgba(0, 0, 0, .04);
+  margin:            5px 0 10px;
+  padding:           1px 12px;
+
+  p {
+	margin:  .5em 0;
+	padding: 2px;
+  }
+
+  &.notify-error {
+	border-left-color: #d63638;
+  }
+}
+
+.securitytxt-footer {
+  margin-top:     50px;
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+}
+
+.securitytxt-footer-text {
+  color: #999999;
+}
+
+.securitytxt-footer-img {
+  max-width: 220px;
+}

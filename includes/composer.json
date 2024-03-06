@@ -1,0 +1,15 @@
+{
+  "name": "vereniging_van_registrars/generate-securitytxt",
+  "description": "Dependancies for encryption keys and signing",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Brian de Geus",
+      "email": "brian@geusmedia.nl"
+    }
+  ],
+  "require": {
+    "phpseclib/phpseclib": "~3.0"
+  }
+}

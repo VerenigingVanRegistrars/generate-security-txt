@@ -1,0 +1,566 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Generate security.txt\n"
+"POT-Creation-Date: 2024-03-05 16:38+0100\n"
+"PO-Revision-Date: 2024-03-05 16:38+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: generate-security-txt.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: admin/class-generate-security-txt-admin.php:96
+msgid "Go to settings"
+msgstr "Ga naar instellingen"
+
+#: admin/class-generate-security-txt-admin.php:181
+#: admin/class-generate-security-txt-admin.php:182
+msgid "Generate Security.txt"
+msgstr "Genereer Security.txt"
+
+#: admin/class-generate-security-txt-admin.php:203
+msgid "No security.txt file exists for this website yet. Create one below."
+msgstr ""
+"Er bestaat nog geen security.txt voor deze website. Maak er een hieronder."
+
+#: admin/class-generate-security-txt-admin.php:210
+msgid ""
+"This website isn't using HTTPS. This is a requirement for any value in "
+"security.txt containing a web URI. Resolve this before you generate a "
+"security.txt file."
+msgstr ""
+"Deze website gebruikt geen HTTPS. Dit is een vereiste voor elke waarde in "
+"security.txt met een web URI. Los dit op voordat je een security.txt bestand "
+"genereert."
+
+#: admin/class-generate-security-txt-admin.php:250
+#, php-format
+msgid ""
+"Regenerate your security.txt, the expirydate is very soon or has passed. <a "
+"href=\"%s\">Click here</a> to do so."
+msgstr ""
+"Genereer opnieuw jouw security.txt, de verloopdatum is dichtbij of al "
+"geweest. <a href=%s>Klik hier</a> om dit te doen."
+
+#: admin/class-generate-security-txt-admin.php:266
+msgid "Invalid - Security.txt is missing"
+msgstr "Ongeldig - Security.txt ontbreekt"
+
+#: admin/class-generate-security-txt-admin.php:287
+#, php-format
+msgid "Security.txt expired on %s. Regenerate the file below."
+msgstr ""
+"Security.txt is vervallen op %s. Genereer het bestand opnieuw hieronder."
+
+#: admin/class-generate-security-txt-admin.php:292
+#, php-format
+msgid "Security.txt will expire on %s. Regenerate the file below."
+msgstr "Security.txt vervalt op %s. Genereer het bestand opnieuw hieronder."
+
+#: admin/class-generate-security-txt-admin.php:297
+msgid "Security.txt is valid"
+msgstr "Security.txt is geldig"
+
+#: admin/class-generate-security-txt-admin.php:551
+msgid "Contact"
+msgstr "Contact"
+
+#: admin/class-generate-security-txt-admin.php:552
+msgid ""
+"This should be the name and e-mail address of the person within your "
+"organization that security researchers can contact when they have found a "
+"vulnerability on your site."
+msgstr ""
+"Hier moet de naam en het e-mailadres komen van degene binnen jouw "
+"organisatie, waar beveiligingsonderzoekers contact mee kunnen opnemen, "
+"wanneer ze een kwetsbaarheid hebben gevonden op je site."
+
+#: admin/class-generate-security-txt-admin.php:558
+msgid "security@domain.com"
+msgstr "security@domein.nl"
+
+#: admin/class-generate-security-txt-admin.php:564
+msgid "Not a valid emailaddress, phonenumber or web URI starting with https://"
+msgstr ""
+"Geen geldig e-mailadres, telefoonnummer of web-URI beginnend met https://"
+
+#: admin/class-generate-security-txt-admin.php:569
+msgid "Expiration date"
+msgstr "Vervaldatum"
+
+#: admin/class-generate-security-txt-admin.php:570
+msgid ""
+"Because data needs to stay current, an expiration date is set within one "
+"year so you can check the data at least once a year. We already have this "
+"set but feel free to adjust it. "
+msgstr ""
+"Omdat gegevens actueel moeten blijven, wordt er een vervaldatum ingesteld "
+"binnen één jaar, zodat je minimaal één keer per jaar de gegevens kunt "
+"controleren. Wij hebben dit al ingesteld maar pas het gerust aan. "
+
+#: admin/class-generate-security-txt-admin.php:576
+msgid "YYYY-MM-DD"
+msgstr "JJJJ-MM-DD"
+
+#: admin/class-generate-security-txt-admin.php:582
+msgid "Not a valid date format, needs YYYY-MM-DD"
+msgstr "Geen geldig datumformaat, moet JJJJ-MM-DD"
+
+#: admin/class-generate-security-txt-admin.php:587
+msgid "Encryption"
+msgstr "Encryptie"
+
+#: admin/class-generate-security-txt-admin.php:588
+msgid ""
+"If your webhost supports encryption, the security.txt will be digitally "
+"encrypted. If so, you will find the PGP key above. If not, the security.txt "
+"file will be generated without encryption and you can ask your hosting "
+"provider about enabling the PHP-extension <code>gnupg</code>."
+msgstr ""
+"Als je webhost versleuteling ondersteunt, wordt de security.txt digitaal "
+"versleuteld. Zo ja, dan vind je hierboven de PGP-sleutel. Als dit niet het "
+"geval is, wordt het security.txt bestand zonder versleuteling gegenereerd en "
+"kan je jouw hostingprovider vragen om de PHP-extensie <code>gnupg</code> in "
+"te schakelen."
+
+#: admin/class-generate-security-txt-admin.php:594
+msgid "This will be filled automatically after generating your security.txt"
+msgstr "Deze wordt automatisch ingevuld na het genereren van jouw security.txt"
+
+#: admin/class-generate-security-txt-admin.php:603
+msgid "Language settings"
+msgstr "Taalinstellingen"
+
+#: admin/class-generate-security-txt-admin.php:604
+msgid ""
+"Above you can specify the languages in which you can (and want to) receive "
+"notifications. We have already set the language of your WordPress "
+"environment for your convenience."
+msgstr ""
+"Onderstaand kun je de talen opgeven waarin je meldingen kunt (en wilt) "
+"ontvangen. Wij hebben voor het gemak de taal van je Wordpress omgeving al "
+"ingesteld."
+
+#: admin/class-generate-security-txt-admin.php:610
+msgid "en, es, nl"
+msgstr "nl, en, es"
+
+#: admin/class-generate-security-txt-admin.php:615
+msgid ""
+"Not a valid format. Needs comma-seperated language codes or use the dropdown"
+msgstr ""
+"Geen geldig formaat. Heeft door komma's gescheiden taalcodes nodig of "
+"gebruik de vervolgkeuzelijst"
+
+#: admin/class-generate-security-txt-admin.php:620
+msgid "Acknowledgments"
+msgstr "Waardering"
+
+#: admin/class-generate-security-txt-admin.php:621
+msgid ""
+"Here you can enter a page thanking the security researchers for reporting a "
+"vulnerability."
+msgstr ""
+"Hier kun je een pagina opgeven, waarin je de beveiligingsonderzoekers "
+"bedankt voor het melden van een kwetsbaarheid."
+
+#: admin/class-generate-security-txt-admin.php:633
+#: admin/class-generate-security-txt-admin.php:651
+#: admin/class-generate-security-txt-admin.php:669
+#: admin/class-generate-security-txt-admin.php:687
+#: admin/class-generate-security-txt-admin.php:704
+msgid "Not a valid web URI starting with https://"
+msgstr "Geen geldige web-URI die begint met https://"
+
+#: admin/class-generate-security-txt-admin.php:638
+msgid "File & location"
+msgstr "Bestand & locatie"
+
+#: admin/class-generate-security-txt-admin.php:639
+msgid ""
+"The security.txt file has been placed in the right folder (well-known) and "
+"digitally encrypted. Above you can see where the file is located and how it "
+"is read by security researchers."
+msgstr ""
+"De security.txt file is in de juiste folder geplaatst (well-known) en "
+"digitaal versleuteld. Hieronder kun je zien waar de file staat en hoe deze "
+"wordt uitgelezen door beveiligingsonderzoekers."
+
+#: admin/class-generate-security-txt-admin.php:656
+msgid "Policy"
+msgstr "Policy"
+
+#: admin/class-generate-security-txt-admin.php:657
+msgid ""
+"Some organizations have a security policy on how they want to receive "
+"notifications. If you have a specific security policy, you can enter it here."
+msgstr ""
+"Sommige organisaties hebben een security policy hoe ze meldingen willen "
+"ontvangen. Indien je een specifieke security policy hebt, dan kun je die "
+"hier opgeven."
+
+#: admin/class-generate-security-txt-admin.php:674
+msgid "Hiring"
+msgstr "Vacatures"
+
+#: admin/class-generate-security-txt-admin.php:675
+msgid ""
+"If you have job openings for security-related positions in your "
+"organization, you can enter them here as well. So, enter the link to your "
+"vacancies here."
+msgstr ""
+"Mocht je vacatures hebben voor security gerelateerde functies in je "
+"organisatie, dan kun je die hier ook nog opgeven. Dus vul hier de link in "
+"naar je vacatures."
+
+#: admin/class-generate-security-txt-admin.php:692
+msgid "Common Security Advisory Framework (CSAF)"
+msgstr "Common Security Advisory Framework (CSAF)"
+
+#: admin/class-generate-security-txt-admin.php:693
+msgid ""
+"If you use a CSAF to receive automated notifications, for example, you can "
+"enter it here."
+msgstr ""
+"Indien je gebruik maakt van een CSAF om bijvoorbeeld geautomatiseerd "
+"meldingen te ontvangen, dan kun je die hier opgeven."
+
+#: admin/class-generate-security-txt-admin.php:749
+msgid "Toggle advanced settings"
+msgstr "Geavanceerde instellingen"
+
+#: admin/class-generate-security-txt-admin.php:777
+msgid "Required"
+msgstr "Verplicht"
+
+#: admin/class-generate-security-txt-admin.php:779
+msgid "Optional"
+msgstr "Optioneel"
+
+#: admin/class-generate-security-txt-admin.php:793
+msgid "Add another"
+msgstr "Nog een toevoegen"
+
+#: admin/class-generate-security-txt-admin.php:810
+msgid "Select a language to add the correct code to the field"
+msgstr "Selecteer een taal om de juiste code aan het veld toe te voegen"
+
+#: admin/class-generate-security-txt-admin.php:836
+msgid ""
+"Encryption is not available because PHP-extension 'gnupg' is not available"
+msgstr ""
+"Encryptie is niet beschikbaar omdat PHP-extensie 'gnupg' niet beschikbaar is"
+
+#: admin/class-generate-security-txt-admin.php:961
+msgid "Saving form fields.."
+msgstr "Formuliervelden opslaan.."
+
+#: admin/class-generate-security-txt-admin.php:962
+msgid "Form fields saved."
+msgstr "Formuliervelden opgeslagen."
+
+#: admin/class-generate-security-txt-admin.php:963
+msgid "Failed to save forms fields."
+msgstr "Het opslaan van formuliervelden is mislukt."
+
+#: admin/class-generate-security-txt-admin.php:973
+msgid "Checking for <code>.well-known</code> folder.."
+msgstr "Controleren op <code>.well-known</code> map.."
+
+#: admin/class-generate-security-txt-admin.php:974
+msgid "<code>.well-known</code> folder exists."
+msgstr "<code>.well-known</code> map bestaat."
+
+#: admin/class-generate-security-txt-admin.php:975
+msgid "<code>.well-known</code> folder doesn't exist. Folder must be created."
+msgstr "<code>.well-known</code> map bestaat niet. Map moet worden aangemaakt."
+
+#: admin/class-generate-security-txt-admin.php:985
+msgid "Creating <code>.well-known</code> folder.."
+msgstr "Aanmaken <code>.well-known</code> map.."
+
+#: admin/class-generate-security-txt-admin.php:986
+msgid "<code>.well-known</code> folder created succesfully."
+msgstr "<code>.well-known</code> map succesvol gemaakt."
+
+#: admin/class-generate-security-txt-admin.php:987
+msgid "Failed to create <code>.well-known</code> folder. "
+msgstr "Het maken van een <code>.well-known</code> map is mislukt. "
+
+#: admin/class-generate-security-txt-admin.php:997
+msgid "Checking for old <code>security.txt</code>.."
+msgstr "Controleren op oude <code>security.txt</code>.."
+
+#: admin/class-generate-security-txt-admin.php:998
+msgid "Old <code>security.txt</code> exists."
+msgstr "Oude <code>security.txt</code> bestaat."
+
+#: admin/class-generate-security-txt-admin.php:999
+msgid "Old <code>security.txt</code> doesn't exist."
+msgstr "Oude <code>security.txt</code> bestaat niet."
+
+#: admin/class-generate-security-txt-admin.php:1009
+msgid "Deleting old <code>security.txt</code>.."
+msgstr "Oude <code>security.txt</code> verwijderen .."
+
+#: admin/class-generate-security-txt-admin.php:1010
+msgid "Deleted old <code>security.txt</code> successfully."
+msgstr "Oude <code>security.txt</code> met succes verwijderd."
+
+#: admin/class-generate-security-txt-admin.php:1011
+msgid "Failed to delete old <code>security.txt</code>."
+msgstr "Kan oude <code>security.txt</code> niet verwijderen."
+
+#: admin/class-generate-security-txt-admin.php:1021
+msgid "Creating <code>security.txt</code> content.."
+msgstr "Maken van <code>security.txt</code> inhoud.."
+
+#: admin/class-generate-security-txt-admin.php:1022
+msgid "Content for <code>security.txt</code> successfully created."
+msgstr "Inhoud voor <code>security.txt</code> succesvol gemaakt."
+
+#: admin/class-generate-security-txt-admin.php:1023
+msgid "Failed to content for <code>security.txt</code>."
+msgstr "Probleem met maken van inhoud van  <code>security.txt</code>."
+
+#: admin/class-generate-security-txt-admin.php:1033
+msgid "Saving <code>security.txt</code> file.."
+msgstr "<code>security.txt</code> bestand opslaan.."
+
+#: admin/class-generate-security-txt-admin.php:1034
+msgid "Saved <code>security.txt</code> successfully."
+msgstr "<code>security.txt</code> succesvol opgeslagen."
+
+#: admin/class-generate-security-txt-admin.php:1035
+msgid "Failed to save <code>security.txt</code>."
+msgstr "Probleem met opslaan van <code>security.txt</code>."
+
+#: admin/class-generate-security-txt-admin.php:1045
+msgid "Checking for encryption availability.."
+msgstr "Controleren op beschikbaarheid van versleuteling.."
+
+#: admin/class-generate-security-txt-admin.php:1046
+msgid ""
+"Encryption is available. <code>PHP-extension 'gnupg'</code> is installed."
+msgstr ""
+"Versleuteling is beschikbaar. <code>PHP-extension 'gnupg'</code> is "
+"geïnstalleerd."
+
+#: admin/class-generate-security-txt-admin.php:1047
+msgid ""
+"Encryption not available, skipping encryption. Ask your webhosting about the "
+"<code>PHP-extension 'gnupg'</code>."
+msgstr ""
+"Versleuteling niet beschikbaar, versleuteling wordt overgeslagen. Informeer "
+"bij jouw webhosting naar de <code>PHP-extension 'gnupg'</code>."
+
+#: admin/class-generate-security-txt-admin.php:1068
+msgid "Generating keys and signing <code>security.txt</code>.."
+msgstr "Sleutels genereren en ondertekenen van <code>security.txt</code>.."
+
+#: admin/class-generate-security-txt-admin.php:1069
+msgid "Successfully generated keys and signed <code>security.txt</code>."
+msgstr ""
+"Succesvol gegenereerde sleutels en ondertekend <code>security.txt</code>."
+
+#: admin/class-generate-security-txt-admin.php:1070
+msgid "Failed to generate keys and/or couldn't sign <code>security.txt</code>."
+msgstr ""
+"Kan geen sleutels genereren en/of kan <code>security.txt</code> niet "
+"ondertekenen."
+
+#: admin/class-generate-security-txt-admin.php:1080
+msgid "Finishing.."
+msgstr "Afronden.."
+
+#: admin/class-generate-security-txt-admin.php:1081
+msgid "Finished succesfully."
+msgstr "Succesvol afgerond."
+
+#: admin/partials/generate-security-txt-admin-display.php:23
+#: admin/partials/generate-security-txt-admin-display.php:35
+msgid "Checking security.txt status"
+msgstr "Status security.txt controleren"
+
+#: admin/partials/generate-security-txt-admin-display.php:28
+msgid "Security.txt Status"
+msgstr "Security.txt Status"
+
+#. Plugin Name of the plugin/theme
+#: admin/partials/generate-security-txt-admin-display.php:50
+msgid "Generate security.txt"
+msgstr "Genereer Security.txt"
+
+#: admin/partials/generate-security-txt-admin-display.php:52
+msgid ""
+"On this page you can easily generate a security.txt file. This makes it "
+"easier for security researchers to contact you when they find a "
+"vulnerability on your site. This plugin puts all the information in the "
+"right place!"
+msgstr ""
+"Op deze pagina kun je eenvoudig een security.txt file aanmaken. Dit maakt "
+"het voor beveiligingsonderzoekers eenvoudiger om contact met jou op te "
+"nemen, wanneer ze een kwetsbaarheid vinden op je site. Deze plugin zet alle "
+"informatie op de juiste plek!"
+
+#: admin/partials/generate-security-txt-admin-display.php:53
+msgid ""
+"Below are several fields where you can enter (contact) information to be "
+"included in the security.txt file. Some fields are required, and some are "
+"optional."
+msgstr ""
+"Hieronder tref je een aantal velden waar je (contact)informatie kunt "
+"invullen die in de security.txt file komt te staan. Sommige velden zijn "
+"verplicht en sommige velden optioneel."
+
+#: admin/partials/generate-security-txt-admin-display.php:61
+msgid ""
+"There are validation errors, fix the fields with a red border in a the form "
+"above."
+msgstr ""
+"Er zijn validatiefouten, corrigeer de velden met een rode rand in het "
+"bovenstaande formulier."
+
+#: admin/partials/generate-security-txt-admin-display.php:63
+#: admin/partials/generate-security-txt-admin-display.php:64
+msgid "Save changes and generate security.txt"
+msgstr "Wijzigingen opslaan en security.txt genereren"
+
+#: admin/partials/generate-security-txt-admin-display.php:63
+#: admin/partials/generate-security-txt-admin-display.php:75
+msgid "Working.. Don't refresh the page"
+msgstr "Bezig… niet de pagina refreshen"
+
+#: admin/partials/generate-security-txt-admin-display.php:69
+msgid "Delete all data, files and keys"
+msgstr "Verwijder alle gegevens, bestanden en sleutels"
+
+#: admin/partials/generate-security-txt-admin-display.php:80
+msgid "Not working yet.."
+msgstr "Werkt nog niet.."
+
+#: admin/partials/generate-security-txt-admin-display.php:85
+msgid "Show private key, save it locally in a secure location"
+msgstr "Toon private key, sla deze lokaal op een veilige locatie op"
+
+#: admin/partials/generate-security-txt-admin-display.php:86
+msgid ""
+"This key is not stored anywhere by this plugin, when you leave this page it "
+"is lost."
+msgstr ""
+"Deze sleutel wordt nergens opgeslagen door deze plugin, wanneer u deze "
+"pagina verlaat is deze verloren."
+
+#: admin/partials/generate-security-txt-admin-display.php:90
+msgid ""
+"This key was used to sign the security.txt file. Save this key locally, you "
+"may need this to communicate securely with reporting security researchers. "
+"You can find your public key by clicking the 'View public keyfile'-button "
+"below."
+msgstr ""
+"Deze sleutel werd gebruikt om het security.txt bestand te ondertekenen. Sla "
+"deze sleutel lokaal op, mogelijk heb je deze nodig om veilig te communiceren "
+"met rapporterende beveiligingsonderzoekers. Je kan jouw publieke sleutel "
+"vinden door hieronder op de knop ’Toon public key’ te klikken."
+
+#: admin/partials/generate-security-txt-admin-display.php:95
+msgid "View security.txt"
+msgstr "Bekijk security.txt"
+
+#: admin/partials/generate-security-txt-admin-display.php:96
+msgid "View public keyfile"
+msgstr "Public key weergeven"
+
+#: admin/partials/generate-security-txt-admin-display.php:99
+msgid "Security.txt file contents"
+msgstr "Security.txt bestandsinhoud"
+
+#: admin/partials/generate-security-txt-admin-display.php:109
+msgid "Verify security.txt externally"
+msgstr "Verifieer security.txt extern"
+
+#: admin/partials/generate-security-txt-admin-display.php:110
+msgid ""
+"This button opens a new tab. Please note that internet.nl doesn’t check "
+"subroot WordPress installs like example.com/wordpress."
+msgstr ""
+"Met deze knop open je een nieuw tabblad. Houd er rekening mee dat internet."
+"nl subroot WordPress-installaties niet controleert zoals example.com/"
+"wordpress."
+
+#: admin/partials/generate-security-txt-admin-display.php:115
+msgid "Debug information and status"
+msgstr "Foutopsporingsinformatie en -status"
+
+#: admin/partials/generate-security-txt-admin-display.php:122
+#: admin/partials/generate-security-txt-admin-display.php:175
+msgid "Subject"
+msgstr "Onderwerp"
+
+#: admin/partials/generate-security-txt-admin-display.php:125
+#: admin/partials/generate-security-txt-admin-display.php:178
+msgid "Status / Version"
+msgstr "Status / Versie"
+
+#: admin/partials/generate-security-txt-admin-display.php:184
+msgid ""
+"When communicating issues with this plugin, please always include a "
+"screenshot of this table."
+msgstr ""
+"Als je problemen met deze plug-in communiceert, voeg dan altijd een "
+"screenshot van deze tabel toe."
+
+#: admin/partials/generate-security-txt-admin-display.php:186
+msgid "More information about security.txt"
+msgstr "Meer informatie over security.txt"
+
+#: admin/partials/generate-security-txt-admin-display.php:187
+msgid ""
+"When vulnerabilities are discovered on a website, by independent security "
+"researchers, they often do not have the correct contact information to "
+"disclose them. Security.txt is an open standard that helps organizations and "
+"security researchers find each other more easily, exchange the right "
+"information and thereby resolve a discovered vulnerability quickly."
+msgstr ""
+"Wanneer er kwetsbaarheden op een website worden ontdekt, door onafhankelijke "
+"beveiligingsonderzoekers, dan ontbreekt het hen vaak aan de juiste "
+"contactinformatie om dit kenbaar te maken. Security.txt is een open "
+"standaard die organisaties én beveiligingsonderzoekers helpt om elkaar "
+"sneller te vinden, de juiste informatie uit te wisselen en daarmee een "
+"gevonden kwetsbaarheid snel op te lossen."
+
+#: admin/partials/generate-security-txt-admin-display.php:192
+msgid "This plugin is sponsored by SIDN fund and an initiative of"
+msgstr "Deze plugin wordt gesponsord door SIDN fonds en is een initiatief van"
+
+#. Plugin URI of the plugin/theme
+msgid "https://wordpress.org/plugins/generate-security-txt/"
+msgstr "https://wordpress.org/plugins/generate-security-txt/"
+
+#. Description of the plugin/theme
+msgid ""
+"Generate a PGP signed security.txt file with ease. Go to tools to generate "
+"the security.txt file or click below on 'Go to settings' to get started."
+msgstr ""
+"Genereer eenvoudig een PGP-ondertekend security.txt-bestand. Ga naar tools "
+"om het security.txt bestand te genereren of klik hieronder op 'Ga naar "
+"instellingen' om aan de slag te gaan."
+
+#. Author of the plugin/theme
+msgid "Vereniging van Registrars"
+msgstr "Vereniging van Registrars"
+
+#. Author URI of the plugin/theme
+msgid "https://www.verenigingvanregistrars.nl/"
+msgstr "https://www.verenigingvanregistrars.nl/"
