@@ -5,7 +5,7 @@
  *
  * This file is used to markup the public-facing aspects of the plugin.
  *
- * @link       https://geusmedia.nl/
+ * @link       https://verenigingvanregistrars.nl/
  * @since      1.0.0
  *
  * @package    Generate_Security_Txt

@@ -6,7 +6,7 @@
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @link       https://geusmedia.nl/
+ * @link       https://verenigingvanregistrars.nl/
  * @since      1.0.0
  *
  * @package    Generate_Security_Txt
@@ -22,7 +22,7 @@
  * @since      1.0.0
  * @package    Generate_Security_Txt
  * @subpackage Generate_Security_Txt/includes
- * @author     Brian de Geus <brian@geusmedia.nl>
+ * @author     Brian de Geus <wordpress@verenigingvanregistrars.nl>
  */
 class Generate_Security_Txt_i18n {
 

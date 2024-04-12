@@ -6,7 +6,7 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://geusmedia.nl/
+ * @link       https://verenigingvanregistrars.nl/
  * @since      1.0.0
  *
  * @package    Generate_Security_Txt
@@ -25,7 +25,7 @@
  * @since      1.0.0
  * @package    Generate_Security_Txt
  * @subpackage Generate_Security_Txt/includes
- * @author     Brian de Geus <brian@geusmedia.nl>
+ * @author     Brian de Geus <wordpress@verenigingvanregistrars.nl>
  */
 class Generate_Security_Txt {
 
@@ -186,7 +186,6 @@ class Generate_Security_Txt {
 
 //		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 //		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
 	}
 
 	/**

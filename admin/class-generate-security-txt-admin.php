@@ -3,7 +3,7 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       https://geusmedia.nl/
+ * @link       https://verenigingvanregistrars.nl/
  * @since      1.0.0
  *
  * @package    Generate_Security_Txt
@@ -18,7 +18,7 @@
  *
  * @package    Generate_Security_Txt
  * @subpackage Generate_Security_Txt/admin
- * @author     Brian de Geus <brian@geusmedia.nl>
+ * @author     Brian de Geus <wordpress@verenigingvanregistrars.nl>
  */
 class Generate_Security_Txt_Admin {
 
@@ -545,7 +545,7 @@ class Generate_Security_Txt_Admin {
                 'name' => 'contact',
                 'title' => 'Contact',
                 'title_l10n' => __('Contact', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'description' => __('This should be the name and e-mail address of the person within your organization that security researchers can contact when they have found a vulnerability on your site.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'description' => __('This should be the e-mail address, phone number or web page of the person within your organization that security researchers can contact when they have found a vulnerability on your site.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
                 'description_url' => '',
                 'required' => true,
                 'multiple' => true,
@@ -577,22 +577,6 @@ class Generate_Security_Txt_Admin {
                 'regex' => '^[0-9]{4}-[0-9]{2}-[0-9]{2}$',
                 'invalid_text' => __('Not a valid date format, needs YYYY-MM-DD')
             ],
-            'encryption' => [
-                'name' => 'encryption',
-                'title' => 'Encryption',
-                'title_l10n' => __('Encryption', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'description' => __('If your webhost supports encryption, the security.txt will be digitally encrypted. If so, you will find the PGP key above. If not, the security.txt file will be generated without encryption and you can ask your hosting provider about enabling the PHP-extension <code>gnupg</code>.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'description_url' => '',
-                'required' => false,
-                'multiple' => false,
-                'disabled' => true,
-                'advanced' => false,
-                'placeholder' => __('This will be filled automatically after generating your security.txt', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'prefill' => '',
-                'prefix' => '',
-                'type' => 'text',
-                'class' => ''
-            ],
             'preferred_languages' => [
                 'name' => 'preferred_languages',
                 'title' => 'Preferred-Languages',
@@ -609,6 +593,22 @@ class Generate_Security_Txt_Admin {
                 'type' => 'text',
                 'class' => '',
                 'invalid_text' => __('Not a valid format. Needs comma-seperated language codes or use the dropdown')
+            ],
+            'encryption' => [
+                'name' => 'encryption',
+                'title' => 'Encryption',
+                'title_l10n' => __('Encryption', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'description' => __('If your webhost supports encryption, the security.txt will be digitally encrypted. If so, you will find the PGP key above. If not, the security.txt file will be generated without encryption and you can ask your hosting provider about enabling the PHP-extension <code>gnupg</code>.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'description_url' => '',
+                'required' => false,
+                'multiple' => false,
+                'disabled' => true,
+                'advanced' => true,
+                'placeholder' => __('This will be filled automatically after generating your security.txt', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'prefill' => '',
+                'prefix' => '',
+                'type' => 'text',
+                'class' => ''
             ],
             'acknowledgments' => [
                 'name' => 'acknowledgments',
@@ -707,6 +707,9 @@ class Generate_Security_Txt_Admin {
 
     /**
      * Echo the HTML for the list of actions
+     *
+     * @param $actions
+     * @return void
      */
     public function create_action_list($actions): void {
         ?>
@@ -895,16 +898,22 @@ class Generate_Security_Txt_Admin {
 
 
     // Define a custom function to check expiration date and send email
-    function check_securitytxt_expiration_and_send_email()
+    public function check_securitytxt_expiration_and_send_email()
     {
+        wp_mail(get_option('admin_email'), 'Securitytxt Expiry Reminder TEST', 'Your securitytxt file will expire tomorrow.');
+
+
         // Get expiration date
-        $securitytxt_expire = get_expiredate();
+        $securitytxt_expire = $this->get_expiredate();
+
+        // Reformat to string
+        if (!empty($securitytxt_expire) && is_array($securitytxt_expire))
+            $securitytxt_expire = reset($securitytxt_expire);
 
         // If expiration date is not available or not in the correct format, return
         if (!$securitytxt_expire || !is_string($securitytxt_expire)) {
             return;
         }
-
 
         // If somehow the file doesn't exist, it can't expire (possibly user deleted all data)
         if(!$this->check_securitytxt())
@@ -913,12 +922,11 @@ class Generate_Security_Txt_Admin {
         // Convert expiration date to DateTime object
         $securitytxt_expire_date = DateTime::createFromFormat("Y-m-d\TH:i:s.u\Z", $securitytxt_expire);
 
-        // Calculate the date for tomorrow
-        $tomorrow = new DateTime('tomorrow');
+        // Calculate the date for today
+        $today = new DateTime('now');
 
-        // Check if expiration date is within a day of tomorrow's date
-        $diff = $tomorrow->diff($securitytxt_expire_date);
-        if ($diff->days === 1) {
+        // Check if expiration date is within 1 day or has passed
+        if ($securitytxt_expire_date <= $today->modify('+1 day')) {
             // Send email to website admin
             // Replace 'admin@example.com' with the admin email address
             wp_mail(get_option('admin_email'), 'Securitytxt Expiry Reminder', 'Your securitytxt file will expire tomorrow.');

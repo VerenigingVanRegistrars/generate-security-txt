@@ -3,7 +3,7 @@
 /**
  * Register all actions and filters for the plugin
  *
- * @link       https://geusmedia.nl/
+ * @link       https://verenigingvanregistrars.nl/
  * @since      1.0.0
  *
  * @package    Generate_Security_Txt
@@ -19,7 +19,7 @@
  *
  * @package    Generate_Security_Txt
  * @subpackage Generate_Security_Txt/includes
- * @author     Brian de Geus <brian@geusmedia.nl>
+ * @author     Brian de Geus <wordpress@verenigingvanregistrars.nl>
  */
 class Generate_Security_Txt_Loader {
 

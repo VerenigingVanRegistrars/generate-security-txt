@@ -5,7 +5,7 @@
  *
  * This file is used to markup the admin-facing aspects of the plugin.
  *
- * @link       https://geusmedia.nl/
+ * @link       https://verenigingvanregistrars.nl/
  * @since      1.0.0
  *
  * @package    Generate_Security_Txt
@@ -60,13 +60,22 @@ $SecurityTxtAdmin->process_form_submit($_POST);
                 <div style="display: none;" id="securitytxtNoticeValidationErrors" class="securitytxt-notify notify-error">
                     <p><?= __( 'There are validation errors, fix the fields with a red border in a the form above.', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?></p>
                 </div>
-                <button id="securityTxtFormSubmit" type="submit" class="securitytxt-ajax-submit securitytxt-submit-button button button-primary" data-text="<?= __('Save changes and generate security.txt', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?>" data-working="<?= __('Working.. Don\'t refresh the page', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?>">
-                    <?= __('Save changes and generate security.txt', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?>
-                </button>
+                <?php if(is_ssl()) : ?>
+                    <button id="securityTxtFormSubmit" type="submit" class="securitytxt-ajax-submit securitytxt-submit-button button button-primary" data-text="<?= __('Save changes and generate security.txt', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?>" data-working="<?= __('Working.. Don\'t refresh the page', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?>">
+                        <?= __('Save changes and generate security.txt', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?>
+                    </button>
+                <?php else : ?>
+                    <div class="securitytxt-notify notify-error">
+                        <p><?= __('This website isn\'t using HTTPS. This is a requirement for any value in security.txt containing a web URI. Resolve this before you generate a security.txt file.', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?></p>
+                    </div>
+                    <button class="disabled securitytxt-submit-button button button-primary" data-text="<?= __('Save changes and generate security.txt', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?>" data-working="<?= __('Working.. Don\'t refresh the page', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?>">
+                        <?= __('Save changes and generate security.txt', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?>
+                    </button>
+                <?php endif; ?>
             </div>
 
             <div class="securitytxt-submit-wrapper px-15em">
-                <a href="<?= $SecurityTxtAdmin->get_deletedata_url(); ?>" type="submit" class="securitytxt-submit-button button button-"><i class="dashicons dashicons-trash"></i> <?= __('Delete all data, files and keys', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?></a>
+                <a href="<?= $SecurityTxtAdmin->get_deletedata_url(); ?>" type="submit" class="securitytxt-submit-button button button-"><i class="dashicons dashicons-trash"></i> <?= __('Reset plugin settings', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?></a>
             </div>
         </div>
     </form>
