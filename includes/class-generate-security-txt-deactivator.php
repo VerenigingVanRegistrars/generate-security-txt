@@ -23,14 +23,12 @@
 class Generate_Security_Txt_Deactivator {
 
 	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
+	 * Some functions to clean up, mainly unregistering cron
+     * TODO; Maybe add removing of keys and files. Not sure if users would want this.
 	 *
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-
+        wp_clear_scheduled_hook('check_securitytxt_expiration_event');
 	}
-
 }

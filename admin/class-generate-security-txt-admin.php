@@ -900,9 +900,6 @@ class Generate_Security_Txt_Admin {
     // Define a custom function to check expiration date and send email
     public function check_securitytxt_expiration_and_send_email()
     {
-        wp_mail(get_option('admin_email'), 'Securitytxt Expiry Reminder TEST', 'Your securitytxt file will expire tomorrow.');
-
-
         // Get expiration date
         $securitytxt_expire = $this->get_expiredate();
 
@@ -927,17 +924,34 @@ class Generate_Security_Txt_Admin {
 
         // Check if expiration date is within 1 day or has passed
         if ($securitytxt_expire_date <= $today->modify('+1 day')) {
+
             // Send email to website admin
-            // Replace 'admin@example.com' with the admin email address
-            wp_mail(get_option('admin_email'), 'Securitytxt Expiry Reminder', 'Your securitytxt file will expire tomorrow.');
+            $to_email = get_option('admin_email');
+            $mail_title = __('Security.txt Expiry Reminder', Generate_Security_Txt_i18n::TEXT_DOMAIN);
+            $mail_content = __('<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress website on %s.</p><p>Your security.txt file is about to expire.</p><p>Generate it again on %s.</p><hr><p>This message was sent by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>', Generate_Security_Txt_i18n::TEXT_DOMAIN);
+
+            // Define the variables to be replaced in the mail content
+            $website = home_url();
+            $generate_url = admin_url('tools.php?page=security_txt_generator');
+
+            // Translate and format the mail content
+            $mail_content = sprintf(__($mail_content), $website, $generate_url);
+
+            // Send the email
+            wp_mail($to_email, $mail_title, $mail_content, ['Content-Type: text/html; charset=UTF-8']);
 
             // Update WordPress option to indicate that email has been sent
             update_option($this::OPTION_FORM_PREFIX . 'securitytxt_email_sent', true);
         }
     }
 
-// Schedule the event to run once a day
-    function schedule_securitytxt_expiration_check()
+
+    /**
+     * Schedule the event to run once a day
+     *
+     * @return void
+     */
+    public function schedule_securitytxt_expiration_check()
     {
         // Check if the event is already scheduled
         if (!wp_next_scheduled('check_securitytxt_expiration_event')) {
