@@ -62,7 +62,7 @@ $SecurityTxtAdmin->check_securitytxt_expiration_and_send_email();
                 <div style="display: none;" id="securitytxtNoticeValidationErrors" class="securitytxt-notify notify-error">
                     <p><?= __( 'There are validation errors, fix the fields with a red border in a the form above.', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?></p>
                 </div>
-                <?php if(!is_ssl()) : ?>
+                <?php if(is_ssl()) : ?>
                     <button id="securityTxtFormSubmit" type="submit" class="securitytxt-ajax-submit securitytxt-submit-button button button-primary" data-text="<?= __('Save changes and generate security.txt', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?>" data-working="<?= __('Working.. Don\'t refresh the page', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?>">
                         <?= __('Save changes and generate security.txt', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?>
                     </button>
