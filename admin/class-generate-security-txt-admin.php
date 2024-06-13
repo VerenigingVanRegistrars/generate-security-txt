@@ -399,6 +399,8 @@ class Generate_Security_Txt_Admin {
         // Retrieve our fields
         $fields = $this->admin_security_text_generator_fields();
 
+        $first = true;
+
         // Loop all fields to retrieve the values
         foreach ($fields as $key => $field) {
             $values = get_option($this::OPTION_TXT_PREFIX . $key);
@@ -406,17 +408,20 @@ class Generate_Security_Txt_Admin {
             if(!empty($values) && is_array($values)) {
                 foreach($values as $value) {
                     if(!empty($value)) {
+
+                        if(!$first) {
+                            // Maybe add linebreaks before
+                            $securitxt_contents .= $with_linebreaks ? "\r\n" : '';
+                        }
+                        else {
+                            $first = false;
+                        }
+
                         $securitxt_contents .= $field['title'] . ': ';
                         $securitxt_contents .= $value;
-
-                        // Maybe add linebreaks
-                        $securitxt_contents .= $with_linebreaks ? "\n" : '';
                     }
                 }
             }
-
-            // Maybe add linebreaks
-//            $securitxt_contents .= $with_linebreaks ? '\n' : '';
         }
 
         return $securitxt_contents;
@@ -928,14 +933,14 @@ class Generate_Security_Txt_Admin {
             // Send email to website admin
             $to_email = get_option('admin_email');
             $mail_title = __('Security.txt Expiry Reminder', Generate_Security_Txt_i18n::TEXT_DOMAIN);
-            $mail_content = __('<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress website on %s.</p><p>Your security.txt file is about to expire.</p><p>Generate it again on %s.</p><hr><p>This message was sent by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>', Generate_Security_Txt_i18n::TEXT_DOMAIN);
+            $mail_content = __('<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress website on %s.</p><p>Your security.txt file will expire on <code>%s</code>.</p><p>We recommend regenerating it as soon as possble it on %s.</p><hr><p>This message was sent at <code>%s</code> by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>', Generate_Security_Txt_i18n::TEXT_DOMAIN);
 
             // Define the variables to be replaced in the mail content
             $website = home_url();
             $generate_url = admin_url('tools.php?page=security_txt_generator');
 
             // Translate and format the mail content
-            $mail_content = sprintf(__($mail_content), $website, $generate_url);
+            $mail_content = sprintf(__($mail_content), $website, $securitytxt_expire_date->format('Y-m-d H:i:s'), $generate_url, $today->format('Y-m-d H:i:s'));
 
             // Send the email
             wp_mail($to_email, $mail_title, $mail_content, ['Content-Type: text/html; charset=UTF-8']);
@@ -1071,6 +1076,7 @@ class Generate_Security_Txt_Admin {
                 'process_response' => false,
                 'class' => ''
             ],
+            // Moved key generation to one function
 //            'generating_keys' => [
 //                'name' => 'generating_keys',
 //                'text_start' => __('Generating private and public keys..', Generate_Security_Txt_i18n::TEXT_DOMAIN),
@@ -1140,8 +1146,6 @@ class Generate_Security_Txt_Admin {
                         $serialized_data = $form_data;
                         $unserialized_data = [];
                         parse_str($serialized_data, $unserialized_data);
-//                        print_r($unserialized_data);
-//                        die();
                         $status = call_user_func([$this, $action['name']], $unserialized_data);
                     }
                     else {
@@ -1296,18 +1300,11 @@ class Generate_Security_Txt_Admin {
                 echo '<li>Calling function <code>' . $action['name'] . '</code> with ' . (!empty($form_data) ? 'data' : 'no data') . '</li>';
 
                 if($form_data) {
-//                    $serialized_data = sanitize_text_field($form_data);
-//                    $unserialized_data = [];
-//                    parse_str($serialized_data, $unserialized_data);
-//                    print_r($serialized_data);
                     $result = call_user_func([$this, $action['name']], $form_data);
                 }
                 else {
                     $result = call_user_func([$this, $action['name']]);
                 }
-
-//                $args = [$action_list, $action['action_on_success']];
-//                $result = call_user_func([$this, $action['name']]);
 
                 // Success
                 if($result) {
@@ -1333,6 +1330,7 @@ class Generate_Security_Txt_Admin {
             }
         }
         else {
+            // Moved logic to different area
 //            echo '<li><b>Finished</b></li>';
         }
     }
@@ -1383,7 +1381,8 @@ class Generate_Security_Txt_Admin {
                 }
 
                 // We need to add the public key URI to the encryption field if it doesn't exist, this is mandatory
-                if($key == 'encryption' && $this->check_pubkey()) {
+                // Should probably not fill this field until later, after pubkey has been saved
+                if($key == 'encryption' && $this->is_gnupg_available()) {
                     $pubkey_url = $this->get_pubkey_url();
 
                     if(empty($clean_values) || !in_array($pubkey_url, $clean_values))
@@ -1411,10 +1410,8 @@ class Generate_Security_Txt_Admin {
 
             // Check if the current screen is your plugin admin page
             $screen = get_current_screen();
-//            print_r($screen);
 
             if ($screen && $screen->id === 'tools_page_security_txt_generator') {
-//                echo 'deleting';
 
                 // Execute the erase functions when the parameter exists on the backend page
                 $this->delete_all_option_data();
@@ -1423,8 +1420,6 @@ class Generate_Security_Txt_Admin {
 
                 // Queue the notification
                 update_option($this::OPTION_FORM_PREFIX . 'notification_delete', true);
-
-//                echo 'deleted all';
 
                 // Optional: Redirect to remove the parameter from the URL
                 wp_safe_redirect(remove_query_arg('securitytxt_erase'));
@@ -1599,7 +1594,7 @@ class Generate_Security_Txt_Admin {
 
         // Check if the file exists for some reason, we don't want to throw errors
         if (!file_exists($file_securitytxt)) {
-            $securitytxt_contents = $this->get_securitytxt_contents();
+            $securitytxt_contents = $this->get_securitytxt_contents(true);
 
             // Write contents to the file
             if (file_put_contents($file_securitytxt, $securitytxt_contents) !== false) {
@@ -1652,7 +1647,7 @@ class Generate_Security_Txt_Admin {
 
             $Encryption_Securitytxt = new Encryption_Securitytxt();
 
-            $result = $Encryption_Securitytxt->encrypt_securitytxt($contact_name, $contact_email, $securitytxt_contents);
+            $result = $Encryption_Securitytxt->encrypt_securitytxt($contact_name, $contact_email, $securitytxt_contents, '');
 
             if(!empty($result['signed_message'])) {
 
