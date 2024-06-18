@@ -969,14 +969,16 @@ class Generate_Security_Txt_Admin {
             $mail_content = sprintf(__($mail_content), $website, $securitytxt_expire_date->format('Y-m-d H:i:s'), $generate_url, $today->format('Y-m-d H:i:s'));
 
             // Send the email
-            wp_mail($to_email, $mail_title, $mail_content, ['Content-Type: text/html; charset=UTF-8']);
+            $sent = wp_mail($to_email, $mail_title, $mail_content, ['Content-Type: text/html; charset=UTF-8']);
 
-            // Update WordPress option to indicate when email has been sent
-            $current_datetime = current_time('mysql');
-            update_option($this::OPTION_FORM_PREFIX . 'securitytxt_email_date', $current_datetime);
+            if($sent) {
+                // Update WordPress option to indicate when email has been sent
+                $current_datetime = current_time('mysql');
+                update_option($this::OPTION_FORM_PREFIX . 'securitytxt_email_date', $current_datetime);
 
-            // Update WordPress option to indicate that email has been sent
-            update_option($this::OPTION_FORM_PREFIX . 'securitytxt_email_sent', true);
+                // Update WordPress option to indicate that email has been sent
+                update_option($this::OPTION_FORM_PREFIX . 'securitytxt_email_sent', true);
+            }
         }
     }
 
