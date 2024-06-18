@@ -171,9 +171,6 @@ class Generate_Security_Txt {
         // Hook the expiry email function to run once a day using WordPress Cron
         $this->loader->add_action('check_securitytxt_expiration_event', $plugin_admin, 'check_securitytxt_expiration_and_send_email');
         $this->loader->add_action('admin_init', $plugin_admin, 'schedule_securitytxt_expiration_check');
-
-//        add_action('check_securitytxt_expiration_event', $plugin_admin, 'check_securitytxt_expiration_and_send_email');
-//        add_action('admin_init', $plugin_admin, 'schedule_securitytxt_expiration_check');
 	}
 
 
@@ -188,6 +185,7 @@ class Generate_Security_Txt {
 
 		$plugin_public = new Generate_Security_Txt_Public( $this->get_plugin_name(), $this->get_version() );
 
+		// No usage of public assets at the moment
 //		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 //		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 	}

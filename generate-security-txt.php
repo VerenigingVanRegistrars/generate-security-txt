@@ -9,14 +9,14 @@
  * that starts the plugin.
  *
  * @link              https://www.verenigingvanregistrars.nl/
- * @since             1.0.2
+ * @since             1.0.0
  * @package           Generate_Security_Txt
  *
  * @wordpress-plugin
  * Plugin Name:       Generate security.txt
  * Plugin URI:        https://wordpress.org/plugins/generate-security-txt/
  * Description:       Generate a PGP signed security.txt file with ease. Go to tools to generate the security.txt file or click below on 'Go to settings' to get started.
- * Version:           1.0.2
+ * Version:           1.0.3
  * Author:            Vereniging van Registrars
  * Author URI:        https://www.verenigingvanregistrars.nl/
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'GENERATE_SECURITY_TXT_VERSION', '1.0.1' );
+define( 'GENERATE_SECURITY_TXT_VERSION', '1.0.3' );
 
 /**
  * The code that runs during plugin activation.

@@ -179,6 +179,14 @@ $SecurityTxtAdmin->check_securitytxt_expiration_and_send_email();
                 <div class="dashicons dashicons-<?= $SecurityTxtAdmin->is_gnupg_available() ? 'yes' : 'no'; ?>"></div> <?= $SecurityTxtAdmin->is_gnupg_available() ? 'Yes' : 'No'; ?>
             </td>
         </tr>
+        <tr>
+            <td>
+                Last expiry reminder sent
+            </td>
+            <td>
+                <?= $SecurityTxtAdmin->get_datetime_last_expiry_reminder(); ?>
+            </td>
+        </tr>
         </tbody>
         <tfoot>
         <tr>

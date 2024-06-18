@@ -369,6 +369,24 @@ class Generate_Security_Txt_Admin {
     }
 
 
+	/**
+	 * Return the last datetime to show in the debug table
+	 *
+	 * @return mixed|string
+	 */
+	public function get_datetime_last_expiry_reminder() {
+		// Retrieve the stored date and time option
+		$last_reminder = get_option( $this::OPTION_FORM_PREFIX . 'securitytxt_email_date' );
+
+		// Check if the option is set and not empty
+		if ( ! empty( $last_reminder ) ) {
+			return $last_reminder;
+		} else {
+			return 'Never';
+		}
+	}
+
+
     /**
      * See if a value is possibly a phonenumber, this is quite a redementary regex which is fine for our purpose
      *
@@ -903,23 +921,31 @@ class Generate_Security_Txt_Admin {
 
 
     // Define a custom function to check expiration date and send email
-    public function check_securitytxt_expiration_and_send_email()
+    public function check_securitytxt_expiration_and_send_email($ignore_checks = false)
     {
         // Get expiration date
         $securitytxt_expire = $this->get_expiredate();
 
-        // Reformat to string
-        if (!empty($securitytxt_expire) && is_array($securitytxt_expire))
-            $securitytxt_expire = reset($securitytxt_expire);
+        if(!$ignore_checks) {
 
-        // If expiration date is not available or not in the correct format, return
-        if (!$securitytxt_expire || !is_string($securitytxt_expire)) {
-            return;
+            // Update WordPress option to indicate that email has been sent
+            $email_sent = get_option($this::OPTION_FORM_PREFIX . 'securitytxt_email_sent', true);
+
+            if($email_sent)
+                return;
+
+            // Reformat to string
+            if (!empty($securitytxt_expire) && is_array($securitytxt_expire))
+                $securitytxt_expire = reset($securitytxt_expire);
+
+            // If expiration date is not available or not in the correct format, return
+            if (!$securitytxt_expire || !is_string($securitytxt_expire))
+                return;
+
+            // If somehow the file doesn't exist, it can't expire (possibly user deleted all data)
+            if(!$this->check_securitytxt())
+                return;
         }
-
-        // If somehow the file doesn't exist, it can't expire (possibly user deleted all data)
-        if(!$this->check_securitytxt())
-            return;
 
         // Convert expiration date to DateTime object
         $securitytxt_expire_date = DateTime::createFromFormat("Y-m-d\TH:i:s.u\Z", $securitytxt_expire);
@@ -944,6 +970,10 @@ class Generate_Security_Txt_Admin {
 
             // Send the email
             wp_mail($to_email, $mail_title, $mail_content, ['Content-Type: text/html; charset=UTF-8']);
+
+            // Update WordPress option to indicate when email has been sent
+            $current_datetime = current_time('mysql');
+            update_option($this::OPTION_FORM_PREFIX . 'securitytxt_email_date', $current_datetime);
 
             // Update WordPress option to indicate that email has been sent
             update_option($this::OPTION_FORM_PREFIX . 'securitytxt_email_sent', true);
