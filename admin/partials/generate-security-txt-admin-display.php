@@ -49,6 +49,9 @@ $SecurityTxtAdmin->check_securitytxt_expiration_and_send_email();
 <div class="securitytxt-body securitytxt-status-tab hide-if-no-js">
 
     <form method="post" action="<?= menu_page_url('security_txt_generator', false); ?>" class="securitytxt-form-wrapper" id="securitytxt-form-main">
+
+        <?php wp_nonce_field( 'securitytxt_nonce' ); ?>
+
         <h2 class="securitytxt-form-title"><?= __( 'Generate security.txt', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?></h2>
 
         <p><?= __('On this page you can easily generate a security.txt file. This makes it easier for security researchers to contact you when they find a vulnerability on your site. This plugin puts all the information in the right place!', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?></p>

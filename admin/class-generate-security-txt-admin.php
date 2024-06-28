@@ -538,10 +538,11 @@ class Generate_Security_Txt_Admin {
      *
      * @return string
      */
-    public function get_deletedata_url(): string
-    {
-        $deletedate_url = menu_page_url('security_txt_generator', false);
-        return add_query_arg('securitytxt_erase', true, $deletedate_url);
+    public function get_deletedata_url(): string {
+	    $delete_url = menu_page_url( 'security_txt_generator', false );
+	    $delete_url = add_query_arg( 'action', 'securitytxt_erase', $delete_url );
+
+	    return wp_nonce_url( $delete_url, 'securitytxt_erase' );
     }
 
 
@@ -1287,27 +1288,36 @@ class Generate_Security_Txt_Admin {
     }
 
 
-    /**
-     * Process a POST submit from the main form
-     * TODO Change to ajax process
-     *
-     * @param $_POST
-     * @return void
-     */
-    public function process_form_submit($postdata): void
-    {
-        // Check if this request was a post and if postdata is filled
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($postdata) && is_array($postdata)) {
-            $this->save_form_postdata($postdata);
+	/**
+	 * Process a POST submit from the main form
+	 *
+	 * @param $postdata
+	 *
+	 * @return void
+	 */
+    public function process_form_submit( $postdata ): void {
 
-            $action_list = $this->admin_security_text_generator_actions();
+	    // Check if this request was a post and if postdata is filled
+	    if ( $_SERVER['REQUEST_METHOD'] === 'POST' && ! empty( $postdata ) && is_array( $postdata ) ) {
+
+		    $nonce_check = check_admin_referer( 'securitytxt_nonce' );
 
             echo '<ul class="securitytxt-actionlist">';
 
-            $this->process_actionlist($action_list, reset($action_list));
+		    if ( $nonce_check ) {
 
-            echo '</ul>';
-        }
+			    $this->save_form_postdata( $postdata );
+
+			    $action_list = $this->admin_security_text_generator_actions();
+
+			    $this->process_actionlist( $action_list, reset( $action_list ) );
+
+		    } else {
+			    echo '<li><div class="dashicons dashicons-no"></div>' . __( 'An problem occured.' ) . '</li>';
+		    }
+
+		    echo '</ul>';
+	    }
     }
 
 
@@ -1438,24 +1448,30 @@ class Generate_Security_Txt_Admin {
     function action_delete_all()
     {
         // Check if the URL parameter 'your_parameter' is set
-        if (!empty($_GET['securitytxt_erase'])) {
+        if ( isset($_GET['action']) && $_GET['action'] === 'securitytxt_erase' ) {
 
-            // Check if the current screen is your plugin admin page
-            $screen = get_current_screen();
+            if(check_admin_referer( 'securitytxt_erase' )) {
 
-            if ($screen && $screen->id === 'tools_page_security_txt_generator') {
+                // Check if the current screen is your plugin admin page
+                $screen = get_current_screen();
 
-                // Execute the erase functions when the parameter exists on the backend page
-                $this->delete_all_option_data();
-                $this->delete_securitytxt();
-                $this->delete_publickey_file();
+                if ( $screen && $screen->id === 'tools_page_security_txt_generator' ) {
 
-                // Queue the notification
-                update_option($this::OPTION_FORM_PREFIX . 'notification_delete', true);
+                    // Execute the erase functions when the parameter exists on the backend page
+                    $this->delete_all_option_data();
+                    $this->delete_securitytxt();
+                    $this->delete_publickey_file();
 
-                // Optional: Redirect to remove the parameter from the URL
-                wp_safe_redirect(remove_query_arg('securitytxt_erase'));
-                exit();
+                    // Queue the notification
+                    update_option($this::OPTION_FORM_PREFIX . 'notification_delete', true);
+
+                    // Optional: Redirect to remove the parameter from the URL
+                    wp_safe_redirect(remove_query_arg('action'));
+                    exit();
+                }
+            }
+            else {
+                // Will produce a 'The link you followed has expired.' screen by default
             }
         }
     }
