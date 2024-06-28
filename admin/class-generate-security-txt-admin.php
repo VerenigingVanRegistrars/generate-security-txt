@@ -807,7 +807,7 @@ class Generate_Security_Txt_Admin {
                     <div class="securitytxt-form-input <?= $i != 0 ? 'securitytxt-removable' : ''; ?>">
                         <input type="<?= $field_values['type']; ?>" <?= !empty($field_values['required']) ? 'required' : ''; ?> placeholder="<?= $field_values['placeholder']; ?>"
                                class="<?= $field_values['required'] ? 'required' : ''; ?> <?= !empty($field_values['disabled']) ? 'securitytxt-readonly securitytxt-disabled' : ''; ?> <?= !empty($field_values['regex']) ? 'validate' : ''; ?> <?= $field_values['class']; ?>" id="<?= $field_values['name'] . '_' . $i; ?>" name="<?= $field_values['name']; ?>[]"
-                               value="<?= $current_values[$i]; ?>" <?= $data_regex; ?> data-count="<?= $i; ?>">
+                               value="<?= esc_attr($current_values[$i]); ?>" <?= $data_regex; ?> data-count="<?= $i; ?>">
                         <button class="securitytxt-submit-button button securitytxt-remove" style="display: <?= $i != 0 ? 'block' : 'none'; ?>"><div class="dashicons dashicons-no"></div></button>
                     </div>
                 <?php endfor; ?>
@@ -1410,9 +1410,14 @@ class Generate_Security_Txt_Admin {
             if (array_key_exists($key, $allowed_fields)) {
 
                 // Sanitize and save form data to custom fields
-                // TODO; This breaks the format of the strings but also seems unnessecary
-                //$clean_values = sanitize_text_field($values);
-                $clean_values = $values;
+                // Check if $values is an array
+                if (is_array($values)) {
+                    // Sanitize each string in the array
+                    $clean_values = array_map('sanitize_text_field', $values);
+                } else {
+                    // Sanitize the single string
+                    $clean_values = sanitize_text_field($values);
+                }
 
                 // We need to add the security.txt URI to the canonical field if it doesn't exist, this is mandatory
                 if($key == 'canonical') {
