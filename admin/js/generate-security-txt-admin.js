@@ -88,8 +88,6 @@
 
                 var form_data = $('#securitytxt-form-main').serialize() || '';
 
-                console.log(form_data);
-
                 // First ajax action
                 ajax_action_call(securitytxt.first_action, securitytxt.first_action_text, form_data);
             }
@@ -144,7 +142,6 @@
 
                 // Add the selected language to the array
                 currentLanguagesArray.push(selectedLang);
-                // console.log(currentLanguagesArray);
 
                 // Update the value of preferred_languages_0 with the new array
                 var joinedLanguagesArray = currentLanguagesArray.join(', ');
@@ -169,11 +166,12 @@
             'class': 'securitytxt-actionlist-item',     // Add a class
             'data-action': next_action                 // Add a data attribute
         });
+
         var $loadingSrc = securitytxt.homeurl + 'wp-includes/images/spinner.gif';
-        // var $loadingImg = '<img class="securitytxt-button-loader" src="' + $loadingSrc + '">';
         var $loadingImg = $('<img>', {
             'src' : $loadingSrc
         });
+
         $action_item.html($loadingImg.prop('outerHTML') + " " + start_text);
         $action_list_html.append($action_item);
 
@@ -187,9 +185,6 @@
             form_data: form_data
         };
 
-        console.log('starting call');
-        console.log(data);
-
         $.ajax({
             type: 'POST',
             url: securitytxt.ajaxurl, // WordPress AJAX URL
@@ -199,6 +194,8 @@
                 console.log(response);
                 
                 if(response.finished_action && response.finished_text) {
+                    console.log('finished action');
+
                     var $finishedActionItem = $('#' + response.finished_action);
                     var $checkmark = $('<div>', {
                         'class': 'dashicons dashicons-yes'
@@ -318,8 +315,6 @@
             data: data,
             success: function (response) {
                 // Handle the AJAX response here
-                console.log(response);
-
                 if ($('#securityTxtPrivateKey').val().trim() !== '') {
                     // Show the container if the textarea is not empty
                     $('#securityBtnContainerPrivateKey').show();
@@ -476,12 +471,12 @@
 
         // Check if the input value matches the regex pattern
         if (regex.test(input)) {
-            console.log('Valid URL');
+            // console.log('Valid URL');
             field.removeClass('invalid').addClass('valid');
             field.closest('.securitytxt-form-input').addClass('validated');
             field.closest('.securitytxt-form-input').removeClass('invalidated');
         } else {
-            console.log('Invalid URL');
+            // console.log('Invalid URL');
             field.removeClass('valid');
 
             if(field.hasClass('required')) {

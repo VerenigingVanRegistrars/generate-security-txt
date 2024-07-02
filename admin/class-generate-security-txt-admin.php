@@ -93,7 +93,7 @@ class Generate_Security_Txt_Admin {
     function add_custom_plugin_link($links, $file)
     {
         if ($file == get_generate_security_txt_basefile()) {
-            $links[] = '<a href="' . admin_url('tools.php?page=security_txt_generator') . '">' . __('Go to settings', Generate_Security_Txt_i18n::TEXT_DOMAIN) . '</a>';
+            $links[] = '<a href="' . admin_url('tools.php?page=security_txt_generator') . '">' . __('Go to settings', 'generate-security-txt') . '</a>';
         }
 
         return $links;
@@ -178,8 +178,8 @@ class Generate_Security_Txt_Admin {
 	public function add_menus() {
         add_submenu_page(
             'tools.php',
-            __( 'Generate Security.txt', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-            __( 'Generate Security.txt', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+            __( 'Generate Security.txt', 'generate-security-txt'),
+            __( 'Generate Security.txt', 'generate-security-txt'),
             'manage_options',
             'security_txt_generator',
             array(&$this, 'admin_security_txt_generator_page_callback')
@@ -200,14 +200,14 @@ class Generate_Security_Txt_Admin {
             // Display your notification if securitytxy doesn't exist
             if(!$this->check_securitytxt()) {
                 echo '<div id="securitytxtNoticeNoTxt" class="notice notice-error">
-                    <p>' . __('No security.txt file exists for this website yet. Create one below.', Generate_Security_Txt_i18n::TEXT_DOMAIN) . '</p>
+                    <p>' . esc_html__('No security.txt file exists for this website yet. Create one below.', 'generate-security-txt') . '</p>
                 </div>';
             }
 
             // Display your notification if securitytxy doesn't exist
             if(!is_ssl()) {
                 echo '<div id="securitytxtNoticeNoTxt" class="notice notice-error">
-                    <p>' . __('This website isn\'t using HTTPS. This is a requirement for any value in security.txt containing a web URI. Resolve this before you generate a security.txt file.', Generate_Security_Txt_i18n::TEXT_DOMAIN) . '</p>
+                    <p>' . esc_html__('This website isn\'t using HTTPS. This is a requirement for any value in security.txt containing a web URI. Resolve this before you generate a security.txt file.', 'generate-security-txt') . '</p>
                 </div>';
             }
 
@@ -244,9 +244,8 @@ class Generate_Security_Txt_Admin {
 
                 // Check if expiration date is within 1 day or has passed
                 if ($securitytxt_expire_date <= $today->modify('+1 day')) {
-                    echo '<div id="securitytxtNoticeExpiry" class="notice notice-error">
-                        <p>' . sprintf(__('Regenerate your security.txt, the expirydate is very soon or has passed. <a href="%s">Click here</a> to do so.', Generate_Security_Txt_i18n::TEXT_DOMAIN), admin_url('tools.php?page=security_txt_generator')) . '</p>
-                    </div>';
+                    // translators: the admin URL to this plugin's admin page
+                    echo '<div id="securitytxtNoticeExpiry" class="notice notice-error"><p>' . sprintf(esc_html__('Regenerate your security.txt, the expirydate is very soon or has passed. <a href="%s">Click here</a> to do so.', 'generate-security-txt'), esc_url(admin_url('tools.php?page=security_txt_generator'))) . '</p></div>';
                 }
             }
         }
@@ -261,7 +260,7 @@ class Generate_Security_Txt_Admin {
     public function status_loader_callback() {
         $status_type = 'no';
         $status_color = 'red';
-        $status_text = __('Invalid - Security.txt is missing', Generate_Security_Txt_i18n::TEXT_DOMAIN);
+        $status_text = __('Invalid - Security.txt is missing', 'generate-security-txt');
 
         $securitytxt_exists = $this->check_securitytxt();
         $securitytxt_expire = $this->get_expiredate();
@@ -280,17 +279,19 @@ class Generate_Security_Txt_Admin {
                 // Compare the provided date with one month later
                 if ($securitytxt_expire < $currentDate) {
                     // File is expired
-                    $status_text = sprintf(__('Security.txt expired on %s. Regenerate the file below.', Generate_Security_Txt_i18n::TEXT_DOMAIN), $securitytxt_expire->format('Y-m-d'));
+                    // translators: the formatted date on which the security.txt file expired
+                    $status_text = sprintf(__('Security.txt expired on %s. Regenerate the file below.', 'generate-security-txt'), $securitytxt_expire->format('Y-m-d'));
                 } elseif ($securitytxt_expire < $oneMonthLater) {
                     // File will expire soon
                     $status_type = 'ellipsis';
                     $status_color = 'yellow';
-                    $status_text = sprintf(__('Security.txt will expire on %s. Regenerate the file below.', Generate_Security_Txt_i18n::TEXT_DOMAIN), $securitytxt_expire->format('Y-m-d'));
+                    // translators: the formatted date on which the security.txt file will expire
+                    $status_text = sprintf(__('Security.txt will expire on %s. Regenerate the file below.', 'generate-security-txt'), $securitytxt_expire->format('Y-m-d'));
                 } else {
                     // File will not expire soon
                     $status_type = 'yes';
                     $status_color = 'green';
-                    $status_text = __('Security.txt is valid', Generate_Security_Txt_i18n::TEXT_DOMAIN);
+                    $status_text = __('Security.txt is valid', 'generate-security-txt');
                 }
             }
         }
@@ -449,19 +450,25 @@ class Generate_Security_Txt_Admin {
     /**
      * Get contents file contents
      */
-    public function get_securitytxt_file_contents()
-    {
-        // Check if the file exists
-        if ($this->check_securitytxt()) {
-            $well_known_path = trailingslashit(ABSPATH) . '.well-known/';
-            $file_path = $well_known_path . 'security.txt';
+	public function get_securitytxt_file_contents() {
+		global $wp_filesystem;
 
-            // Return the contents as a string
-            return file_get_contents($file_path);
-        } else {
-            return false;
-        }
-    }
+		// Initialize the WP_Filesystem
+		if ( ! WP_Filesystem() ) {
+			return false;
+		}
+
+		// Check if the file exists
+		if ( $this->check_securitytxt() ) {
+			$well_known_path = trailingslashit( ABSPATH ) . '.well-known/';
+			$file_path       = $well_known_path . 'security.txt';
+
+			// Return the contents of the local file as a string
+			return $wp_filesystem->get_contents( $file_path );
+		} else {
+			return false;
+		}
+	}
 
 
     /**
@@ -568,14 +575,14 @@ class Generate_Security_Txt_Admin {
             'contact' => [
                 'name' => 'contact',
                 'title' => 'Contact',
-                'title_l10n' => __('Contact', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'description' => __('This should be the e-mail address, phone number or web page of the person within your organization that security researchers can contact when they have found a vulnerability on your site.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'title_l10n' => __('Contact', 'generate-security-txt'),
+                'description' => __('This should be the e-mail address, phone number or web page of the person within your organization that security researchers can contact when they have found a vulnerability on your site.', 'generate-security-txt'),
                 'description_url' => '',
                 'required' => true,
                 'multiple' => true,
                 'disabled' => false,
                 'advanced' => false,
-                'placeholder' => __('security@domain.com', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'placeholder' => __('security@domain.com', 'generate-security-txt'),
                 'prefill' => 'admin_mail',
                 'prefix' => '',
                 'type' => 'text',
@@ -586,14 +593,14 @@ class Generate_Security_Txt_Admin {
             'expires' => [
                 'name' => 'expires',
                 'title' => 'Expires',
-                'title_l10n' => __('Expiration date', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'description' => __('Because data needs to stay current, an expiration date is set within one year so you can check the data at least once a year. We already have this set but feel free to adjust it. ', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'title_l10n' => __('Expiration date', 'generate-security-txt'),
+                'description' => __('Because data needs to stay current, an expiration date is set within one year so you can check the data at least once a year. We already have this set but feel free to adjust it. ', 'generate-security-txt'),
                 'description_url' => '',
                 'required' => true,
                 'multiple' => false,
                 'disabled' => false,
                 'advanced' => false,
-                'placeholder' => __('YYYY-MM-DD', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'placeholder' => __('YYYY-MM-DD', 'generate-security-txt'),
                 'prefill' => 'expire_suggest',
                 'prefix' => '',
                 'type' => 'text',
@@ -604,14 +611,14 @@ class Generate_Security_Txt_Admin {
             'preferred_languages' => [
                 'name' => 'preferred_languages',
                 'title' => 'Preferred-Languages',
-                'title_l10n' => __('Language settings', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'description' => __('Above you can specify the languages in which you can (and want to) receive notifications. We have already set the language of your WordPress environment for your convenience.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'title_l10n' => __('Language settings', 'generate-security-txt'),
+                'description' => __('Above you can specify the languages in which you can (and want to) receive notifications. We have already set the language of your WordPress environment for your convenience.', 'generate-security-txt'),
                 'description_url' => '',
                 'required' => false,
                 'multiple' => false,
                 'disabled' => false,
                 'advanced' => false,
-                'placeholder' => __('en, es, nl', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'placeholder' => __('en, es, nl', 'generate-security-txt'),
                 'prefill' => 'site_lang',
                 'prefix' => '',
                 'type' => 'text',
@@ -621,14 +628,14 @@ class Generate_Security_Txt_Admin {
             'encryption' => [
                 'name' => 'encryption',
                 'title' => 'Encryption',
-                'title_l10n' => __('Encryption', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'description' => __('If your webhost supports encryption, the security.txt will be digitally encrypted. If so, you will find the PGP key above. If not, the security.txt file will be generated without encryption and you can ask your hosting provider about enabling the PHP-extension <code>gnupg</code>.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'title_l10n' => __('Encryption', 'generate-security-txt'),
+                'description' => __('If your webhost supports encryption, the security.txt will be digitally encrypted. If so, you will find the PGP key above. If not, the security.txt file will be generated without encryption and you can ask your hosting provider about enabling the PHP-extension <code>gnupg</code>.', 'generate-security-txt'),
                 'description_url' => '',
                 'required' => false,
                 'multiple' => false,
                 'disabled' => true,
                 'advanced' => true,
-                'placeholder' => __('This will be filled automatically after generating your security.txt', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'placeholder' => __('This will be filled automatically after generating your security.txt', 'generate-security-txt'),
                 'prefill' => '',
                 'prefix' => '',
                 'type' => 'text',
@@ -637,8 +644,8 @@ class Generate_Security_Txt_Admin {
             'acknowledgments' => [
                 'name' => 'acknowledgments',
                 'title' => 'Acknowledgments',
-                'title_l10n' => __('Acknowledgments', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'description' => __('Here you can enter a page thanking the security researchers for reporting a vulnerability.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'title_l10n' => __('Acknowledgments', 'generate-security-txt'),
+                'description' => __('Here you can enter a page thanking the security researchers for reporting a vulnerability.', 'generate-security-txt'),
                 'description_url' => '',
                 'required' => false,
                 'multiple' => true,
@@ -655,8 +662,8 @@ class Generate_Security_Txt_Admin {
             'canonical' => [
                 'name' => 'canonical',
                 'title' => 'Canonical',
-                'title_l10n' => __('File & location', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'description' => __('The security.txt file has been placed in the right folder (well-known) and digitally encrypted. Above you can see where the file is located and how it is read by security researchers.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'title_l10n' => __('File & location', 'generate-security-txt'),
+                'description' => __('The security.txt file has been placed in the right folder (well-known) and digitally encrypted. Above you can see where the file is located and how it is read by security researchers.', 'generate-security-txt'),
                 'description_url' => '',
                 'required' => false,
                 'multiple' => true,
@@ -673,8 +680,8 @@ class Generate_Security_Txt_Admin {
             'policy' => [
                 'name' => 'policy',
                 'title' => 'Policy',
-                'title_l10n' => __('Policy', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'description' => __('Some organizations have a security policy on how they want to receive notifications. If you have a specific security policy, you can enter it here.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'title_l10n' => __('Policy', 'generate-security-txt'),
+                'description' => __('Some organizations have a security policy on how they want to receive notifications. If you have a specific security policy, you can enter it here.', 'generate-security-txt'),
                 'description_url' => '',
                 'required' => false,
                 'multiple' => true,
@@ -691,8 +698,8 @@ class Generate_Security_Txt_Admin {
             'hiring' => [
                 'name' => 'hiring',
                 'title' => 'Hiring',
-                'title_l10n' => __('Hiring', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'description' => __('If you have job openings for security-related positions in your organization, you can enter them here as well. So, enter the link to your vacancies here.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'title_l10n' => __('Hiring', 'generate-security-txt'),
+                'description' => __('If you have job openings for security-related positions in your organization, you can enter them here as well. So, enter the link to your vacancies here.', 'generate-security-txt'),
                 'description_url' => '',
                 'required' => false,
                 'multiple' => true,
@@ -709,8 +716,8 @@ class Generate_Security_Txt_Admin {
             'csaf' => [
                 'name' => 'csaf',
                 'title' => 'CSAF',
-                'title_l10n' => __('Common Security Advisory Framework (CSAF)', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'description' => __('If you use a CSAF to receive automated notifications, for example, you can enter it here.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'title_l10n' => __('Common Security Advisory Framework (CSAF)', 'generate-security-txt'),
+                'description' => __('If you use a CSAF to receive automated notifications, for example, you can enter it here.', 'generate-security-txt'),
                 'description_url' => '',
                 'required' => false,
                 'multiple' => true,
@@ -741,7 +748,7 @@ class Generate_Security_Txt_Admin {
             <?php
                 $loader = $action['loader'] ? '<img src="' . trailingslashit(includes_url()) . 'images/spinner.gif">' : '';
             ?>
-                <li><div <?= !empty($action['loader']) ? 'style="display: none;"' : ''; ?> class="dashicons dashicons-yes"></div><?= $loader; ?><?= $action['text_start']; ?></li>
+                <li><div <?php echo esc_html(!empty($action['loader']) ? 'style="display: none;"' : ''); ?> class="dashicons dashicons-yes"></div><?php echo esc_html($loader); ?><?php echo esc_html($action['text_start']); ?></li>
             <?php endforeach; ?>
         <?php
     }
@@ -769,7 +776,7 @@ class Generate_Security_Txt_Admin {
 
         if($advanced_open) {
             echo '</div>';
-            echo '<button id="securitytxtShowAdvanced" class="securitytxt-show-advanced button"><div class="dashicons dashicons-plus"></div> ' . __('Toggle advanced settings', Generate_Security_Txt_i18n::TEXT_DOMAIN) . '</button>';
+            echo '<button id="securitytxtShowAdvanced" class="securitytxt-show-advanced button"><div class="dashicons dashicons-plus"></div> ' . esc_html__('Toggle advanced settings', 'generate-security-txt') . '</button>';
         }
     }
 
@@ -792,28 +799,28 @@ class Generate_Security_Txt_Admin {
         $field_values = $this->maybe_alter_placeholder($field_values);
 
         $field_count = !empty($current_values) && is_array($current_values) ? count($current_values) : 1;
-        $data_regex = !empty($field_values['regex']) ? 'data-regex="' . $field_values['regex'] . '"' : '';
+        $data_regex = !empty($field_values['regex']) ? $field_values['regex'] : '';
         ?>
             <h4 class="securitytxt-form-heading">
-                <label class="title" for="<?= $field_values['name']; ?>"><?= $field_values['title']; ?></label>
+                <label class="title" for="<?php echo esc_attr($field_values['name']); ?>"><?php echo esc_html($field_values['title']); ?></label>
                 <?php if (!empty($field_values['required'])) : ?>
-                    <span class="badge red"><?= __('Required', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?></span>
+                    <span class="badge red"><?php echo esc_html__('Required', 'generate-security-txt'); ?></span>
                 <?php else : ?>
-                    <span class="badge neutral"><?= __('Optional', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?></span>
+                    <span class="badge neutral"><?php echo esc_html__('Optional', 'generate-security-txt'); ?></span>
                 <?php endif; ?>
             </h4>
             <div class="securitytxt-form-field">
                 <?php for($i = 0; $i < $field_count; $i++) : ?>
-                    <div class="securitytxt-form-input <?= $i != 0 ? 'securitytxt-removable' : ''; ?>">
-                        <input type="<?= $field_values['type']; ?>" <?= !empty($field_values['required']) ? 'required' : ''; ?> placeholder="<?= $field_values['placeholder']; ?>"
-                               class="<?= $field_values['required'] ? 'required' : ''; ?> <?= !empty($field_values['disabled']) ? 'securitytxt-readonly securitytxt-disabled' : ''; ?> <?= !empty($field_values['regex']) ? 'validate' : ''; ?> <?= $field_values['class']; ?>" id="<?= $field_values['name'] . '_' . $i; ?>" name="<?= $field_values['name']; ?>[]"
-                               value="<?= esc_attr($current_values[$i]); ?>" <?= $data_regex; ?> data-count="<?= $i; ?>">
-                        <button class="securitytxt-submit-button button securitytxt-remove" style="display: <?= $i != 0 ? 'block' : 'none'; ?>"><div class="dashicons dashicons-no"></div></button>
+                    <div class="securitytxt-form-input <?php echo esc_html($i != 0 ? 'securitytxt-removable' : ''); ?>">
+                        <input type="<?php echo esc_attr($field_values['type']); ?>" <?php echo esc_attr(!empty($field_values['required']) ? 'required' : ''); ?> placeholder="<?php echo esc_html($field_values['placeholder']); ?>"
+                               class="<?php echo esc_attr($field_values['required'] ? 'required' : ''); ?> <?php echo esc_attr(!empty($field_values['disabled']) ? 'securitytxt-readonly securitytxt-disabled' : ''); ?> <?php echo !empty($field_values['regex']) ? 'validate' : ''; ?> <?php echo esc_attr($field_values['class']); ?>" id="<?php echo esc_attr($field_values['name'] . '_' . $i); ?>" name="<?php echo esc_attr($field_values['name']); ?>[]"
+                               value="<?php echo esc_attr($current_values[$i]); ?>" data-regex="<?php echo esc_js($data_regex); ?>" data-count="<?php echo esc_attr($i); ?>">
+                        <button class="securitytxt-submit-button button securitytxt-remove" style="display: <?php echo $i != 0 ? 'block' : 'none'; ?>"><div class="dashicons dashicons-no"></div></button>
                     </div>
                 <?php endfor; ?>
                 <?php if (!empty($field_values['multiple'])) : ?>
                     <button type="button" class="button securitytxt-addfield">
-                        <?= __( 'Add another', Generate_Security_Txt_i18n::TEXT_DOMAIN); ?>
+                        <?php echo esc_html__( 'Add another', 'generate-security-txt'); ?>
                     </button>
                 <?php endif; ?>
                 <?php if (!empty($field_values['name'] == 'preferred_languages')) : ?>
@@ -830,14 +837,15 @@ class Generate_Security_Txt_Admin {
                     );
 
                     wp_dropdown_languages($args);
-                    echo '<small class="securitytxt-description">' . __('Select a language to add the correct code to the field') . '</small>';
+                    echo '<small class="securitytxt-description">' . esc_html__('Select a language to add the correct code to the field') . '</small>';
                     ?>
                 <?php endif; ?>
                 <?php if (!empty($field_values['description'])) : ?>
-                    <?php if (!empty($field_values['description_url'])) : ?>
-                        <p><?= sprintf(__($field_values['description'], Generate_Security_Txt_i18n::TEXT_DOMAIN), $field_values['description_url']); ?></p>
+                    <?php if (!empty($field_values['description_url'])) : // Not currently used ?>
+                        <?php // translators: any description can hold a possible URL to direct to the RFC ?>
+                        <p><?php //= sprintf(__($field_values['description'], 'generate-security-txt'), $field_values['description_url']); ?></p>
                     <?php else : ?>
-                        <p><?= $field_values['description']; ?></p>
+                        <p><?php echo esc_html($field_values['description']); ?></p>
                     <?php endif; ?>
                 <?php endif; ?>
                 <hr>
@@ -856,7 +864,7 @@ class Generate_Security_Txt_Admin {
         // Change the placeholder on the encryption field if gnupg is not available to clarify
         if(!empty($field_values['name']) && $field_values['name'] == 'encryption') {
             if(!$this->is_gnupg_available()) {
-                $field_values['placeholder'] = __('Encryption is not available because PHP-extension \'gnupg\' is not available', Generate_Security_Txt_i18n::TEXT_DOMAIN);
+                $field_values['placeholder'] = __('Encryption is not available because PHP-extension \'gnupg\' is not available', 'generate-security-txt');
             }
         }
 
@@ -959,15 +967,15 @@ class Generate_Security_Txt_Admin {
 
             // Send email to website admin
             $to_email = get_option('admin_email');
-            $mail_title = __('Security.txt Expiry Reminder', Generate_Security_Txt_i18n::TEXT_DOMAIN);
-            $mail_content = __('<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress website on %s.</p><p>Your security.txt file will expire on <code>%s</code>.</p><p>We recommend regenerating it as soon as possble it on %s.</p><hr><p>This message was sent at <code>%s</code> by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>', Generate_Security_Txt_i18n::TEXT_DOMAIN);
+            $mail_title = __('Security.txt Expiry Reminder', 'generate-security-txt');
 
             // Define the variables to be replaced in the mail content
             $website = home_url();
             $generate_url = admin_url('tools.php?page=security_txt_generator');
 
             // Translate and format the mail content
-            $mail_content = sprintf(__($mail_content), $website, $securitytxt_expire_date->format('Y-m-d H:i:s'), $generate_url, $today->format('Y-m-d H:i:s'));
+            // translators: a link to the admin page for this plugins on plugin's website
+            $mail_content = sprintf(__('<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress website on %1$s.</p><p>Your security.txt file will expire on <code>%2$s</code>.</p><p>We recommend regenerating it as soon as possble it on %3$s.</p><hr><p>This message was sent at <code>%4$s</code> by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>', 'generate-security-txt'), $website, $securitytxt_expire_date->format('Y-m-d H:i:s'), $generate_url, $today->format('Y-m-d H:i:s'));;
 
             // Send the email
             $sent = wp_mail($to_email, $mail_title, $mail_content, ['Content-Type: text/html; charset=UTF-8']);
@@ -1015,9 +1023,9 @@ class Generate_Security_Txt_Admin {
         $securitytxt_actions = [
             'save_fields' => [
                 'name' => 'save_fields',
-                'text_start' => __('Saving form fields..', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_success' => __('Form fields saved.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_fail' => __('Failed to save forms fields.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'text_start' => __('Saving form fields..', 'generate-security-txt'),
+                'text_success' => __('Form fields saved.', 'generate-security-txt'),
+                'text_fail' => __('Failed to save forms fields.', 'generate-security-txt'),
                 'loader' => true,
                 'stop_on_fail' => true,
                 'action_on_success' => 'check_wellknown_folder',
@@ -1027,9 +1035,9 @@ class Generate_Security_Txt_Admin {
             ],
             'check_wellknown_folder' => [
                 'name' => 'check_wellknown_folder',
-                'text_start' => __('Checking for <code>.well-known</code> folder..', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_success' => __('<code>.well-known</code> folder exists.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_fail' => __('<code>.well-known</code> folder doesn\'t exist. Folder must be created.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'text_start' => __('Checking for <code>.well-known</code> folder..', 'generate-security-txt'),
+                'text_success' => __('<code>.well-known</code> folder exists.', 'generate-security-txt'),
+                'text_fail' => __('<code>.well-known</code> folder doesn\'t exist. Folder must be created.', 'generate-security-txt'),
                 'loader' => true,
                 'stop_on_fail' => false,
                 'action_on_success' => 'check_securitytxt',
@@ -1039,9 +1047,9 @@ class Generate_Security_Txt_Admin {
             ],
             'create_wellknown_folder' => [
                 'name' => 'create_wellknown_folder',
-                'text_start' => __('Creating <code>.well-known</code> folder..', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_success' => __('<code>.well-known</code> folder created succesfully.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_fail' => __('Failed to create <code>.well-known</code> folder. ', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'text_start' => __('Creating <code>.well-known</code> folder..', 'generate-security-txt'),
+                'text_success' => __('<code>.well-known</code> folder created succesfully.', 'generate-security-txt'),
+                'text_fail' => __('Failed to create <code>.well-known</code> folder. ', 'generate-security-txt'),
                 'loader' => true,
                 'stop_on_fail' => true,
                 'action_on_success' => 'check_securitytxt',
@@ -1051,9 +1059,9 @@ class Generate_Security_Txt_Admin {
             ],
             'check_securitytxt' => [
                 'name' => 'check_securitytxt',
-                'text_start' => __('Checking for old <code>security.txt</code>..', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_success' => __('Old <code>security.txt</code> exists.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_fail' => __('Old <code>security.txt</code> doesn\'t exist.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'text_start' => __('Checking for old <code>security.txt</code>..', 'generate-security-txt'),
+                'text_success' => __('Old <code>security.txt</code> exists.', 'generate-security-txt'),
+                'text_fail' => __('Old <code>security.txt</code> doesn\'t exist.', 'generate-security-txt'),
                 'loader' => true,
                 'stop_on_fail' => false,
                 'action_on_success' => 'delete_securitytxt',
@@ -1063,9 +1071,9 @@ class Generate_Security_Txt_Admin {
             ],
             'delete_securitytxt' => [
                 'name' => 'delete_securitytxt',
-                'text_start' => __('Deleting old <code>security.txt</code>..', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_success' => __('Deleted old <code>security.txt</code> successfully.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_fail' => __('Failed to delete old <code>security.txt</code>.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'text_start' => __('Deleting old <code>security.txt</code>..', 'generate-security-txt'),
+                'text_success' => __('Deleted old <code>security.txt</code> successfully.', 'generate-security-txt'),
+                'text_fail' => __('Failed to delete old <code>security.txt</code>.', 'generate-security-txt'),
                 'loader' => true,
                 'stop_on_fail' => true,
                 'action_on_success' => 'create_securitytxt_contents',
@@ -1075,9 +1083,9 @@ class Generate_Security_Txt_Admin {
             ],
             'create_securitytxt_contents' => [
                 'name' => 'create_securitytxt_contents',
-                'text_start' => __('Creating <code>security.txt</code> content..', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_success' => __('Content for <code>security.txt</code> successfully created.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_fail' => __('Failed to content for <code>security.txt</code>.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'text_start' => __('Creating <code>security.txt</code> content..', 'generate-security-txt'),
+                'text_success' => __('Content for <code>security.txt</code> successfully created.', 'generate-security-txt'),
+                'text_fail' => __('Failed to content for <code>security.txt</code>.', 'generate-security-txt'),
                 'loader' => true,
                 'stop_on_fail' => true,
                 'action_on_success' => 'save_securitytxt', // Skip to save
@@ -1087,9 +1095,9 @@ class Generate_Security_Txt_Admin {
             ],
             'save_securitytxt' => [
                 'name' => 'save_securitytxt',
-                'text_start' => __('Saving <code>security.txt</code> file..', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_success' => __('Saved <code>security.txt</code> successfully.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_fail' => __('Failed to save <code>security.txt</code>.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'text_start' => __('Saving <code>security.txt</code> file..', 'generate-security-txt'),
+                'text_success' => __('Saved <code>security.txt</code> successfully.', 'generate-security-txt'),
+                'text_fail' => __('Failed to save <code>security.txt</code>.', 'generate-security-txt'),
                 'loader' => true,
                 'stop_on_fail' => true,
                 'action_on_success' => 'check_gnupg',
@@ -1099,9 +1107,9 @@ class Generate_Security_Txt_Admin {
             ],
             'check_gnupg' => [
                 'name' => 'check_gnupg',
-                'text_start' => __('Checking for encryption availability..', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_success' => __('Encryption is available. <code>PHP-extension \'gnupg\'</code> is installed.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_fail' => __('Encryption not available, skipping encryption. Ask your webhosting about the <code>PHP-extension \'gnupg\'</code>.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'text_start' => __('Checking for encryption availability..', 'generate-security-txt'),
+                'text_success' => __('Encryption is available. <code>PHP-extension \'gnupg\'</code> is installed.', 'generate-security-txt'),
+                'text_fail' => __('Encryption not available, skipping encryption. Ask your webhosting about the <code>PHP-extension \'gnupg\'</code>.', 'generate-security-txt'),
                 'loader' => true,
                 'stop_on_fail' => false,
                 'action_on_success' => 'encrypt_securitytxt', // Skip to save
@@ -1112,9 +1120,9 @@ class Generate_Security_Txt_Admin {
             // Moved key generation to one function
 //            'generating_keys' => [
 //                'name' => 'generating_keys',
-//                'text_start' => __('Generating private and public keys..', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-//                'text_success' => __('Private and public keys successfully generated.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-//                'text_fail' => __('Failed to generate private and public keys.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+//                'text_start' => __('Generating private and public keys..', 'generate-security-txt'),
+//                'text_success' => __('Private and public keys successfully generated.', 'generate-security-txt'),
+//                'text_fail' => __('Failed to generate private and public keys.', 'generate-security-txt'),
 //                'loader' => true,
 //                'stop_on_fail' => true,
 //                'action_on_success' => 'encrypt_securitytxt',
@@ -1123,9 +1131,9 @@ class Generate_Security_Txt_Admin {
 //            ],
             'encrypt_securitytxt' => [
                 'name' => 'encrypt_securitytxt',
-                'text_start' => __('Generating keys and signing <code>security.txt</code>..', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_success' => __('Successfully generated keys and signed <code>security.txt</code>.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_fail' => __('Failed to generate keys and/or couldn\'t sign <code>security.txt</code>.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'text_start' => __('Generating keys and signing <code>security.txt</code>..', 'generate-security-txt'),
+                'text_success' => __('Successfully generated keys and signed <code>security.txt</code>.', 'generate-security-txt'),
+                'text_fail' => __('Failed to generate keys and/or couldn\'t sign <code>security.txt</code>.', 'generate-security-txt'),
                 'loader' => true,
                 'stop_on_fail' => true,
                 'action_on_success' => 'finish',
@@ -1135,8 +1143,8 @@ class Generate_Security_Txt_Admin {
             ],
             'finish' => [
                 'name' => 'finish',
-                'text_start' => __('Finishing..', Generate_Security_Txt_i18n::TEXT_DOMAIN),
-                'text_success' => __('Finished succesfully.', Generate_Security_Txt_i18n::TEXT_DOMAIN),
+                'text_start' => __('Finishing..', 'generate-security-txt'),
+                'text_success' => __('Finished succesfully.', 'generate-security-txt'),
                 'text_fail' => '',
                 'loader' => false,
                 'stop_on_fail' => true,
@@ -1151,6 +1159,11 @@ class Generate_Security_Txt_Admin {
     }
 
 
+	/**
+     * Process a series of actions
+     *
+	 * @return void
+	 */
     public function process_actionlist_callback() {
 
         $postdata = $_POST;
@@ -1162,6 +1175,27 @@ class Generate_Security_Txt_Admin {
         $response = '';
         $continue = true;
 
+	    // Verify the nonce before proceeding
+	    if ( check_admin_referer() ) {
+
+		    $finished_text = __( 'Invalid nonce.. Stopping.', 'generate-security-txt' );
+
+		    // Example: Send a JSON response
+		    $response = array(
+			    'status'          => 0,
+			    'finished_action' => 'save_fields',
+			    'finished_text'   => $finished_text,
+			    'next_action'     => '',
+			    'next_start_text' => $next_start_text,
+			    'response_data'   => null,
+			    'continue'        => false
+		    );
+
+		    wp_send_json( $response );
+
+		    return;
+	    }
+
         if(!empty($postdata) && !empty($postdata['next_action'])) {
             $action_list = $this->admin_security_text_generator_actions();
             $action_name = $postdata['next_action'];
@@ -1172,7 +1206,6 @@ class Generate_Security_Txt_Admin {
                 if(method_exists($this, $action['name'])) {
 
                     $form_data = !empty($postdata['form_data']) ? $postdata['form_data'] : false;
-//                    $form_data = !empty($_POST) ? $_POST : false;
 
                     if($form_data) {
 //                        $serialized_data = sanitize_text_field($form_data);
@@ -1262,7 +1295,7 @@ class Generate_Security_Txt_Admin {
         // Check if the file exists
         if (file_exists($file_securitytxt)) {
             // Read contents from the file
-//            $securitytxt_contents = file_get_contents($file_securitytxt);
+//            $securitytxt_contents = wp_remote_get($file_securitytxt);
             $securitytxt_contents = $this->get_securitytxt_file_contents();
 
             // Check if reading was successful
@@ -1300,6 +1333,7 @@ class Generate_Security_Txt_Admin {
 	    // Check if this request was a post and if postdata is filled
 	    if ( $_SERVER['REQUEST_METHOD'] === 'POST' && ! empty( $postdata ) && is_array( $postdata ) ) {
 
+            // Check nonce validity
 		    $nonce_check = check_admin_referer( 'securitytxt_nonce' );
 
             echo '<ul class="securitytxt-actionlist">';
@@ -1313,7 +1347,7 @@ class Generate_Security_Txt_Admin {
 			    $this->process_actionlist( $action_list, reset( $action_list ) );
 
 		    } else {
-			    echo '<li><div class="dashicons dashicons-no"></div>' . __( 'An problem occured.' ) . '</li>';
+			    echo '<li><div class="dashicons dashicons-no"></div>' . esc_html__( 'A problem occured.', 'generate-security-txt' ) . '</li>';
 		    }
 
 		    echo '</ul>';
@@ -1330,8 +1364,16 @@ class Generate_Security_Txt_Admin {
      */
     private function process_actionlist($action_list, $action) {
 
+        $allowed_html = [
+            'b' => [],
+            'i' => [],
+            'strong' => [],
+            'em' => [],
+            'code' => []
+        ];
+
         if(!empty($action) && is_array($action)) {
-            echo '<li><div class="dashicons dashicons-yes"></div>' . $action['text_start'] . '</li>';
+            echo '<li><div class="dashicons dashicons-yes"></div>' . wp_kses($action['text_start'], $allowed_html) . '</li>';
 
             if(method_exists($this, $action['name'])) {
 
@@ -1339,7 +1381,7 @@ class Generate_Security_Txt_Admin {
 
                 $form_data = !empty($_POST) ? $_POST : false;
 
-                echo '<li>Calling function <code>' . $action['name'] . '</code> with ' . (!empty($form_data) ? 'data' : 'no data') . '</li>';
+//                echo '<li>Calling function <code>' . $action['name'] . '</code> with ' . (!empty($form_data) ? 'data' : 'no data') . '</li>';
 
                 if($form_data) {
                     $result = call_user_func([$this, $action['name']], $form_data);
@@ -1350,13 +1392,13 @@ class Generate_Security_Txt_Admin {
 
                 // Success
                 if($result) {
-                    echo !empty($action['text_success']) ? '<li><div class="dashicons dashicons-yes"></div>' . $action['text_success'] . '</li>' : '';
+                    echo !empty($action['text_success']) ? '<li><div class="dashicons dashicons-yes"></div>' . wp_kses($action['text_success'], $allowed_html) . '</li>' : '';
                     $next_action = !empty($action['action_on_success']) ? $action_list[$action['action_on_success']] : false;
                     $this->process_actionlist($action_list, $next_action);
                 }
                 // Fail
                 else {
-                    echo '<li><div class="dashicons dashicons-no"></div>' . $action['text_fail'] . '</li>';
+                    echo '<li><div class="dashicons dashicons-no"></div>' . wp_kses($action['text_fail'], $allowed_html) . '</li>';
 
                     if(!$action['stop_on_fail']) {
                         $next_action = !empty($action['action_on_fail']) ? $action_list[$action['action_on_fail']] : false;
@@ -1368,7 +1410,7 @@ class Generate_Security_Txt_Admin {
                 }
             }
             else {
-                echo '<li><b>Stopped. Function <code>' . $action['name'] . '</code> doesn\'t exist yet.</b></li>';
+                echo '<li><b>Stopped. Function <code>' . wp_kses($action['name'], $allowed_html) . '</code> doesn\'t exist.</b></li>';
             }
         }
         else {
@@ -1537,16 +1579,23 @@ class Generate_Security_Txt_Admin {
      * @return bool
      */
     public function create_wellknown_folder() {
+        global $wp_filesystem;
+
+        // Initialize the WP_Filesystem
+        if ( ! WP_Filesystem() ) {
+            return false;
+        }
+
         $well_known_path = trailingslashit(ABSPATH) . '.well-known/';
 
         // Check if the folder exists
-        if (is_dir($well_known_path)) {
+        if ( $wp_filesystem->is_dir( $well_known_path ) ) {
             // Folder already exists
             return true;
         }
 
         // Attempt to create the folder
-        if (mkdir($well_known_path, 0755, true)) {
+        if ( $wp_filesystem->mkdir( $well_known_path, 0755 ) ) {
             // Folder created successfully
             return true;
         } else {
@@ -1594,19 +1643,19 @@ class Generate_Security_Txt_Admin {
         $file_to_delete = $well_known_path . 'security.txt';
 
         // Check if the file exists before attempting to delete
-        if (file_exists($file_to_delete)) {
-            // Attempt to delete the file
-            if (unlink($file_to_delete)) {
-                // File deleted successfully
-                return true;
-            } else {
-                // Unable to delete the file
-                return false;
-            }
-        } else {
-            // File doesn't exist in the first place
-            return true;
-        }
+	    if ( file_exists( $file_to_delete ) ) {
+		    // Attempt to delete the file
+		    wp_delete_file( $file_to_delete );
+
+		    if ( ! file_exists( $file_to_delete ) ) {
+			    return true;
+		    } else {
+			    return false;
+		    }
+	    } else {
+		    // File doesn't exist in the first place
+		    return true;
+	    }
     }
 
 
@@ -1634,32 +1683,45 @@ class Generate_Security_Txt_Admin {
      *
      * @return bool
      */
-    public function save_securitytxt(): bool
-    {
-        // Try to delete (this is redundant)
-        if(!$this->delete_securitytxt())
-            return false;
+    public function save_securitytxt(): bool {
+	    global $wp_filesystem;
 
-        // Continue
-        $well_known_path = trailingslashit(ABSPATH) . '.well-known/';
-        $file_securitytxt = $well_known_path . 'security.txt';
+	    // Initialize the WP Filesystem
+	    if ( ! function_exists( 'request_filesystem_credentials' ) ) {
+		    require_once( ABSPATH . 'wp-admin/includes/file.php' );
+	    }
 
+	    $creds = request_filesystem_credentials( site_url() );
 
-        // Check if the file exists for some reason, we don't want to throw errors
-        if (!file_exists($file_securitytxt)) {
-            $securitytxt_contents = $this->get_securitytxt_contents(true);
+	    // Check if WP_Filesystem is initialized correctly
+	    if ( ! WP_Filesystem( $creds ) ) {
+		    return false;
+	    }
 
-            // Write contents to the file
-            if (file_put_contents($file_securitytxt, $securitytxt_contents) !== false) {
-                // File created successfully
-                return true;
-            } else {
-                // Unable to write contents to the file
-                return false;
-            }
-        }
+	    // Try to delete (this is redundant)
+	    if ( ! $this->delete_securitytxt() ) {
+		    return false;
+	    }
 
-        return false;
+	    // Continue
+	    $well_known_path  = trailingslashit( ABSPATH ) . '.well-known/';
+	    $file_securitytxt = $well_known_path . 'security.txt';
+
+	    // Check if the file exists for some reason, we don't want to throw errors
+	    if ( ! $wp_filesystem->exists( $file_securitytxt ) ) {
+		    $securitytxt_contents = $this->get_securitytxt_contents( true );
+
+		    // Write contents to the file
+		    if ( $wp_filesystem->put_contents( $file_securitytxt, $securitytxt_contents, FS_CHMOD_FILE ) ) {
+			    // File created successfully
+			    return true;
+		    } else {
+			    // Unable to write contents to the file
+			    return false;
+		    }
+	    }
+
+	    return false;
     }
 
 
@@ -1679,36 +1741,48 @@ class Generate_Security_Txt_Admin {
      * @return array|bool
      */
     public function encrypt_securitytxt() {
+        global $wp_filesystem;
+
+        // Initialize the WP Filesystem
+        if ( ! function_exists( 'request_filesystem_credentials' ) ) {
+            require_once( ABSPATH . 'wp-admin/includes/file.php' );
+        }
+
+        $creds = request_filesystem_credentials( site_url() );
+
+        // Check if WP_Filesystem is initialized correctly
+        if ( ! WP_Filesystem( $creds ) ) {
+            return false;
+        }
 
         // Retrieve our fields
         $fields = $this->admin_security_text_generator_fields();
 
-        // Retrieve contact emailaddress
+        // Retrieve contact email address
         $contact_email = get_option($this::OPTION_FORM_PREFIX . $fields['contact']['name']);
 
-        // We can't proceed without an emailaddress
-        if(empty($contact_email))
+        // We can't proceed without an email address
+        if (empty($contact_email))
             return false;
 
         $contact_email = reset($contact_email);
 
-        // There is no name requirement in the security.txt standard, but pgp encryption requires it. We will simply use the email for this again
+        // There is no name requirement in the security.txt standard, but PGP encryption requires it. We will simply use the email for this again
         $contact_name = $contact_email;
 
-        if($this->check_securitytxt()) {
+        if ($this->check_securitytxt()) {
             $securitytxt_contents = $this->get_securitytxt_file_contents();
 
             $Encryption_Securitytxt = new Encryption_Securitytxt();
 
             $result = $Encryption_Securitytxt->encrypt_securitytxt($contact_name, $contact_email, $securitytxt_contents, '');
 
-            if(!empty($result['signed_message'])) {
-
+            if (!empty($result['signed_message'])) {
                 $well_known_path = trailingslashit(ABSPATH) . '.well-known/';
                 $file_securitytxt = $well_known_path . 'security.txt';
 
                 // Write contents to the file
-                if (file_put_contents($file_securitytxt, $result['signed_message'], LOCK_EX) !== false) {
+                if ($wp_filesystem->put_contents($file_securitytxt, $result['signed_message'], FS_CHMOD_FILE)) {
                     // File created successfully
                 } else {
                     // Unable to write contents to the file
@@ -1716,12 +1790,11 @@ class Generate_Security_Txt_Admin {
                 }
             }
 
-            if(!empty($result['public_key'])) {
-
+            if (!empty($result['public_key'])) {
                 $file_pubkey = trailingslashit(ABSPATH) . 'pubkey.txt';
 
                 // Write contents to the file
-                if (file_put_contents($file_pubkey, $result['public_key'], LOCK_EX) !== false) {
+                if ($wp_filesystem->put_contents($file_pubkey, $result['public_key'], FS_CHMOD_FILE)) {
                     // File created successfully
                 } else {
                     // Unable to write contents to the file
@@ -1762,11 +1835,11 @@ class Generate_Security_Txt_Admin {
         // Check if the file exists before attempting to delete
         if (file_exists($file_to_delete)) {
             // Attempt to delete the file
-            if (unlink($file_to_delete)) {
-                // File deleted successfully
+            wp_delete_file( $file_to_delete );
+
+            if ( ! file_exists( $file_to_delete ) ) {
                 return true;
             } else {
-                // Unable to delete the file
                 return false;
             }
         } else {

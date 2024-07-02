@@ -216,12 +216,33 @@ class OpenPGP_Message implements IteratorAggregate, ArrayAccess {
   public $uri = NULL;
   public $packets = array();
 
-  static function parse_file($path) {
-    if (($msg = self::parse(file_get_contents($path)))) {
-      $msg->uri = preg_match('!^[\w\d]+://!', $path) ? $path : 'file://' . realpath($path);
-      return $msg;
-    }
-  }
+	static function parse_file( $path ) {
+		global $wp_filesystem;
+
+		// Initialize the WP_Filesystem
+		if ( ! WP_Filesystem() ) {
+			return false;
+		}
+
+		// Determine the full path of the file
+		$full_path = realpath( $path );
+
+		// Check if the file exists
+		if ( ! $wp_filesystem->exists( $full_path ) ) {
+			return false;
+		}
+
+		// Retrieve the file contents
+		$contents = $wp_filesystem->get_contents( $full_path );
+
+		if ( $contents && ( $msg = self::parse( $contents ) ) ) {
+			$msg->uri = 'file://' . $full_path;
+
+			return $msg;
+		}
+
+		return false;
+	}
 
   /**
    * @see http://tools.ietf.org/html/rfc4880#section-4.1
@@ -642,7 +663,7 @@ class OpenPGP_AsymmetricSessionKeyPacket extends OpenPGP_Packet {
         $this->encrypted_data = $this->input;
         break;
       default:
-        throw new Exception("Unsupported AsymmetricSessionKeyPacket version: " . $this->version);
+        throw new Exception("Unsupported AsymmetricSessionKeyPacket version: " . esc_html($this->version));
     }
   }
 
