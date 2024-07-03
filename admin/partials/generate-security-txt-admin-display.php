@@ -65,7 +65,7 @@ $SecurityTxtAdmin->check_securitytxt_expiration_and_send_email();
                 <div style="display: none;" id="securitytxtNoticeValidationErrors" class="securitytxt-notify notify-error">
                     <p><?php echo esc_html__( 'There are validation errors, fix the fields with a red border in a the form above.', 'generate-security-txt'); ?></p>
                 </div>
-                <?php if(!is_ssl()) : ?>
+                <?php if(is_ssl()) : ?>
                     <button id="securityTxtFormSubmit" type="submit" class="securitytxt-ajax-submit securitytxt-submit-button button button-primary" data-text="<?php echo esc_attr__('Save changes and generate security.txt', 'generate-security-txt'); ?>" data-working="<?php echo esc_attr__('Working.. Don\'t refresh the page', 'generate-security-txt'); ?>">
                         <?php echo esc_html__('Save changes and generate security.txt', 'generate-security-txt'); ?>
                     </button>
