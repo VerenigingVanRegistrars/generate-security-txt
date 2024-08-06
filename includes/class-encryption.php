@@ -1,13 +1,24 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 use phpseclib3\Crypt\RSA;
 use phpseclib3\Crypt\RSA\Formats\Keys\PKCS1;
 
-@include_once dirname(__FILE__) . '/vendor/autoload.php';
-require_once dirname(__FILE__) . '/openpgp-php/lib/openpgp.php';
-require_once dirname(__FILE__) . '/openpgp-php/lib/openpgp_crypt_rsa.php';
+// Check if phpseclib3 RSA classes are available
+if (!class_exists(RSA::class) || !class_exists(PKCS1::class)) {
+	@include_once dirname(__FILE__) . '/vendor/autoload.php';
+}
 
-class Encryption_Securitytxt
+// OpenPGP's library doesn't exist within composer, require if they aren't available yet
+if (!class_exists('OpenPGP')) {
+    require_once dirname(__FILE__) . '/openpgp-php/lib/openpgp.php';
+}
+if (!class_exists('OpenPGP_Crypt_RSA')) {
+    require_once dirname(__FILE__) . '/openpgp-php/lib/openpgp_crypt_rsa.php';
+}
+
+
+class Securitytxt_Encryption
 {
     public function __construct()
     {

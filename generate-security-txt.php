@@ -41,7 +41,7 @@ define( 'GENERATE_SECURITY_TXT_VERSION', '1.0.4' );
  * The code that runs during plugin activation.
  * This action is documented in includes/class-generate-security-txt-activator.php
  */
-function activate_generate_security_txt() {
+function generate_security_txt_activate() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-generate-security-txt-activator.php';
 	Generate_Security_Txt_Activator::activate();
 }
@@ -50,13 +50,13 @@ function activate_generate_security_txt() {
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-generate-security-txt-deactivator.php
  */
-function deactivate_generate_security_txt() {
+function generate_security_txt_deactivate() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-generate-security-txt-deactivator.php';
 	Generate_Security_Txt_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_generate_security_txt' );
-register_deactivation_hook( __FILE__, 'deactivate_generate_security_txt' );
+register_activation_hook( __FILE__, 'generate_security_txt_activate' );
+register_deactivation_hook( __FILE__, 'generate_security_txt_deactivate' );
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -71,7 +71,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-encryption.php';
  *
  * @return string
  */
-function get_generate_security_txt_basefile() {
+function generate_security_txt_get_basefile() {
     return plugin_basename(__FILE__);
 }
 
@@ -85,10 +85,10 @@ function get_generate_security_txt_basefile() {
  *
  * @since    1.0.0
  */
-function run_generate_security_txt() {
+function generate_security_txt_run() {
 
 	$plugin = new Generate_Security_Txt();
 	$plugin->run();
 
 }
-run_generate_security_txt();
+generate_security_txt_run();

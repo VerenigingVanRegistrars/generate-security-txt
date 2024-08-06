@@ -1,7 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * Provide a admin area view for the plugin
+ * Provide an admin area view for the plugin
  *
  * This file is used to markup the admin-facing aspects of the plugin.
  *
@@ -13,18 +14,14 @@
  */
 
 $SecurityTxtAdmin = new Generate_Security_Txt_Admin();
-$Encryption_Securitytxt = new Encryption_Securitytxt();
+$Securitytxt_Encryption = new Securitytxt_Encryption();
 $form_fields = $SecurityTxtAdmin->admin_security_text_generator_fields();
 
-$SecurityTxtAdmin->process_form_submit($_POST);
+//$SecurityTxtAdmin->process_form_submit();
 
 $SecurityTxtAdmin->check_securitytxt_expiration_and_send_email();
 ?>
-<script>
-    var securitytxt_spinner_url = '<?php echo esc_url( trailingslashit( includes_url() ) . 'images/spinner.gif' ); ?>';
-    var securitytxt_status_text = '<?php echo esc_js( __( 'Checking security.txt status', 'generate-security-txt' ) ); ?>';
-</script>
-<!-- This file should primarily consist of HTML with a little bit of PHP. -->
+<!-- This file should primarily consist of HTML with a bit of PHP. -->
 <div class="securitytxt-header">
     <div class="securitytxt-title-section">
         <h1><?php echo esc_html__('Security.txt Status', 'generate-security-txt'); ?></h1>

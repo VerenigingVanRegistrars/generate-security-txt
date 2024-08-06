@@ -92,7 +92,7 @@ class Generate_Security_Txt_Admin {
      */
     function add_custom_plugin_link($links, $file)
     {
-        if ($file == get_generate_security_txt_basefile()) {
+        if ($file == generate_security_txt_get_basefile()) {
             $links[] = '<a href="' . admin_url('tools.php?page=security_txt_generator') . '">' . __('Go to settings', 'generate-security-txt') . '</a>';
         }
 
@@ -133,7 +133,7 @@ class Generate_Security_Txt_Admin {
         // Check if we are on the specific backend template
         if ($current_screen && $current_screen->id === 'tools_page_security_txt_generator') {
             wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/generate-security-txt-admin.css', [], $this->version, 'all' );
-            wp_enqueue_style('jquery-ui-datepicker-style', 'https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css', [], $this->version, 'all' );
+            wp_enqueue_style( $this->plugin_name . '-jquery-ui', plugin_dir_url( __FILE__ ) . 'css/jquery-ui.css', [], $this->version, 'all' );
         }
 	}
 
@@ -156,12 +156,15 @@ class Generate_Security_Txt_Admin {
 
             $action_list = $this->admin_security_text_generator_actions();
             $first_action = reset($action_list);
+
             wp_localize_script($this->plugin_name, 'securitytxt',
                 [
                     'ajaxurl' => admin_url('admin-ajax.php'),
                     'homeurl' => trailingslashit(home_url()),
                     'first_action' => $first_action['name'],
-                    'first_action_text' => $first_action['text_start']
+                    'first_action_text' => $first_action['text_start'],
+                    'spinner_url' => esc_url( trailingslashit( includes_url() ) . 'images/spinner.gif' ),
+                    'status_text' => esc_js( __( 'Checking security.txt status', 'generate-security-txt' ) )
                 ]
             );
 
@@ -564,6 +567,77 @@ class Generate_Security_Txt_Admin {
     }
 
 
+	/**
+     * Check for possibly existing POST data and sanitize
+     *
+	 * @return array
+	 */
+    private function sanitize_form_submit_post() {
+
+        // Initialize an empty array to hold the sanitized data
+        $sanitized_form_data = array();
+
+        // Check if form_data is set and not empty
+        if (!empty($_POST['form_data'])) {
+            // Parse the serialized form data into an associative array
+            parse_str($_POST['form_data'], $form_data_array);
+
+            // Sanitize email addresses in the 'contact' array
+            if (!empty($form_data_array['contact']) && is_array($form_data_array['contact'])) {
+                $sanitized_form_data['contact'] = array_map('sanitize_email', $form_data_array['contact']);
+            }
+
+            // Sanitize the 'expires' date fields
+            if (!empty($form_data_array['expires']) && is_array($form_data_array['expires'])) {
+                $sanitized_form_data['expires'] = array_map('sanitize_text_field', $form_data_array['expires']);
+            }
+
+            // Sanitize preferred languages
+            if (!empty($form_data_array['preferred_languages']) && is_array($form_data_array['preferred_languages'])) {
+                $sanitized_form_data['preferred_languages'] = array_map('sanitize_text_field', $form_data_array['preferred_languages']);
+            }
+
+            // Sanitize the 'lang' field
+            if (isset($form_data_array['lang'])) {
+                $sanitized_form_data['lang'] = sanitize_text_field($form_data_array['lang']);
+            }
+
+            // Sanitize URLs in the 'encryption' array
+            if (!empty($form_data_array['encryption']) && is_array($form_data_array['encryption'])) {
+                $sanitized_form_data['encryption'] = array_map('esc_url_raw', $form_data_array['encryption']);
+            }
+
+            // Sanitize the 'acknowledgments' field
+            if (!empty($form_data_array['acknowledgments']) && is_array($form_data_array['acknowledgments'])) {
+                $sanitized_form_data['acknowledgments'] = array_map('sanitize_text_field', $form_data_array['acknowledgments']);
+            }
+
+            // Sanitize URLs in the 'canonical' array
+            if (!empty($form_data_array['canonical']) && is_array($form_data_array['canonical'])) {
+                $sanitized_form_data['canonical'] = array_map('esc_url_raw', $form_data_array['canonical']);
+            }
+
+            // Sanitize the 'policy' field
+            if (!empty($form_data_array['policy']) && is_array($form_data_array['policy'])) {
+                $sanitized_form_data['policy'] = array_map('esc_url_raw', $form_data_array['policy']);
+            }
+
+            // Sanitize the 'hiring' field
+            if (!empty($form_data_array['hiring']) && is_array($form_data_array['hiring'])) {
+                $sanitized_form_data['hiring'] = array_map('esc_url_raw', $form_data_array['hiring']);
+            }
+
+            // Sanitize the 'csaf' field
+            if (!empty($form_data_array['csaf']) && is_array($form_data_array['csaf'])) {
+                $sanitized_form_data['csaf'] = array_map('esc_url_raw', $form_data_array['csaf']);
+            }
+        }
+
+        return $sanitized_form_data;
+    }
+
+
+
     /**
      * The array of fields used to generate the form fields on the backend page
      *
@@ -588,7 +662,7 @@ class Generate_Security_Txt_Admin {
                 'type' => 'text',
                 'class' => '',
                 'regex' => '^(?:(?:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})|(?:[0-9]+)|(?:https:\/\/.*))$',
-                'invalid_text' => __('Not a valid emailaddress, phonenumber or web URI starting with https://')
+                'invalid_text' => __('Not a valid emailaddress, phonenumber or web URI starting with https://', 'generate-security-txt')
             ],
             'expires' => [
                 'name' => 'expires',
@@ -606,7 +680,7 @@ class Generate_Security_Txt_Admin {
                 'type' => 'text',
                 'class' => '',
                 'regex' => '^[0-9]{4}-[0-9]{2}-[0-9]{2}$',
-                'invalid_text' => __('Not a valid date format, needs YYYY-MM-DD')
+                'invalid_text' => __('Not a valid date format, needs YYYY-MM-DD', 'generate-security-txt')
             ],
             'preferred_languages' => [
                 'name' => 'preferred_languages',
@@ -623,7 +697,7 @@ class Generate_Security_Txt_Admin {
                 'prefix' => '',
                 'type' => 'text',
                 'class' => '',
-                'invalid_text' => __('Not a valid format. Needs comma-seperated language codes or use the dropdown')
+                'invalid_text' => __('Not a valid format. Needs comma-seperated language codes or use the dropdown', 'generate-security-txt')
             ],
             'encryption' => [
                 'name' => 'encryption',
@@ -657,7 +731,7 @@ class Generate_Security_Txt_Admin {
                 'type' => 'text',
                 'class' => '',
                 'regex' => '^https:\\/\\/',
-                'invalid_text' => __('Not a valid web URI starting with https://')
+                'invalid_text' => __('Not a valid web URI starting with https://', 'generate-security-txt')
             ],
             'canonical' => [
                 'name' => 'canonical',
@@ -675,7 +749,7 @@ class Generate_Security_Txt_Admin {
                 'type' => 'text',
                 'class' => '',
                 'regex' => '^https:\\/\\/',
-                'invalid_text' => __('Not a valid web URI starting with https://')
+                'invalid_text' => __('Not a valid web URI starting with https://', 'generate-security-txt')
             ],
             'policy' => [
                 'name' => 'policy',
@@ -693,7 +767,7 @@ class Generate_Security_Txt_Admin {
                 'type' => 'text',
                 'class' => '',
                 'regex' => '^https:\\/\\/',
-                'invalid_text' => __('Not a valid web URI starting with https://')
+                'invalid_text' => __('Not a valid web URI starting with https://', 'generate-security-txt')
             ],
             'hiring' => [
                 'name' => 'hiring',
@@ -711,7 +785,7 @@ class Generate_Security_Txt_Admin {
                 'type' => 'text',
                 'class' => '',
                 'regex' => '^https:\\/\\/',
-                'invalid_text' => __('Not a valid web URI starting with https://')
+                'invalid_text' => __('Not a valid web URI starting with https://', 'generate-security-txt')
             ],
             'csaf' => [
                 'name' => 'csaf',
@@ -728,7 +802,7 @@ class Generate_Security_Txt_Admin {
                 'type' => 'text',
                 'class' => '',
                 'regex' => '^https:\\/\\/',
-                'invalid_text' => __('Not a valid web URI starting with https://')
+                'invalid_text' => __('Not a valid web URI starting with https://', 'generate-security-txt')
             ]
         ];
 
@@ -1166,14 +1240,21 @@ class Generate_Security_Txt_Admin {
 	 */
     public function process_actionlist_callback() {
 
-        $postdata = $_POST;
+        $postdata = array();
+
         $status = -1;
-        $finished_action = '';
         $finished_text = '';
-        $next_action = '';
         $next_start_text = '';
         $response = '';
         $continue = true;
+
+        $finished_action = isset($_POST['action']) ? sanitize_text_field($_POST['action']) : '';
+        $next_action = isset($_POST['next_action']) ? sanitize_text_field($_POST['next_action']) : '';
+
+        $postdata['action'] = $finished_action;
+        $postdata['next_action'] = $next_action;
+
+        $postdata['form_data'] = $this->sanitize_form_submit_post();
 
 	    // Verify the nonce before proceeding
 	    if ( check_admin_referer() ) {
@@ -1208,11 +1289,7 @@ class Generate_Security_Txt_Admin {
                     $form_data = !empty($postdata['form_data']) ? $postdata['form_data'] : false;
 
                     if($form_data) {
-//                        $serialized_data = sanitize_text_field($form_data);
-                        $serialized_data = $form_data;
-                        $unserialized_data = [];
-                        parse_str($serialized_data, $unserialized_data);
-                        $status = call_user_func([$this, $action['name']], $unserialized_data);
+                        $status = call_user_func([$this, $action['name']], $form_data);
                     }
                     else {
                         $status = call_user_func([$this, $action['name']]);
@@ -1328,7 +1405,10 @@ class Generate_Security_Txt_Admin {
 	 *
 	 * @return void
 	 */
-    public function process_form_submit( $postdata ): void {
+    public function process_form_submit( $postdata = null ): void {
+
+        $postdata = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        $postdata = null;
 
 	    // Check if this request was a post and if postdata is filled
 	    if ( $_SERVER['REQUEST_METHOD'] === 'POST' && ! empty( $postdata ) && is_array( $postdata ) ) {
@@ -1358,6 +1438,8 @@ class Generate_Security_Txt_Admin {
     /**
      * Process the actionlist recursively
      *
+     * @deprecated - Not used in primary form at the moment, only for manual check
+     *
      * @param $action_list
      * @param $action
      * @return void
@@ -1379,18 +1461,9 @@ class Generate_Security_Txt_Admin {
 
                 $result = -1;
 
-                $form_data = !empty($_POST) ? $_POST : false;
+                $result = call_user_func( [ $this, $action['name'] ] );
 
-//                echo '<li>Calling function <code>' . $action['name'] . '</code> with ' . (!empty($form_data) ? 'data' : 'no data') . '</li>';
-
-                if($form_data) {
-                    $result = call_user_func([$this, $action['name']], $form_data);
-                }
-                else {
-                    $result = call_user_func([$this, $action['name']]);
-                }
-
-                // Success
+	            // Success
                 if($result) {
                     echo !empty($action['text_success']) ? '<li><div class="dashicons dashicons-yes"></div>' . wp_kses($action['text_success'], $allowed_html) . '</li>' : '';
                     $next_action = !empty($action['action_on_success']) ? $action_list[$action['action_on_success']] : false;
@@ -1425,7 +1498,7 @@ class Generate_Security_Txt_Admin {
      *
      * @return bool
      */
-    public function save_fields($post_data) {
+    public function save_fields($post_data = null) {
 
         if(!empty($post_data)) {
             return $this->save_form_postdata($post_data);
@@ -1441,7 +1514,7 @@ class Generate_Security_Txt_Admin {
      * @param $postdata
      * @return bool
      */
-    public function save_form_postdata($postdata) {
+    public function save_form_postdata($postdata = null) {
 
         // Retrieve our fields
         $allowed_fields = $this->admin_security_text_generator_fields();
@@ -1559,8 +1632,7 @@ class Generate_Security_Txt_Admin {
      */
     public function check_wellknown_folder(): bool
     {
-        // TODO Move to own action
-//        $this->sav
+        // TODO Move to own action in later version
 
         $well_known_path = trailingslashit(ABSPATH) . '.well-known/';
 
@@ -1773,9 +1845,9 @@ class Generate_Security_Txt_Admin {
         if ($this->check_securitytxt()) {
             $securitytxt_contents = $this->get_securitytxt_file_contents();
 
-            $Encryption_Securitytxt = new Encryption_Securitytxt();
+            $Securitytxt_Encryption = new Securitytxt_Encryption();
 
-            $result = $Encryption_Securitytxt->encrypt_securitytxt($contact_name, $contact_email, $securitytxt_contents, '');
+            $result = $Securitytxt_Encryption->encrypt_securitytxt($contact_name, $contact_email, $securitytxt_contents, '');
 
             if (!empty($result['signed_message'])) {
                 $well_known_path = trailingslashit(ABSPATH) . '.well-known/';

@@ -252,7 +252,7 @@
 
         // Create the img element
         var $img = $('<img>', {
-            'src': securitytxt_spinner_url
+            'src': securitytxt.spinner_url
         });
 
         // Append the img to the div
@@ -261,7 +261,7 @@
         // Create the div with class 'securitytxt-status-label'
         var $labelDiv = $('<div>', {
             'class': 'securitytxt-status-label',
-            'text': securitytxt_status_text
+            'text': securitytxt.status_text
         });
 
         $('#securitytxtStatus').empty()
