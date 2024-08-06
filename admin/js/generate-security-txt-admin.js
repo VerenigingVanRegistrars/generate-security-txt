@@ -63,7 +63,7 @@
                 $('#securitytxtNoticeValidationErrors').show();
             } else {
                 // All fields are valid, proceed with your logic
-                console.log('All fields are valid.');
+                // console.log('All fields are valid.');
 
                 var $loadingSrc = securitytxt.homeurl + 'wp-includes/images/spinner.gif';
                 var $loadingImg = '<img class="securitytxt-button-loader" src="' + $loadingSrc + '"> ';
@@ -191,10 +191,10 @@
             data: data,
             success: function (response) {
                 // Handle the AJAX response here
-                console.log(response);
+                // console.log(response);
                 
                 if(response.finished_action && response.finished_text) {
-                    console.log('finished action');
+                    // console.log('finished action');
 
                     var $finishedActionItem = $('#' + response.finished_action);
                     var $checkmark = $('<div>', {

@@ -1308,7 +1308,7 @@ class Generate_Security_Txt_Admin {
                     if($status) {
                         $finished_text = !empty($action['text_success']) ? $action['text_success'] : '';
 
-                        if(!$action['stop_on_success']) {
+                        if(!isset($action['stop_on_success']) || !$action['stop_on_success']) {
                             $next_action = !empty($action['action_on_success']) ? $action_list[$action['action_on_success']]['name'] : false;
                             $next_start_text = !empty($action['action_on_success']) ? $action_list[$action['action_on_success']]['text_start'] : false;
                         }
@@ -1320,7 +1320,7 @@ class Generate_Security_Txt_Admin {
                     else {
                         $finished_text = !empty($action['text_fail']) ? $action['text_fail'] : '';
 
-                        if(!$action['stop_on_fail']) {
+                        if(!isset($action['stop_on_fail']) || !$action['stop_on_fail']) {
                             $next_action = !empty($action['action_on_fail']) ? $action_list[$action['action_on_fail']]['name'] : false;
                             $next_start_text = !empty($action['action_on_fail']) ? $action_list[$action['action_on_fail']]['text_start'] : false;
                         }
