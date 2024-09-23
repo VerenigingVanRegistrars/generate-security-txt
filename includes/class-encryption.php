@@ -107,13 +107,14 @@ class Securitytxt_Encryption
         // Output normalised data.  You could convert line endings here
         // without breaking the signature, but do not add any
         // trailing whitespace to lines.
-        $file_contents .= preg_replace("/^-/", "- -", $packets[0]->data) . "\n";
+	    $file_contents .= preg_replace("/^-/", "- -", $this->normalize_line_endings($packets[0]->data)) . "\n";
         $file_contents .= OpenPGP::enarmor($packets[1][0]->to_bytes(), "PGP SIGNATURE");
 
 
         $parsed_pubkey = OpenPGP_Message::parse($publicEnarmorKey);
 
         /* Parse signed message from file named "t" */
+	    $file_contents = $this->normalize_line_endings($file_contents);
         $m = OpenPGP_Message::parse($file_contents);
 
         /* Create a verifier for the key */
@@ -129,4 +130,16 @@ class Securitytxt_Encryption
             'verified' => $verified
         );
     }
+
+
+	/**
+	 * Normalize line endings to guarentee security.txt standards
+	 *
+	 * @param $string
+	 *
+	 * @return array|string|string[]
+	 */
+	function normalize_line_endings($string) {
+	    return str_replace(array("\r\n", "\r", "\n"), "\n", $string);
+	}
 }

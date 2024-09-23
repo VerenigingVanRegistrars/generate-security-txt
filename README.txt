@@ -3,7 +3,7 @@ Contributors: verenigingvanregistrars
 Tags: security, security.txt, responsible disclosure
 Requires at least: 6.3
 Tested up to: 6.5
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,6 +48,9 @@ Your security.txt file will not be valid without URIs starting with 'https://'. 
 * Initial release version
 
 == Upgrade Notice ==
+
+= 1.0.6 =
+Normalize end of line characters
 
 = 1.0 =
 Update to phpseclib latest version
