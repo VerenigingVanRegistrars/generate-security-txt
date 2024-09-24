@@ -1782,18 +1782,31 @@ class Generate_Security_Txt_Admin {
 	    $file_securitytxt = $well_known_path . 'security.txt';
 
 	    // Check if the file exists for some reason, we don't want to throw errors
-	    if ( ! $wp_filesystem->exists( $file_securitytxt ) ) {
-		    $securitytxt_contents = $this->get_securitytxt_contents( true );
+        if ( ! $wp_filesystem->exists( $file_securitytxt ) ) {
+            $securitytxt_contents = $this->get_securitytxt_contents( true );
 
-		    // Write contents to the file
-		    if ( $wp_filesystem->put_contents( $file_securitytxt, $securitytxt_contents, FS_CHMOD_FILE ) ) {
-			    // File created successfully
-			    return true;
-		    } else {
-			    // Unable to write contents to the file
-			    return false;
-		    }
-	    }
+            // Write contents to the file
+            if ( $wp_filesystem->put_contents( $file_securitytxt, $securitytxt_contents, FS_CHMOD_FILE ) ) {
+                // File created successfully
+
+                // Read the file contents after writing
+                $actual_contents = $wp_filesystem->get_contents( $file_securitytxt );
+
+                // Normalize line endings using the normalize_line_endings function
+                $normalized_contents = Securitytxt_Encryption::normalize_line_endings($actual_contents);
+
+                // Check if the normalized contents differ from the actual contents
+                if ( $actual_contents !== $normalized_contents ) {
+                    // If different, rewrite the file with normalized contents
+                    $wp_filesystem->put_contents( $file_securitytxt, $normalized_contents, FS_CHMOD_FILE );
+                }
+
+                return true;
+            } else {
+                // Unable to write contents to the file
+                return false;
+            }
+        }
 
 	    return false;
     }

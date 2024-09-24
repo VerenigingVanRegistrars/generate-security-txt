@@ -140,6 +140,17 @@ class Securitytxt_Encryption
 	 * @return array|string|string[]
 	 */
 	public static function normalize_line_endings($string) {
-	    return str_replace(array("\r\n", "\r", "\n"), "\n", $string);
+	    // Replace all existing line endings with \n
+	    $string = str_replace(array("\r\n", "\r", "\n"), "\n", $string);
+
+	    // Now replace \n with \r\n to conform to CRLF standard
+	    $string = str_replace("\n", "\r\n", $string);
+
+	    // Ensure the string ends with a single CRLF
+	    if (substr($string, -2) !== "\r\n") {
+	        $string .= "\r\n";
+	    }
+
+	    return $string;
 	}
 }
