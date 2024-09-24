@@ -446,6 +446,8 @@ class Generate_Security_Txt_Admin {
             }
         }
 
+        $securitxt_contents = Securitytxt_Encryption::normalize_line_endings($securitxt_contents);
+
         return $securitxt_contents;
     }
 
