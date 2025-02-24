@@ -171,6 +171,11 @@ class Generate_Security_Txt {
         // Hook the expiry email function to run once a day using WordPress Cron
         $this->loader->add_action('check_securitytxt_expiration_event', $plugin_admin, 'check_securitytxt_expiration_and_send_email');
         $this->loader->add_action('admin_init', $plugin_admin, 'schedule_securitytxt_expiration_check');
+        $this->loader->add_action('securitytxt_archiveorg_request_event', $plugin_admin, 'securitytxt_archiveorg_request_url');
+        $this->loader->add_action('admin_init', $plugin_admin, 'schedule_securitytxt_archiveorg_request');
+        $this->loader->add_action('securitytxt_verify_file_contents_event', $plugin_admin, 'securitytxt_verify_file_contents');
+        $this->loader->add_action('admin_init', $plugin_admin, 'schedule_securitytxt_verify_file_contents');
+
 	}
 
 

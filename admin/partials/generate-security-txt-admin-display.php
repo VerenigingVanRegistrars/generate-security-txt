@@ -62,7 +62,7 @@ $SecurityTxtAdmin->check_securitytxt_expiration_and_send_email();
                 <div style="display: none;" id="securitytxtNoticeValidationErrors" class="securitytxt-notify notify-error">
                     <p><?php echo esc_html__( 'There are validation errors, fix the fields with a red border in a the form above.', 'generate-security-txt'); ?></p>
                 </div>
-                <?php if(is_ssl()) : ?>
+                <?php if(!is_ssl()) : ?>
                     <button id="securityTxtFormSubmit" type="submit" class="securitytxt-ajax-submit securitytxt-submit-button button button-primary" data-text="<?php echo esc_attr__('Save changes and generate security.txt', 'generate-security-txt'); ?>" data-working="<?php echo esc_attr__('Working.. Don\'t refresh the page', 'generate-security-txt'); ?>">
                         <?php echo esc_html__('Save changes and generate security.txt', 'generate-security-txt'); ?>
                     </button>
@@ -202,8 +202,61 @@ $SecurityTxtAdmin->check_securitytxt_expiration_and_send_email();
     </table>
     <small class="table-footer"><?php echo esc_html__( 'When communicating issues with this plugin, please always include a screenshot of this table.', 'generate-security-txt'); ?></small>
 
+
     <h3 class="securitytxt-section-title"><?php echo esc_html__('More information about security.txt', 'generate-security-txt'); ?></h3>
     <p><?php echo esc_html__('When vulnerabilities are discovered on a website, by independent security researchers, they often do not have the correct contact information to disclose them. Security.txt is an open standard that helps organizations and security researchers find each other more easily, exchange the right information and thereby resolve a discovered vulnerability quickly.', 'generate-security-txt'); ?></p>
+
+    <h3 class="securitytxt-section-title">
+        <?php echo esc_html__( 'Log', 'generate-security-txt'); ?>
+    </h3>
+
+    <table class="wp-list-table widefat fixed striped table-view-list">
+        <thead>
+        <tr>
+            <th scope="col" style="width: 180px;">
+                <?php echo esc_html__( 'Timestamp', 'generate-security-txt'); ?>
+            </th>
+            <th scope="col">
+                <?php echo esc_html__( 'Log entry', 'generate-security-txt'); ?>
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+	    <?php $log_entries = $SecurityTxtAdmin->log_get_entries(); ?>
+	    <?php if ( is_array( $log_entries ) && count( $log_entries ) > 0 ) : ?>
+		    <?php foreach ( $log_entries as $log_entry ) : ?>
+                <tr>
+                    <td>
+                        <?php echo $log_entry['time']; ?>
+                    </td>
+                    <td>
+                        <?php echo $log_entry['message']; ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+	    <?php else : ?>
+            <tr>
+                <td colspan="2">
+				    <?php echo esc_html__( 'There are no log entries.', 'generate-security-txt' ); ?>
+                </td>
+            </tr>
+	    <?php endif; ?>
+        </tbody>
+
+        <tfoot>
+        <tr>
+            <th scope="col">
+                <?php echo esc_html__( 'Timestamp', 'generate-security-txt'); ?>
+            </th>
+            <th scope="col">
+                <?php echo esc_html__( 'Log entry', 'generate-security-txt'); ?>
+            </th>
+        </tr>
+        </tfoot>
+
+    </table>
+    <small class="table-footer"><?php echo esc_html__( 'This table contains a log of the last 50 actions made by the plugin.', 'generate-security-txt'); ?></small>
 
 </div>
 

@@ -30,5 +30,7 @@ class Generate_Security_Txt_Deactivator {
 	 */
 	public static function deactivate() {
         wp_clear_scheduled_hook('check_securitytxt_expiration_event');
+        wp_clear_scheduled_hook('securitytxt_archiveorg_request_event');
+        wp_clear_scheduled_hook('securitytxt_verify_file_contents');
 	}
 }

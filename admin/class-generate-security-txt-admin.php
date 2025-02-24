@@ -25,6 +25,7 @@ class Generate_Security_Txt_Admin {
     // Define the constants
     const OPTION_FORM_PREFIX = 'gensecform_';
     const OPTION_TXT_PREFIX = 'gensectxt_';
+    const ARCHIVEORG_URL = 'https://web.archive.org/save/';
 
 	/**
 	 * The ID of this plugin.
@@ -550,6 +551,17 @@ class Generate_Security_Txt_Admin {
      *
      * @return string
      */
+    public function get_securitytxt_uri(): string
+    {
+        return ABSPATH . '.well-known/security.txt';
+    }
+
+
+    /**
+     * Get the URL to verify security.txt externally
+     *
+     * @return string
+     */
     public function get_deletedata_url(): string {
 	    $delete_url = menu_page_url( 'security_txt_generator', false );
 	    $delete_url = add_query_arg( 'action', 'securitytxt_erase', $delete_url );
@@ -1005,6 +1017,28 @@ class Generate_Security_Txt_Admin {
     }
 
 
+    /**
+     * Scheduled Events
+     * -----------------------
+     */
+
+
+
+    /**
+     * Schedule the expiry event to run once a day
+     *
+     * @return void
+     */
+    public function schedule_securitytxt_expiration_check()
+    {
+        // Check if the event is already scheduled
+        if (!wp_next_scheduled('check_securitytxt_expiration_event')) {
+            // Schedule event to run once a day at midnight
+            wp_schedule_event(strtotime('midnight'), 'daily', 'check_securitytxt_expiration_event');
+        }
+    }
+
+
     // Define a custom function to check expiration date and send email
     public function check_securitytxt_expiration_and_send_email($ignore_checks = false)
     {
@@ -1014,7 +1048,7 @@ class Generate_Security_Txt_Admin {
         if(!$ignore_checks) {
 
             // Update WordPress option to indicate that email has been sent
-            $email_sent = get_option($this::OPTION_FORM_PREFIX . 'securitytxt_email_sent', true);
+            $email_sent = get_option('securitytxt_email_sent', true);
 
             if($email_sent)
                 return;
@@ -1056,30 +1090,153 @@ class Generate_Security_Txt_Admin {
             // Send the email
             $sent = wp_mail($to_email, $mail_title, $mail_content, ['Content-Type: text/html; charset=UTF-8']);
 
+            $this->log_add_entry(esc_html__( 'Attempted to send Expiry Notice email.', 'generate-security-txt'));
+
             if($sent) {
                 // Update WordPress option to indicate when email has been sent
                 $current_datetime = current_time('mysql');
                 update_option($this::OPTION_FORM_PREFIX . 'securitytxt_email_date', $current_datetime);
 
                 // Update WordPress option to indicate that email has been sent
-                update_option($this::OPTION_FORM_PREFIX . 'securitytxt_email_sent', true);
+                update_option('securitytxt_email_sent', true);
             }
         }
     }
 
 
     /**
-     * Schedule the event to run once a day
+     * Schedule the Archive.org request to run once a day
      *
      * @return void
      */
-    public function schedule_securitytxt_expiration_check()
+    public function schedule_securitytxt_archiveorg_request()
     {
         // Check if the event is already scheduled
-        if (!wp_next_scheduled('check_securitytxt_expiration_event')) {
+        if (!wp_next_scheduled('securitytxt_archiveorg_request_event')) {
             // Schedule event to run once a day at midnight
-            wp_schedule_event(strtotime('midnight'), 'daily', 'check_securitytxt_expiration_event');
+            wp_schedule_event(strtotime('midnight'), 'daily', 'securitytxt_archiveorg_request_event');
         }
+    }
+
+
+	/**
+     * The function to be called for the archive.org request cron to submit a new security.txt
+     *
+	 * @return void
+	 */
+    function securitytxt_archiveorg_request_url() {
+        // Check if the option is set to true
+        $should_run = get_option('securitytxt_archiveorg_request', false);
+
+        if ($should_run) {
+            // Define the URL to call
+            $archive_url = $this::ARCHIVEORG_URL . $this->get_securitytxt_url();
+
+            // Make the request
+            $response = wp_remote_get($archive_url, ['timeout' => 10]);
+
+            // Optionally log the response (for debugging)
+            if (is_wp_error($response)) {
+
+                // Log the error
+                error_log('Cron request failed: ' . $response->get_error_message());
+
+                $this->log_add_entry(sprintf(
+                    esc_html__('Error submitting to archive.org - %s: %s', 'generate-security-txt'),
+                    $archive_url,
+                    $response->get_error_message()
+                ));
+
+            } else {
+                $this->log_add_entry(sprintf(
+                    esc_html__( 'Submitted to archive.org - %s.', 'generate-security-txt'),
+                    $archive_url
+                ));
+            }
+
+            // Reset the option to prevent another request until it's manually set again
+            update_option('securitytxt_archiveorg_request', false);
+        }
+    }
+
+
+    /**
+     * Schedule the security.txt file verification to run once a day
+     *
+     * @return void
+     */
+    public function schedule_securitytxt_verify_file_contents()
+    {
+        // Check if the event is already scheduled
+        if (!wp_next_scheduled('securitytxt_verify_file_contents_event')) {
+            // Schedule event to run once a day at midnight
+            wp_schedule_event(strtotime('midnight'), 'daily', 'securitytxt_verify_file_contents_event');
+        }
+    }
+
+
+	/**
+     * This function verifies the hash of the current file against the saved hash
+	 */
+    public function securitytxt_verify_file_contents() {
+	    // Get the saved hash from the WordPress options
+	    $saved_hash = get_option( 'securitytxt_hash', '' );
+
+	    // Check if the security.txt file exists
+	    if ( ! $this->check_securitytxt() ) {
+		    return false;
+	    }
+
+	    // Generate the current hash of the file
+	    $current_hash = hash_file( 'sha256', $this->get_securitytxt_uri() );
+
+	    // Compare the hashes
+	    if ( $saved_hash === $current_hash ) {
+            // Succesfully verified
+            $this->log_add_entry(esc_html__( 'Security.txt hash verified succesfully.', 'generate-security-txt'), true);
+	    } else {
+            // Failed to verify
+            $this->log_add_entry(esc_html__( 'Security.txt hash failed to verify.', 'generate-security-txt'));
+
+             // Send email to website admin
+            $to_email = get_option('admin_email');
+            $mail_title = __('Security.txt Alert Notice', 'generate-security-txt');
+
+            // Define the variables to be replaced in the mail content
+            $website = home_url();
+            $generate_url = admin_url('tools.php?page=security_txt_generator');
+            $today = new DateTime('now');
+
+            // Translate and format the mail content
+            // translators: a link to the admin page for this plugins on plugin's website
+            $mail_content = sprintf(__('<h2>Security.txt Alert</h2><p>This is an alert from your WordPress website on %1$s.</p><p>Your security.txt failed to verify its contents during a routine check.</p><p>We recommend checking the file as soon as possible on <a href="%3$s">%2$s</a>. If the file is incorrect and not changed by you, please make sure your FTP and/or webhosting access isn\'t comprimised.</p><hr><p>This message was sent at <code>%3$s</code> by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>', 'generate-security-txt'), $website, $this->get_securitytxt_url(), $today->format('Y-m-d H:i:s'));
+
+            // Send the email
+            $sent = wp_mail($to_email, $mail_title, $mail_content, ['Content-Type: text/html; charset=UTF-8']);
+
+            $this->log_add_entry(esc_html__( 'Attempted to send Alert Notice email.', 'generate-security-txt'));
+	    }
+    }
+
+
+	/**
+     * Save the current file hash
+     *
+	 * @return false|string
+	 */
+    function securitytxt_save_hash() {
+        
+        if (!$this->check_securitytxt()) {
+            return false;
+        }
+    
+        // Generate a hash (SHA256 is secure and efficient)
+        $file_hash = hash_file('sha256', $this->get_securitytxt_uri());
+    
+        // Save the hash in a WordPress option
+        update_option('securitytxt_hash', $file_hash);
+        
+        return $file_hash;
     }
 
 
@@ -1584,6 +1741,9 @@ class Generate_Security_Txt_Admin {
                     $this->delete_securitytxt();
                     $this->delete_publickey_file();
 
+                    // Clear the log
+                    $this->log_add_entry(esc_html__( 'Plugin data cleared.', 'generate-security-txt'));
+
                     // Queue the notification
                     update_option($this::OPTION_FORM_PREFIX . 'notification_delete', true);
 
@@ -1901,8 +2061,16 @@ class Generate_Security_Txt_Admin {
      */
     public function finish() {
 
+        $this->log_add_entry(esc_html__( 'Finished creating new security.txt.', 'generate-security-txt'));
+
+        // Save the new hash
+        $this->securitytxt_save_hash();
+
+        // Update WordPress option to indicate that we need an archive.org request this day
+        update_option('securitytxt_archiveorg_request', true);
+
         // Update WordPress option to indicate that email has to be sent when expiry is close
-        update_option($this::OPTION_FORM_PREFIX . 'securitytxt_email_sent', false);
+        update_option('securitytxt_email_sent', false);
 
         // Just true for now
         return true;
@@ -1933,4 +2101,57 @@ class Generate_Security_Txt_Admin {
             return true;
         }
     }
+
+
+
+    /**
+     * Log functions
+     * -----------------------
+     */
+
+	/**
+     * Add a log entry
+     *
+	 * @param $message
+	 *
+	 * @return void
+	 */
+    function log_add_entry( $message ): void {
+	    $logs = get_option( 'securitytxt_logs', [] );
+
+	    if ( ! is_array( $logs ) ) {
+		    $logs = [];
+	    }
+
+	    // Nieuwe entry toevoegen met timestamp
+	    array_unshift( $logs, [
+		    'time'    => current_time( 'mysql' ),
+		    'message' => $message
+	    ] );
+
+	    // Limit the amount of logs to 50
+	    if ( count( $logs ) > 50 ) {
+		    array_pop( $logs );
+	    }
+
+	    update_option( 'securitytxt_logs', $logs );
+    }
+
+
+	/**
+	 * Return the current log in an array
+	 *
+	 * @return array
+	 */
+	function log_get_entries() {
+		return get_option( 'securitytxt_logs', [] );
+	}
+
+
+	/**
+	 * Clear the plugin log
+	 */
+	public function log_clearall(): void {
+		update_option( 'securitytxt_logs', [] );
+	}
 }
