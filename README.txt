@@ -3,7 +3,7 @@ Contributors: verenigingvanregistrars
 Tags: security, security.txt, responsible disclosure
 Requires at least: 6.3
 Tested up to: 6.5
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,7 +49,7 @@ Your security.txt file will not be valid without URIs starting with 'https://'. 
 
 == Upgrade Notice ==
 
-= 1.0.7 =
+= 1.0.8 =
 Updated internet.nl conform
 
 = 1.0.6 =

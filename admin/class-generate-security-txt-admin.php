@@ -1133,7 +1133,7 @@ class Generate_Security_Txt_Admin {
             $archive_url = $this::ARCHIVEORG_URL . $this->get_securitytxt_url();
 
             // Make the request
-            $response = wp_remote_get($archive_url, ['timeout' => 10]);
+            $response = wp_remote_get($archive_url, ['timeout' => 20]);
 
             // Optionally log the response (for debugging)
             if (is_wp_error($response)) {
