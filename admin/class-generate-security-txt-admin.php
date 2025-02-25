@@ -1085,7 +1085,7 @@ class Generate_Security_Txt_Admin {
 
             // Translate and format the mail content
             // translators: a link to the admin page for this plugins on plugin's website
-            $mail_content = sprintf(__('<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress website on %1$s.</p><p>Your security.txt file will expire on <code>%2$s</code>.</p><p>We recommend regenerating it as soon as possble it on %3$s.</p><hr><p>This message was sent at <code>%4$s</code> by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>', 'generate-security-txt'), $website, $securitytxt_expire_date->format('Y-m-d H:i:s'), $generate_url, $today->format('Y-m-d H:i:s'));;
+            $mail_content = sprintf(__('<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress website on %1$s.</p><p>Your security.txt file will expire on <code>%2$s</code>.</p><p>We recommend regenerating it as soon as possble it on %3$s.</p><hr><p>This message was sent at <code>%4$s</code> by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>', 'generate-security-txt'), $website, $securitytxt_expire_date->format('Y-m-d H:i:s'), $generate_url, $today->format('Y-m-d H:i:s'));
 
             // Send the email
             $sent = wp_mail($to_email, $mail_title, $mail_content, ['Content-Type: text/html; charset=UTF-8']);
@@ -1209,7 +1209,7 @@ class Generate_Security_Txt_Admin {
 
             // Translate and format the mail content
             // translators: a link to the admin page for this plugins on plugin's website
-            $mail_content = sprintf(__('<h2>Security.txt Alert</h2><p>This is an alert from your WordPress website on %1$s.</p><p>Your security.txt failed to verify its contents during a routine check.</p><p>We recommend checking the file as soon as possible on <a href="%3$s">%2$s</a>. If the file is incorrect and not changed by you, please make sure your FTP and/or webhosting access isn\'t comprimised.</p><hr><p>This message was sent at <code>%3$s</code> by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>', 'generate-security-txt'), $website, $this->get_securitytxt_url(), $today->format('Y-m-d H:i:s'));
+            $mail_content = sprintf(__('<h2>Security.txt Alert Notice</h2><p>This is an alert from your WordPress website on %1$s.</p><p>Your security.txt failed to verify its contents during a routine check.</p><p>We recommend manually checking the file contents as soon as possible on <a href="%2$s">%2$s</a>. If the file has information that was not entered by you through the plugin and the file was not changed by you, please make sure your FTP and/or webhosting access is not compromised.</p><hr><p>This message was sent at <code>%3$s</code> by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p><p>If you keep receiving this email and there is nothing incorrect about the security.txt, please contact the plugin developer through the WordPress plugin page.</p><hr><p>This message was sent at <code>%3$s</code> by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>', 'generate-security-txt'), $website, $this->get_securitytxt_url(), $today->format('Y-m-d H:i:s'));
 
             // Send the email
             $sent = wp_mail($to_email, $mail_title, $mail_content, ['Content-Type: text/html; charset=UTF-8']);

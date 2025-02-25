@@ -2,15 +2,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Generate security.txt\n"
-"POT-Creation-Date: 2024-04-15 14:04+0200\n"
-"PO-Revision-Date: 2024-04-12 16:18+0200\n"
+"POT-Creation-Date: 2025-02-25 11:51+0100\n"
+"PO-Revision-Date: 2025-02-25 11:32+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.5\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: generate-security-txt.php\n"
@@ -20,21 +20,27 @@ msgstr ""
 "_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
+"X-Poedit-SearchPathExcluded-1: includes/vendor\n"
 
-#: admin/class-generate-security-txt-admin.php:96
+#: admin/class-generate-security-txt-admin.php:97
 msgid "Go to settings"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:181
-#: admin/class-generate-security-txt-admin.php:182
+#: admin/class-generate-security-txt-admin.php:168
+#: admin/partials/generate-security-txt-admin-display.php:34
+msgid "Checking security.txt status"
+msgstr ""
+
+#: admin/class-generate-security-txt-admin.php:185
+#: admin/class-generate-security-txt-admin.php:186
 msgid "Generate Security.txt"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:203
+#: admin/class-generate-security-txt-admin.php:207
 msgid "No security.txt file exists for this website yet. Create one below."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:210
+#: admin/class-generate-security-txt-admin.php:214
 #: admin/partials/generate-security-txt-admin-display.php:71
 msgid ""
 "This website isn't using HTTPS. This is a requirement for any value in "
@@ -42,94 +48,97 @@ msgid ""
 "security.txt file."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:248
+#. translators: the admin URL to this plugin's admin page
+#: admin/class-generate-security-txt-admin.php:252
 #, php-format
 msgid ""
 "Regenerate your security.txt, the expirydate is very soon or has passed. <a "
 "href=\"%s\">Click here</a> to do so."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:264
+#: admin/class-generate-security-txt-admin.php:267
 msgid "Invalid - Security.txt is missing"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:283
+#. translators: the formatted date on which the security.txt file expired
+#: admin/class-generate-security-txt-admin.php:287
 #, php-format
 msgid "Security.txt expired on %s. Regenerate the file below."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:288
+#. translators: the formatted date on which the security.txt file will expire
+#: admin/class-generate-security-txt-admin.php:293
 #, php-format
 msgid "Security.txt will expire on %s. Regenerate the file below."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:293
+#: admin/class-generate-security-txt-admin.php:298
 msgid "Security.txt is valid"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:547
+#: admin/class-generate-security-txt-admin.php:666
 msgid "Contact"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:548
+#: admin/class-generate-security-txt-admin.php:667
 msgid ""
 "This should be the e-mail address, phone number or web page of the person "
 "within your organization that security researchers can contact when they "
 "have found a vulnerability on your site."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:554
+#: admin/class-generate-security-txt-admin.php:673
 msgid "security@domain.com"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:560
+#: admin/class-generate-security-txt-admin.php:679
 msgid "Not a valid emailaddress, phonenumber or web URI starting with https://"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:565
+#: admin/class-generate-security-txt-admin.php:684
 msgid "Expiration date"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:566
+#: admin/class-generate-security-txt-admin.php:685
 msgid ""
 "Because data needs to stay current, an expiration date is set within one "
 "year so you can check the data at least once a year. We already have this "
 "set but feel free to adjust it. "
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:572
+#: admin/class-generate-security-txt-admin.php:691
 msgid "YYYY-MM-DD"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:578
+#: admin/class-generate-security-txt-admin.php:697
 msgid "Not a valid date format, needs YYYY-MM-DD"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:583
+#: admin/class-generate-security-txt-admin.php:702
 msgid "Language settings"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:584
+#: admin/class-generate-security-txt-admin.php:703
 msgid ""
 "Above you can specify the languages in which you can (and want to) receive "
 "notifications. We have already set the language of your WordPress "
 "environment for your convenience."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:590
+#: admin/class-generate-security-txt-admin.php:709
 msgid "en, es, nl"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:595
+#: admin/class-generate-security-txt-admin.php:714
 msgid ""
 "Not a valid format. Needs comma-seperated language codes or use the dropdown"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:600
+#: admin/class-generate-security-txt-admin.php:719
 msgid "Encryption"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:601
+#: admin/class-generate-security-txt-admin.php:720
 msgid ""
 "If your webhost supports encryption, the security.txt will be digitally "
 "encrypted. If so, you will find the PGP key above. If not, the security.txt "
@@ -137,234 +146,295 @@ msgid ""
 "provider about enabling the PHP-extension <code>gnupg</code>."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:607
+#: admin/class-generate-security-txt-admin.php:726
 msgid "This will be filled automatically after generating your security.txt"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:616
+#: admin/class-generate-security-txt-admin.php:735
 msgid "Acknowledgments"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:617
+#: admin/class-generate-security-txt-admin.php:736
 msgid ""
 "Here you can enter a page thanking the security researchers for reporting a "
 "vulnerability."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:629
-#: admin/class-generate-security-txt-admin.php:647
-#: admin/class-generate-security-txt-admin.php:665
-#: admin/class-generate-security-txt-admin.php:683
-#: admin/class-generate-security-txt-admin.php:700
+#: admin/class-generate-security-txt-admin.php:748
+#: admin/class-generate-security-txt-admin.php:766
+#: admin/class-generate-security-txt-admin.php:784
+#: admin/class-generate-security-txt-admin.php:802
+#: admin/class-generate-security-txt-admin.php:819
 msgid "Not a valid web URI starting with https://"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:634
+#: admin/class-generate-security-txt-admin.php:753
 msgid "File & location"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:635
+#: admin/class-generate-security-txt-admin.php:754
 msgid ""
 "The security.txt file has been placed in the right folder (well-known) and "
 "digitally encrypted. Above you can see where the file is located and how it "
 "is read by security researchers."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:652
+#: admin/class-generate-security-txt-admin.php:771
 msgid "Policy"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:653
+#: admin/class-generate-security-txt-admin.php:772
 msgid ""
 "Some organizations have a security policy on how they want to receive "
 "notifications. If you have a specific security policy, you can enter it here."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:670
+#: admin/class-generate-security-txt-admin.php:789
 msgid "Hiring"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:671
+#: admin/class-generate-security-txt-admin.php:790
 msgid ""
 "If you have job openings for security-related positions in your "
 "organization, you can enter them here as well. So, enter the link to your "
 "vacancies here."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:688
+#: admin/class-generate-security-txt-admin.php:807
 msgid "Common Security Advisory Framework (CSAF)"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:689
+#: admin/class-generate-security-txt-admin.php:808
 msgid ""
 "If you use a CSAF to receive automated notifications, for example, you can "
 "enter it here."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:748
+#: admin/class-generate-security-txt-admin.php:867
 msgid "Toggle advanced settings"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:776
+#: admin/class-generate-security-txt-admin.php:895
 msgid "Required"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:778
+#: admin/class-generate-security-txt-admin.php:897
 msgid "Optional"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:792
+#: admin/class-generate-security-txt-admin.php:911
 msgid "Add another"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:809
+#: admin/class-generate-security-txt-admin.php:928
 msgid "Select a language to add the correct code to the field"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:835
+#: admin/class-generate-security-txt-admin.php:955
 msgid ""
 "Encryption is not available because PHP-extension 'gnupg' is not available"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:930
+#: admin/class-generate-security-txt-admin.php:1080
 msgid "Security.txt Expiry Reminder"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:931
+#. translators: a link to the admin page for this plugins on plugin's website
+#: admin/class-generate-security-txt-admin.php:1088
 #, php-format
 msgid ""
 "<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress "
-"website on %s.</p><p>Your security.txt file is about to expire.</"
-"p><p>Generate it again on %s.</p><hr><p>This message was sent by the "
+"website on %1$s.</p><p>Your security.txt file will expire on <code>%2$s</"
+"code>.</p><p>We recommend regenerating it as soon as possble it on %3$s.</"
+"p><hr><p>This message was sent at <code>%4$s</code> by the Wordpress plugin "
+"<b>Generate Security.txt</b> by Vereniging van Registrars.</p>"
+msgstr ""
+
+#: admin/class-generate-security-txt-admin.php:1093
+msgid "Attempted to send Expiry Notice email."
+msgstr ""
+
+#: admin/class-generate-security-txt-admin.php:1145
+#, php-format
+msgid "Error submitting to archive.org - %s: %s"
+msgstr ""
+
+#: admin/class-generate-security-txt-admin.php:1152
+#, php-format
+msgid "Submitted to archive.org - %s."
+msgstr ""
+
+#: admin/class-generate-security-txt-admin.php:1196
+msgid "Security.txt hash verified succesfully."
+msgstr ""
+
+#: admin/class-generate-security-txt-admin.php:1199
+msgid "Security.txt hash failed to verify."
+msgstr ""
+
+#: admin/class-generate-security-txt-admin.php:1203
+msgid "Security.txt Alert Notice"
+msgstr ""
+
+#. translators: a link to the admin page for this plugins on plugin's website
+#: admin/class-generate-security-txt-admin.php:1212
+#, php-format
+msgid ""
+"<h2>Security.txt Alert Notice</h2><p>This is an alert from your WordPress "
+"website on %1$s.</p><p>Your security.txt failed to verify its contents "
+"during a routine check.</p><p>We recommend manually checking the file "
+"contents as soon as possible on <a href=\"%2$s\">%2$s</a>. If the file has "
+"information that was not entered by you through the plugin and the file was "
+"not changed by you, please make sure your FTP and/or webhosting access is "
+"not compromised.</p><hr><p>This message was sent at <code>%3$s</code> by the "
+"Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</"
+"p><p>If you keep receiving this email and there is nothing incorrect about "
+"the security.txt, please contact the plugin developer through the WordPress "
+"plugin page.</p><hr><p>This message was sent at <code>%3$s</code> by the "
 "Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</"
 "p>"
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:980
+#: admin/class-generate-security-txt-admin.php:1217
+msgid "Attempted to send Alert Notice email."
+msgstr ""
+
+#: admin/class-generate-security-txt-admin.php:1259
 msgid "Saving form fields.."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:981
+#: admin/class-generate-security-txt-admin.php:1260
 msgid "Form fields saved."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:982
+#: admin/class-generate-security-txt-admin.php:1261
 msgid "Failed to save forms fields."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:992
+#: admin/class-generate-security-txt-admin.php:1271
 msgid "Checking for <code>.well-known</code> folder.."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:993
+#: admin/class-generate-security-txt-admin.php:1272
 msgid "<code>.well-known</code> folder exists."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:994
+#: admin/class-generate-security-txt-admin.php:1273
 msgid "<code>.well-known</code> folder doesn't exist. Folder must be created."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1004
+#: admin/class-generate-security-txt-admin.php:1283
 msgid "Creating <code>.well-known</code> folder.."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1005
+#: admin/class-generate-security-txt-admin.php:1284
 msgid "<code>.well-known</code> folder created succesfully."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1006
+#: admin/class-generate-security-txt-admin.php:1285
 msgid "Failed to create <code>.well-known</code> folder. "
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1016
+#: admin/class-generate-security-txt-admin.php:1295
 msgid "Checking for old <code>security.txt</code>.."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1017
+#: admin/class-generate-security-txt-admin.php:1296
 msgid "Old <code>security.txt</code> exists."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1018
+#: admin/class-generate-security-txt-admin.php:1297
 msgid "Old <code>security.txt</code> doesn't exist."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1028
+#: admin/class-generate-security-txt-admin.php:1307
 msgid "Deleting old <code>security.txt</code>.."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1029
+#: admin/class-generate-security-txt-admin.php:1308
 msgid "Deleted old <code>security.txt</code> successfully."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1030
+#: admin/class-generate-security-txt-admin.php:1309
 msgid "Failed to delete old <code>security.txt</code>."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1040
+#: admin/class-generate-security-txt-admin.php:1319
 msgid "Creating <code>security.txt</code> content.."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1041
+#: admin/class-generate-security-txt-admin.php:1320
 msgid "Content for <code>security.txt</code> successfully created."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1042
+#: admin/class-generate-security-txt-admin.php:1321
 msgid "Failed to content for <code>security.txt</code>."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1052
+#: admin/class-generate-security-txt-admin.php:1331
 msgid "Saving <code>security.txt</code> file.."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1053
+#: admin/class-generate-security-txt-admin.php:1332
 msgid "Saved <code>security.txt</code> successfully."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1054
+#: admin/class-generate-security-txt-admin.php:1333
 msgid "Failed to save <code>security.txt</code>."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1064
+#: admin/class-generate-security-txt-admin.php:1343
 msgid "Checking for encryption availability.."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1065
+#: admin/class-generate-security-txt-admin.php:1344
 msgid ""
 "Encryption is available. <code>PHP-extension 'gnupg'</code> is installed."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1066
+#: admin/class-generate-security-txt-admin.php:1345
 msgid ""
 "Encryption not available, skipping encryption. Ask your webhosting about the "
 "<code>PHP-extension 'gnupg'</code>."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1087
+#: admin/class-generate-security-txt-admin.php:1367
 msgid "Generating keys and signing <code>security.txt</code>.."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1088
+#: admin/class-generate-security-txt-admin.php:1368
 msgid "Successfully generated keys and signed <code>security.txt</code>."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1089
+#: admin/class-generate-security-txt-admin.php:1369
 msgid "Failed to generate keys and/or couldn't sign <code>security.txt</code>."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1099
+#: admin/class-generate-security-txt-admin.php:1379
 msgid "Finishing.."
 msgstr ""
 
-#: admin/class-generate-security-txt-admin.php:1100
+#: admin/class-generate-security-txt-admin.php:1380
 msgid "Finished succesfully."
 msgstr ""
 
-#: admin/partials/generate-security-txt-admin-display.php:25
-#: admin/partials/generate-security-txt-admin-display.php:37
-msgid "Checking security.txt status"
+#: admin/class-generate-security-txt-admin.php:1421
+msgid "Invalid nonce.. Stopping."
 msgstr ""
 
-#: admin/partials/generate-security-txt-admin-display.php:30
+#: admin/class-generate-security-txt-admin.php:1589
+msgid "A problem occured."
+msgstr ""
+
+#: admin/class-generate-security-txt-admin.php:1745
+msgid "Plugin data cleared."
+msgstr ""
+
+#: admin/class-generate-security-txt-admin.php:2064
+msgid "Finished creating new security.txt."
+msgstr ""
+
+#: admin/partials/generate-security-txt-admin-display.php:27
 msgid "Security.txt Status"
 msgstr ""
 
@@ -460,26 +530,26 @@ msgid "Debug information and status"
 msgstr ""
 
 #: admin/partials/generate-security-txt-admin-display.php:133
-#: admin/partials/generate-security-txt-admin-display.php:186
+#: admin/partials/generate-security-txt-admin-display.php:194
 msgid "Subject"
 msgstr ""
 
 #: admin/partials/generate-security-txt-admin-display.php:136
-#: admin/partials/generate-security-txt-admin-display.php:189
+#: admin/partials/generate-security-txt-admin-display.php:197
 msgid "Status / Version"
 msgstr ""
 
-#: admin/partials/generate-security-txt-admin-display.php:195
+#: admin/partials/generate-security-txt-admin-display.php:203
 msgid ""
 "When communicating issues with this plugin, please always include a "
 "screenshot of this table."
 msgstr ""
 
-#: admin/partials/generate-security-txt-admin-display.php:197
+#: admin/partials/generate-security-txt-admin-display.php:206
 msgid "More information about security.txt"
 msgstr ""
 
-#: admin/partials/generate-security-txt-admin-display.php:198
+#: admin/partials/generate-security-txt-admin-display.php:207
 msgid ""
 "When vulnerabilities are discovered on a website, by independent security "
 "researchers, they often do not have the correct contact information to "
@@ -488,7 +558,29 @@ msgid ""
 "information and thereby resolve a discovered vulnerability quickly."
 msgstr ""
 
-#: admin/partials/generate-security-txt-admin-display.php:203
+#: admin/partials/generate-security-txt-admin-display.php:210
+msgid "Log"
+msgstr ""
+
+#: admin/partials/generate-security-txt-admin-display.php:217
+#: admin/partials/generate-security-txt-admin-display.php:250
+msgid "Timestamp"
+msgstr ""
+
+#: admin/partials/generate-security-txt-admin-display.php:220
+#: admin/partials/generate-security-txt-admin-display.php:253
+msgid "Log entry"
+msgstr ""
+
+#: admin/partials/generate-security-txt-admin-display.php:241
+msgid "There are no log entries."
+msgstr ""
+
+#: admin/partials/generate-security-txt-admin-display.php:259
+msgid "This table contains a log of the last 50 actions made by the plugin."
+msgstr ""
+
+#: admin/partials/generate-security-txt-admin-display.php:264
 msgid "This plugin is sponsored by SIDN fund and an initiative of"
 msgstr ""
 
