@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Generate security.txt\n"
-"POT-Creation-Date: 2025-02-25 11:51+0100\n"
-"PO-Revision-Date: 2025-02-25 12:41+0100\n"
+"POT-Creation-Date: 2025-04-03 13:45+0200\n"
+"PO-Revision-Date: 2025-04-03 13:45+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -292,28 +292,41 @@ msgstr "Attempted to send Expiry Notice email."
 
 #: admin/class-generate-security-txt-admin.php:1145
 #, php-format
+msgid "Time-out submitting to archive.org - %s. Trying again in 24 hours."
+msgstr "Time-out submitting to archive.org - %s. Trying again in 24 hours."
+
+#: admin/class-generate-security-txt-admin.php:1155
+#, php-format
 msgid "Error submitting to archive.org - %s: %s"
 msgstr "Error submitting to archive.org - %s: %s"
 
-#: admin/class-generate-security-txt-admin.php:1152
+#: admin/class-generate-security-txt-admin.php:1162
 #, php-format
 msgid "Submitted to archive.org - %s."
 msgstr "Submitted to archive.org - %s."
 
-#: admin/class-generate-security-txt-admin.php:1196
+#: admin/class-generate-security-txt-admin.php:1197
+msgid ""
+"Security.txt hash not found. Generate a new security.txt for hash "
+"verification."
+msgstr ""
+"Security.txt hash not found. Generate a new security.txt for hash "
+"verification."
+
+#: admin/class-generate-security-txt-admin.php:1212
 msgid "Security.txt hash verified succesfully."
 msgstr "Security.txt hash verified succesfully."
 
-#: admin/class-generate-security-txt-admin.php:1199
+#: admin/class-generate-security-txt-admin.php:1215
 msgid "Security.txt hash failed to verify."
 msgstr "Security.txt hash failed to verify."
 
-#: admin/class-generate-security-txt-admin.php:1203
+#: admin/class-generate-security-txt-admin.php:1219
 msgid "Security.txt Alert Notice"
 msgstr "Security.txt Alert Notice"
 
 #. translators: a link to the admin page for this plugins on plugin's website
-#: admin/class-generate-security-txt-admin.php:1212
+#: admin/class-generate-security-txt-admin.php:1228
 #, php-format
 msgid ""
 "<h2>Security.txt Alert Notice</h2><p>This is an alert from your WordPress "
@@ -344,105 +357,105 @@ msgstr ""
 "Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</"
 "p>"
 
-#: admin/class-generate-security-txt-admin.php:1217
+#: admin/class-generate-security-txt-admin.php:1233
 msgid "Attempted to send Alert Notice email."
 msgstr "Attempted to send Alert Notice email."
 
-#: admin/class-generate-security-txt-admin.php:1259
+#: admin/class-generate-security-txt-admin.php:1275
 msgid "Saving form fields.."
 msgstr "Saving form fields.."
 
-#: admin/class-generate-security-txt-admin.php:1260
+#: admin/class-generate-security-txt-admin.php:1276
 msgid "Form fields saved."
 msgstr "Form fields saved."
 
-#: admin/class-generate-security-txt-admin.php:1261
+#: admin/class-generate-security-txt-admin.php:1277
 msgid "Failed to save forms fields."
 msgstr "Failed to save forms fields."
 
-#: admin/class-generate-security-txt-admin.php:1271
+#: admin/class-generate-security-txt-admin.php:1287
 msgid "Checking for <code>.well-known</code> folder.."
 msgstr "Checking for <code>.well-known</code> folder.."
 
-#: admin/class-generate-security-txt-admin.php:1272
+#: admin/class-generate-security-txt-admin.php:1288
 msgid "<code>.well-known</code> folder exists."
 msgstr "<code>.well-known</code> folder exists."
 
-#: admin/class-generate-security-txt-admin.php:1273
+#: admin/class-generate-security-txt-admin.php:1289
 msgid "<code>.well-known</code> folder doesn't exist. Folder must be created."
 msgstr "<code>.well-known</code> folder doesn't exist. Folder must be created."
 
-#: admin/class-generate-security-txt-admin.php:1283
+#: admin/class-generate-security-txt-admin.php:1299
 msgid "Creating <code>.well-known</code> folder.."
 msgstr "Creating <code>.well-known</code> folder.."
 
-#: admin/class-generate-security-txt-admin.php:1284
+#: admin/class-generate-security-txt-admin.php:1300
 msgid "<code>.well-known</code> folder created succesfully."
 msgstr "<code>.well-known</code> folder created succesfully."
 
-#: admin/class-generate-security-txt-admin.php:1285
+#: admin/class-generate-security-txt-admin.php:1301
 msgid "Failed to create <code>.well-known</code> folder. "
 msgstr "Failed to create <code>.well-known</code> folder. "
 
-#: admin/class-generate-security-txt-admin.php:1295
+#: admin/class-generate-security-txt-admin.php:1311
 msgid "Checking for old <code>security.txt</code>.."
 msgstr "Checking for old <code>security.txt</code>.."
 
-#: admin/class-generate-security-txt-admin.php:1296
+#: admin/class-generate-security-txt-admin.php:1312
 msgid "Old <code>security.txt</code> exists."
 msgstr "Old <code>security.txt</code> exists."
 
-#: admin/class-generate-security-txt-admin.php:1297
+#: admin/class-generate-security-txt-admin.php:1313
 msgid "Old <code>security.txt</code> doesn't exist."
 msgstr "Old <code>security.txt</code> doesn't exist."
 
-#: admin/class-generate-security-txt-admin.php:1307
+#: admin/class-generate-security-txt-admin.php:1323
 msgid "Deleting old <code>security.txt</code>.."
 msgstr "Deleting old <code>security.txt</code>.."
 
-#: admin/class-generate-security-txt-admin.php:1308
+#: admin/class-generate-security-txt-admin.php:1324
 msgid "Deleted old <code>security.txt</code> successfully."
 msgstr "Deleted old <code>security.txt</code> successfully."
 
-#: admin/class-generate-security-txt-admin.php:1309
+#: admin/class-generate-security-txt-admin.php:1325
 msgid "Failed to delete old <code>security.txt</code>."
 msgstr "Failed to delete old <code>security.txt</code>."
 
-#: admin/class-generate-security-txt-admin.php:1319
+#: admin/class-generate-security-txt-admin.php:1335
 msgid "Creating <code>security.txt</code> content.."
 msgstr "Creating <code>security.txt</code> content.."
 
-#: admin/class-generate-security-txt-admin.php:1320
+#: admin/class-generate-security-txt-admin.php:1336
 msgid "Content for <code>security.txt</code> successfully created."
 msgstr "Content for <code>security.txt</code> successfully created."
 
-#: admin/class-generate-security-txt-admin.php:1321
+#: admin/class-generate-security-txt-admin.php:1337
 msgid "Failed to content for <code>security.txt</code>."
 msgstr "Failed to content for <code>security.txt</code>."
 
-#: admin/class-generate-security-txt-admin.php:1331
+#: admin/class-generate-security-txt-admin.php:1347
 msgid "Saving <code>security.txt</code> file.."
 msgstr "Saving <code>security.txt</code> file.."
 
-#: admin/class-generate-security-txt-admin.php:1332
+#: admin/class-generate-security-txt-admin.php:1348
 msgid "Saved <code>security.txt</code> successfully."
 msgstr "Saved <code>security.txt</code> successfully."
 
-#: admin/class-generate-security-txt-admin.php:1333
+#: admin/class-generate-security-txt-admin.php:1349
 msgid "Failed to save <code>security.txt</code>."
 msgstr "Failed to save <code>security.txt</code>."
 
-#: admin/class-generate-security-txt-admin.php:1343
+#: admin/class-generate-security-txt-admin.php:1359
 msgid "Checking for encryption availability.."
 msgstr "Checking for encryption availability.."
 
-#: admin/class-generate-security-txt-admin.php:1344
+#: admin/class-generate-security-txt-admin.php:1360
 msgid ""
 "Encryption is available. <code>PHP-extension 'gnupg'</code> is installed."
 msgstr ""
 "Encryption is available. <code>PHP-extension 'gnupg'</code> is installed."
 
-#: admin/class-generate-security-txt-admin.php:1345
+#: admin/class-generate-security-txt-admin.php:1361
 msgid ""
 "Encryption not available, skipping encryption. Ask your webhosting about the "
 "<code>PHP-extension 'gnupg'</code>."
@@ -450,40 +463,40 @@ msgstr ""
 "Encryption not available, skipping encryption. Ask your webhosting about the "
 "<code>PHP-extension 'gnupg'</code>."
 
-#: admin/class-generate-security-txt-admin.php:1367
+#: admin/class-generate-security-txt-admin.php:1383
 msgid "Generating keys and signing <code>security.txt</code>.."
 msgstr "Generating keys and signing <code>security.txt</code>.."
 
-#: admin/class-generate-security-txt-admin.php:1368
+#: admin/class-generate-security-txt-admin.php:1384
 msgid "Successfully generated keys and signed <code>security.txt</code>."
 msgstr "Successfully generated keys and signed <code>security.txt</code>."
 
-#: admin/class-generate-security-txt-admin.php:1369
+#: admin/class-generate-security-txt-admin.php:1385
 msgid "Failed to generate keys and/or couldn't sign <code>security.txt</code>."
 msgstr ""
 "Failed to generate keys and/or couldn't sign <code>security.txt</code>."
 
-#: admin/class-generate-security-txt-admin.php:1379
+#: admin/class-generate-security-txt-admin.php:1395
 msgid "Finishing.."
 msgstr "Finishing.."
 
-#: admin/class-generate-security-txt-admin.php:1380
+#: admin/class-generate-security-txt-admin.php:1396
 msgid "Finished succesfully."
 msgstr "Finished succesfully."
 
-#: admin/class-generate-security-txt-admin.php:1421
+#: admin/class-generate-security-txt-admin.php:1437
 msgid "Invalid nonce.. Stopping."
 msgstr "Invalid nonce.. Stopping."
 
-#: admin/class-generate-security-txt-admin.php:1589
+#: admin/class-generate-security-txt-admin.php:1605
 msgid "A problem occured."
 msgstr "A problem occured."
 
-#: admin/class-generate-security-txt-admin.php:1745
+#: admin/class-generate-security-txt-admin.php:1761
 msgid "Plugin data cleared."
 msgstr "Plugin data cleared."
 
-#: admin/class-generate-security-txt-admin.php:2064
+#: admin/class-generate-security-txt-admin.php:2080
 msgid "Finished creating new security.txt."
 msgstr "Finished creating new security.txt."
 

@@ -21,6 +21,23 @@ $form_fields = $SecurityTxtAdmin->admin_security_text_generator_fields();
 
 $SecurityTxtAdmin->check_securitytxt_expiration_and_send_email();
 ?>
+<style>
+    .extra-log-row {
+        display: none;
+    }
+</style>
+<script>
+function showMoreRows(event, count) {
+	event.preventDefault();
+
+	// Show hidden rows
+	const rows = document.querySelectorAll('.extra-log-row');
+	rows.forEach(row => row.style.display = 'table-row');
+
+	// Hide the show-more link row
+	event.target.closest('tr').style.display = 'none';
+}
+</script>
 <!-- This file should primarily consist of HTML with a bit of PHP. -->
 <div class="securitytxt-header">
     <div class="securitytxt-title-section">
@@ -223,26 +240,38 @@ $SecurityTxtAdmin->check_securitytxt_expiration_and_send_email();
         </thead>
 
         <tbody>
+        <?php
+            $x = 10;
+            $row_count = 0;
+        ?>
 	    <?php $log_entries = $SecurityTxtAdmin->log_get_entries(); ?>
+	    <?php $log_count = is_array($log_entries) ? count($log_entries) : 0; ?>
 	    <?php if ( is_array( $log_entries ) && count( $log_entries ) > 0 ) : ?>
 		    <?php foreach ( $log_entries as $log_entry ) : ?>
-                <tr>
-                    <td>
-                        <?php echo $log_entry['time']; ?>
-                    </td>
-                    <td>
-                        <?php echo $log_entry['message']; ?>
+                <tr class="<?php echo ($row_count > 5) ? 'extra-log-row' : ''; ?>">
+                    <td><?php echo $log_entry['time']; ?></td>
+                    <td><?php echo $log_entry['message']; ?></td>
+                </tr>
+
+                <?php if ( $row_count == 5 ) : ?>
+                <tr class="show-more-row">
+                    <td colspan="2" style="text-align: center;">
+                        <a href="#" onclick="showMoreRows(event, <?php echo $x; ?>)">
+                            <?php echo sprintf( esc_html__( 'Show %d more log entries', 'generate-security-txt' ), $log_count - 5 ); ?>
+                        </a>
                     </td>
                 </tr>
-            <?php endforeach; ?>
-	    <?php else : ?>
-            <tr>
-                <td colspan="2">
-				    <?php echo esc_html__( 'There are no log entries.', 'generate-security-txt' ); ?>
-                </td>
-            </tr>
-	    <?php endif; ?>
-        </tbody>
+                <?php endif; ?>
+                <?php $row_count++; ?>
+            <?php
+                endforeach;
+            else :
+            ?>
+                <tr>
+                    <td colspan="2"><?php echo esc_html__( 'There are no log entries.', 'generate-security-txt' ); ?></td>
+                </tr>
+            <?php endif; ?>
+            </tbody>
 
         <tfoot>
         <tr>
