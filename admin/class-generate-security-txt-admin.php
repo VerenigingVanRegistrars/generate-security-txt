@@ -1138,24 +1138,34 @@ class Generate_Security_Txt_Admin {
             // Optionally log the response (for debugging)
             if (is_wp_error($response)) {
 
-                // Log the error
-                error_log('Cron request failed: ' . $response->get_error_message());
+                // Time out, it can happen, we try again tomorrow
+                if(str_contains($response->get_error_message(), 'error 28' )) {
 
-                $this->log_add_entry(sprintf(
-                    esc_html__('Error submitting to archive.org - %s: %s', 'generate-security-txt'),
-                    $archive_url,
-                    $response->get_error_message()
-                ));
+                    $this->log_add_entry(sprintf(
+                        esc_html__('Time-out submitting to archive.org - %s. Trying again in 24 hours.', 'generate-security-txt'),
+                        $archive_url,
+                        $response->get_error_message()
+                    ));
+                }
+                else {
+                    // Log the error
+                    error_log('Cron request failed: ' . $response->get_error_message());
 
+                    $this->log_add_entry(sprintf(
+                        esc_html__('Error submitting to archive.org - %s: %s', 'generate-security-txt'),
+                        $archive_url,
+                        $response->get_error_message()
+                    ));
+                }
             } else {
                 $this->log_add_entry(sprintf(
                     esc_html__( 'Submitted to archive.org - %s.', 'generate-security-txt'),
                     $archive_url
                 ));
-            }
 
-            // Reset the option to prevent another request until it's manually set again
-            update_option('securitytxt_archiveorg_request', false);
+                // Reset the option to prevent another request until it's manually set again
+                update_option('securitytxt_archiveorg_request', false);
+            }
         }
     }
 
@@ -1181,6 +1191,12 @@ class Generate_Security_Txt_Admin {
     public function securitytxt_verify_file_contents() {
 	    // Get the saved hash from the WordPress options
 	    $saved_hash = get_option( 'securitytxt_hash', '' );
+
+        // No saved hash yet, possibly after update or after reset
+        if( empty($saved_hash) ) {
+            $this->log_add_entry(esc_html__( 'Security.txt hash not found. Generate a new security.txt for hash verification.', 'generate-security-txt'), true);
+		    return false;
+        }
 
 	    // Check if the security.txt file exists
 	    if ( ! $this->check_securitytxt() ) {
