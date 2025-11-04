@@ -3,7 +3,7 @@ Contributors: verenigingvanregistrars
 Tags: security, security.txt, responsible disclosure
 Requires at least: 6.3
 Tested up to: 6.7
-Stable tag: 1.0.9
+Stable tag: 1.0.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -44,6 +44,9 @@ Your security.txt file will not be valid without URIs starting with 'https://'. 
 
 == Changelog ==
 
+= 1.0.10 =
+Updated dependencies
+
 = 1.0.9 =
 Updated dependencies
 
@@ -59,6 +62,9 @@ Normalize end of line characters
 * Initial release version
 
 == Upgrade Notice ==
+
+= 1.0.10 =
+Updated dependencies
 
 = 1.0.9 =
 Updated dependencies

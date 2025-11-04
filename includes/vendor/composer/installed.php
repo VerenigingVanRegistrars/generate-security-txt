@@ -3,7 +3,7 @@
         'name' => 'vereniging_van_registrars/generate-securitytxt',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '02243b6fdeea66cf10f7f27be53a86faf92b1bb7',
+        'reference' => '1df4e4c65404336dae95212c745c2aabf70b5014',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'paragonie/constant_time_encoding' => array(
-            'pretty_version' => 'v2.7.0',
-            'version' => '2.7.0.0',
-            'reference' => '52a0d99e69f56b9ec27ace92ba56897fe6993105',
+            'pretty_version' => 'v2.8.2',
+            'version' => '2.8.2.0',
+            'reference' => 'e30811f7bc69e4b5b6d5783e712c06c8eabf0226',
             'type' => 'library',
             'install_path' => __DIR__ . '/../paragonie/constant_time_encoding',
             'aliases' => array(),
@@ -29,9 +29,9 @@
             'dev_requirement' => false,
         ),
         'phpseclib/phpseclib' => array(
-            'pretty_version' => '3.0.46',
-            'version' => '3.0.46.0',
-            'reference' => '56483a7de62a6c2a6635e42e93b8a9e25d4f0ec6',
+            'pretty_version' => '3.0.47',
+            'version' => '3.0.47.0',
+            'reference' => '9d6ca36a6c2dd434765b1071b2644a1c683b385d',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpseclib/phpseclib',
             'aliases' => array(),
@@ -40,7 +40,7 @@
         'vereniging_van_registrars/generate-securitytxt' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '02243b6fdeea66cf10f7f27be53a86faf92b1bb7',
+            'reference' => '1df4e4c65404336dae95212c745c2aabf70b5014',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
