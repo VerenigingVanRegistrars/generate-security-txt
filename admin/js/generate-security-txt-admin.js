@@ -65,8 +65,7 @@
                 // All fields are valid, proceed with your logic
                 // console.log('All fields are valid.');
 
-                var $loadingSrc = securitytxt.homeurl + 'wp-includes/images/spinner.gif';
-                var $loadingImg = '<img class="securitytxt-button-loader" src="' + $loadingSrc + '"> ';
+                var $loadingImg = '<img class="securitytxt-button-loader" src="' + securitytxt.spinner_url + '"> ';
 
                 $(this).addClass('disabled');
                 $(this).attr('disabled', true);
@@ -167,9 +166,8 @@
             'data-action': next_action                 // Add a data attribute
         });
 
-        var $loadingSrc = securitytxt.homeurl + 'wp-includes/images/spinner.gif';
         var $loadingImg = $('<img>', {
-            'src' : $loadingSrc
+            'src' : securitytxt.spinner_url
         });
 
         $action_item.html($loadingImg.prop('outerHTML') + " " + start_text);
