@@ -182,7 +182,8 @@
         var data = {
             action: 'process_actionlist', // Replace with your actual AJAX action
             next_action: next_action,
-            form_data: form_data
+            form_data: form_data,
+            _wpnonce: securitytxt.nonce
         };
 
         $.ajax({
