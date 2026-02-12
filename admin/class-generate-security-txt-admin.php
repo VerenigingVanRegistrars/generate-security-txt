@@ -1126,7 +1126,7 @@ class Generate_Security_Txt_Admin {
 	 */
     function securitytxt_archiveorg_request_url() {
         // Check if the option is set to true
-        $should_run = get_option('securitytxt_archiveorg_request', false);
+        $should_run = get_option('securitytxt_archiveorg_request', false) && get_option('blog_public');
 
         if ($should_run) {
             // Define the URL to call
