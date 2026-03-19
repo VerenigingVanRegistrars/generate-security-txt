@@ -2,8 +2,8 @@
 Contributors: verenigingvanregistrars
 Tags: security, security.txt, responsible disclosure
 Requires at least: 6.3
-Tested up to: 6.8.3
-Stable tag: 1.0.10
+Tested up to: 6.9.4
+Stable tag: 1.0.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,6 +16,8 @@ Security.txt is an open standard (RFC 9116) that allows ethical hackers and secu
 The principle is simple and effective: contact information is put into a txt file and placed in a fixed location in your website's directory structure (well-known folder). In this way, contact can easily be made.
 
 This plugin helps you to create and place the security.txt file without any knowledge of the open standard. This makes you easily accessible in case something is wrong with your website.
+
+This plugin is completely free to use and does not include any advertisements or paid version.
 
 == Installation ==
 
@@ -43,6 +45,9 @@ Your security.txt file will not be valid without URIs starting with 'https://'. 
 2. /assets/screenshot-2.png
 
 == Changelog ==
+
+= 1.0.11 =
+Updated dependencies
 
 = 1.0.10 =
 Updated dependencies

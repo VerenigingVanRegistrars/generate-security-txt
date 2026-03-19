@@ -1040,68 +1040,118 @@ class Generate_Security_Txt_Admin {
 
 
     // Define a custom function to check expiration date and send email
-    public function check_securitytxt_expiration_and_send_email($ignore_checks = false)
-    {
-        // Get expiration date
-        $securitytxt_expire = $this->get_expiredate();
+	public function check_securitytxt_expiration_and_send_email( $ignore_checks = false ) {
+		// Get expiration date
+		$securitytxt_expire = $this->get_expiredate();
 
-        if(!$ignore_checks) {
+		// Reformat to string
+		if ( ! empty( $securitytxt_expire ) && is_array( $securitytxt_expire ) ) {
+			$securitytxt_expire = reset( $securitytxt_expire );
+		}
 
-            // Update WordPress option to indicate that email has been sent
-            $email_sent = get_option('securitytxt_email_sent', true);
+		// If expiration date is not available or not in the correct format, return
+		if ( ! $securitytxt_expire || ! is_string( $securitytxt_expire ) ) {
+			return;
+		}
 
-            if($email_sent)
-                return;
+		// If somehow the file doesn't exist, it can't expire (possibly user deleted all data)
+		if ( ! $ignore_checks && ! $this->check_securitytxt() ) {
+			return;
+		}
 
-            // Reformat to string
-            if (!empty($securitytxt_expire) && is_array($securitytxt_expire))
-                $securitytxt_expire = reset($securitytxt_expire);
+		// Convert expiration date to DateTime object
+		$securitytxt_expire_date = DateTime::createFromFormat( "Y-m-d\TH:i:s.u\Z", $securitytxt_expire );
 
-            // If expiration date is not available or not in the correct format, return
-            if (!$securitytxt_expire || !is_string($securitytxt_expire))
-                return;
+		// Stop if parsing failed
+		if ( ! $securitytxt_expire_date ) {
+			return;
+		}
 
-            // If somehow the file doesn't exist, it can't expire (possibly user deleted all data)
-            if(!$this->check_securitytxt())
-                return;
-        }
+		// Calculate dates
+		$now                = new DateTime( 'now' );
+		$today_plus_1_day   = ( clone $now )->modify( '+1 day' );
+		$today_plus_1_month = ( clone $now )->modify( '+1 month' );
 
-        // Convert expiration date to DateTime object
-        $securitytxt_expire_date = DateTime::createFromFormat("Y-m-d\TH:i:s.u\Z", $securitytxt_expire);
+		// Get email status options
+		$email_sent_monthbefore = (bool) get_option( 'securitytxt_email_sent_monthbefore', false );
+		$email_sent             = (bool) get_option( 'securitytxt_email_sent', false );
 
-        // Calculate the date for today
-        $today = new DateTime('now');
+		// Decide which reminder should be sent
+		$send_type = '';
 
-        // Check if expiration date is within 1 day or has passed
-        if ($securitytxt_expire_date <= $today->modify('+1 day')) {
+		if ( $securitytxt_expire_date <= $today_plus_1_day ) {
+			// Expiry is within 1 day or already passed
+			if ( ! $ignore_checks && $email_sent ) {
+				return;
+			}
+			$send_type = 'day';
+		} elseif ( $securitytxt_expire_date <= $today_plus_1_month ) {
+			// Expiry is within 1 month
+			if ( ! $ignore_checks && $email_sent_monthbefore ) {
+				return;
+			}
+			$send_type = 'month';
+		} else {
+			return;
+		}
 
-            // Send email to website admin
-            $to_email = get_option('admin_email');
-            $mail_title = __('Security.txt Expiry Reminder', 'generate-security-txt');
+		// Send email to website admin
+		$to_email = get_option( 'admin_email' );
 
-            // Define the variables to be replaced in the mail content
-            $website = home_url();
-            $generate_url = admin_url('tools.php?page=security_txt_generator');
+		// Define the variables to be replaced in the mail content
+		$website      = home_url();
+		$generate_url = admin_url( 'tools.php?page=security_txt_generator' );
 
-            // Translate and format the mail content
-            // translators: a link to the admin page for this plugins on plugin's website
-            $mail_content = sprintf(__('<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress website on %1$s.</p><p>Your security.txt file will expire on <code>%2$s</code>.</p><p>We recommend regenerating it as soon as possble it on %3$s.</p><hr><p>This message was sent at <code>%4$s</code> by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>', 'generate-security-txt'), $website, $securitytxt_expire_date->format('Y-m-d H:i:s'), $generate_url, $today->format('Y-m-d H:i:s'));
+		if ( $send_type === 'month' ) {
+			$mail_title = __( 'Security.txt Expiry Reminder (1 Month Notice)', 'generate-security-txt' );
 
-            // Send the email
-            $sent = wp_mail($to_email, $mail_title, $mail_content, ['Content-Type: text/html; charset=UTF-8']);
+			// translators: 1: website URL, 2: expiration datetime, 3: plugin admin URL, 4: current datetime
+			$mail_content = sprintf(
+				__(
+					'<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress website on %1$s.</p><p>Your security.txt file will expire in about one month, on <code>%2$s</code>.</p><p>We recommend regenerating it in time via %3$s.</p><hr><p>This message was sent at <code>%4$s</code> by the WordPress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>',
+					'generate-security-txt'
+				),
+				$website,
+				$securitytxt_expire_date->format( 'Y-m-d H:i:s' ),
+				$generate_url,
+				$now->format( 'Y-m-d H:i:s' )
+			);
+		} else {
+			$mail_title = __( 'Security.txt Expiry Reminder', 'generate-security-txt' );
 
-            $this->log_add_entry(esc_html__( 'Attempted to send Expiry Notice email.', 'generate-security-txt'));
+			// Keep old strings for the existing expiry reminder
+			// translators: a link to the admin page for this plugins on plugin's website
+			$mail_content = sprintf(
+				__(
+					'<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress website on %1$s.</p><p>Your security.txt file will expire on <code>%2$s</code>.</p><p>We recommend regenerating it as soon as possble it on %3$s.</p><hr><p>This message was sent at <code>%4$s</code> by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>',
+					'generate-security-txt'
+				),
+				$website,
+				$securitytxt_expire_date->format( 'Y-m-d H:i:s' ),
+				$generate_url,
+				$now->format( 'Y-m-d H:i:s' )
+			);
+		}
 
-            if($sent) {
-                // Update WordPress option to indicate when email has been sent
-                $current_datetime = current_time('mysql');
-                update_option($this::OPTION_FORM_PREFIX . 'securitytxt_email_date', $current_datetime);
+		// Send the email
+		$sent = wp_mail( $to_email, $mail_title, $mail_content, [ 'Content-Type: text/html; charset=UTF-8' ] );
 
-                // Update WordPress option to indicate that email has been sent
-                update_option('securitytxt_email_sent', true);
-            }
-        }
-    }
+		$this->log_add_entry( esc_html__( 'Attempted to send Expiry Notice email.', 'generate-security-txt' ) );
+
+		if ( $sent ) {
+			// Update WordPress option to indicate when email has been sent
+			$current_datetime = current_time( 'mysql' );
+			update_option( $this::OPTION_FORM_PREFIX . 'securitytxt_email_date', $current_datetime );
+
+			if ( $send_type === 'month' ) {
+				update_option( 'securitytxt_email_sent_monthbefore', true );
+			}
+
+			if ( $send_type === 'day' ) {
+				update_option( 'securitytxt_email_sent', true );
+			}
+		}
+	}
 
 
     /**
@@ -2086,6 +2136,7 @@ class Generate_Security_Txt_Admin {
         update_option('securitytxt_archiveorg_request', true);
 
         // Update WordPress option to indicate that email has to be sent when expiry is close
+        update_option('securitytxt_email_sent_monthbefore', false);
         update_option('securitytxt_email_sent', false);
 
         // Just true for now

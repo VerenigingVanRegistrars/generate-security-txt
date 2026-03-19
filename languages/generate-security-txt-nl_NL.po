@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Generate security.txt\n"
-"POT-Creation-Date: 2025-04-10 14:02+0200\n"
-"PO-Revision-Date: 2025-04-10 14:03+0200\n"
+"POT-Creation-Date: 2026-03-19 18:07+0100\n"
+"PO-Revision-Date: 2026-03-19 18:09+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -271,12 +271,31 @@ msgid ""
 msgstr ""
 "Encryptie is niet beschikbaar omdat PHP-extensie 'gnupg' niet beschikbaar is"
 
-#: admin/class-generate-security-txt-admin.php:1080
+#: admin/class-generate-security-txt-admin.php:1106
+msgid "Security.txt Expiry Reminder (1 Month Notice)"
+msgstr "Security.txt Verloopherinnering (1 maand waarschuwing)"
+
+#: admin/class-generate-security-txt-admin.php:1111
+#, php-format
+msgid ""
+"<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress "
+"website on %1$s.</p><p>Your security.txt file will expire in about one "
+"month, on <code>%2$s</code>.</p><p>We recommend regenerating it in time via "
+"%3$s.</p><hr><p>This message was sent at <code>%4$s</code> by the WordPress "
+"plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>"
+msgstr ""
+"<h2>Security.txt Verloopherinnering</h2><p>Dit is een herinnering van jouw "
+"WordPress-website op %s.</p><p>Jouw security.txt bestand vervalt binnen een "
+"maand, op <code>%s</code>.</p><p>We raden aan om het zo snel mogelijk te "
+"regenereren op %s.</p><hr><p>Dit bericht is verzonden op <code>%s</code> "
+"door de Wordpress plugin <b>Generate Security.txt</b> van de Vereniging van "
+"Registrars.</p>"
+
+#: admin/class-generate-security-txt-admin.php:1120
 msgid "Security.txt Expiry Reminder"
 msgstr "Security.txt Verloopherinnering"
 
-#. translators: a link to the admin page for this plugins on plugin's website
-#: admin/class-generate-security-txt-admin.php:1088
+#: admin/class-generate-security-txt-admin.php:1126
 #, php-format
 msgid ""
 "<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress "
@@ -292,27 +311,27 @@ msgstr ""
 "Wordpress plugin <b>Generate Security.txt</b> van de Vereniging van "
 "Registrars.</p>"
 
-#: admin/class-generate-security-txt-admin.php:1093
+#: admin/class-generate-security-txt-admin.php:1139
 msgid "Attempted to send Expiry Notice email."
 msgstr "Geprobeerd om een e-mail met een verloopherinnering te verzenden."
 
-#: admin/class-generate-security-txt-admin.php:1145
+#: admin/class-generate-security-txt-admin.php:1195
 #, php-format
 msgid "Time-out submitting to archive.org - %s. Trying again in 24 hours."
 msgstr ""
 "Time-out bij het indienen bij archive.org - %s. Morgen opnieuw proberen."
 
-#: admin/class-generate-security-txt-admin.php:1155
+#: admin/class-generate-security-txt-admin.php:1205
 #, php-format
 msgid "Error submitting to archive.org - %s: %s"
 msgstr "Fout bij het indienen bij archive.org - %s: %s"
 
-#: admin/class-generate-security-txt-admin.php:1162
+#: admin/class-generate-security-txt-admin.php:1212
 #, php-format
 msgid "Submitted to archive.org - %s."
 msgstr "Ingediend bij archive.org - %s."
 
-#: admin/class-generate-security-txt-admin.php:1197
+#: admin/class-generate-security-txt-admin.php:1247
 msgid ""
 "Security.txt hash not found. Generate a new security.txt for hash "
 "verification."
@@ -320,20 +339,20 @@ msgstr ""
 "Security.txt hash niet gevonden. Genereer een nieuwe security.txt voor hash "
 "verificatie."
 
-#: admin/class-generate-security-txt-admin.php:1212
+#: admin/class-generate-security-txt-admin.php:1262
 msgid "Security.txt hash verified succesfully."
 msgstr "Security.txt hash succesvol geverifieerd."
 
-#: admin/class-generate-security-txt-admin.php:1215
+#: admin/class-generate-security-txt-admin.php:1265
 msgid "Security.txt hash failed to verify."
 msgstr "Security.txt hash kon niet worden geverifieerd."
 
-#: admin/class-generate-security-txt-admin.php:1219
+#: admin/class-generate-security-txt-admin.php:1269
 msgid "Security.txt Alert Notice"
 msgstr "Security.txt Waarschuwing"
 
 #. translators: a link to the admin page for this plugins on plugin's website
-#: admin/class-generate-security-txt-admin.php:1228
+#: admin/class-generate-security-txt-admin.php:1278
 #, php-format
 msgid ""
 "<h2>Security.txt Alert Notice</h2><p>This is an alert from your WordPress "
@@ -363,106 +382,106 @@ msgstr ""
 "Wordpress plugin <b>Generate Security.txt</b> van Vereniging van Registrars."
 "</p>"
 
-#: admin/class-generate-security-txt-admin.php:1233
+#: admin/class-generate-security-txt-admin.php:1283
 msgid "Attempted to send Alert Notice email."
 msgstr "Geprobeerd om een e-mail met een waarschuwingsbericht te verzenden."
 
-#: admin/class-generate-security-txt-admin.php:1275
+#: admin/class-generate-security-txt-admin.php:1325
 msgid "Saving form fields.."
 msgstr "Formuliervelden opslaan.."
 
-#: admin/class-generate-security-txt-admin.php:1276
+#: admin/class-generate-security-txt-admin.php:1326
 msgid "Form fields saved."
 msgstr "Formuliervelden opgeslagen."
 
-#: admin/class-generate-security-txt-admin.php:1277
+#: admin/class-generate-security-txt-admin.php:1327
 msgid "Failed to save forms fields."
 msgstr "Het opslaan van formuliervelden is mislukt."
 
-#: admin/class-generate-security-txt-admin.php:1287
+#: admin/class-generate-security-txt-admin.php:1337
 msgid "Checking for <code>.well-known</code> folder.."
 msgstr "Controleren op <code>.well-known</code> map.."
 
-#: admin/class-generate-security-txt-admin.php:1288
+#: admin/class-generate-security-txt-admin.php:1338
 msgid "<code>.well-known</code> folder exists."
 msgstr "<code>.well-known</code> map bestaat."
 
-#: admin/class-generate-security-txt-admin.php:1289
+#: admin/class-generate-security-txt-admin.php:1339
 msgid "<code>.well-known</code> folder doesn't exist. Folder must be created."
 msgstr "<code>.well-known</code> map bestaat niet. Map moet worden aangemaakt."
 
-#: admin/class-generate-security-txt-admin.php:1299
+#: admin/class-generate-security-txt-admin.php:1349
 msgid "Creating <code>.well-known</code> folder.."
 msgstr "Aanmaken <code>.well-known</code> map.."
 
-#: admin/class-generate-security-txt-admin.php:1300
+#: admin/class-generate-security-txt-admin.php:1350
 msgid "<code>.well-known</code> folder created succesfully."
 msgstr "<code>.well-known</code> map succesvol gemaakt."
 
-#: admin/class-generate-security-txt-admin.php:1301
+#: admin/class-generate-security-txt-admin.php:1351
 msgid "Failed to create <code>.well-known</code> folder. "
 msgstr "Het maken van een <code>.well-known</code> map is mislukt. "
 
-#: admin/class-generate-security-txt-admin.php:1311
+#: admin/class-generate-security-txt-admin.php:1361
 msgid "Checking for old <code>security.txt</code>.."
 msgstr "Controleren op oude <code>security.txt</code>.."
 
-#: admin/class-generate-security-txt-admin.php:1312
+#: admin/class-generate-security-txt-admin.php:1362
 msgid "Old <code>security.txt</code> exists."
 msgstr "Oude <code>security.txt</code> bestaat."
 
-#: admin/class-generate-security-txt-admin.php:1313
+#: admin/class-generate-security-txt-admin.php:1363
 msgid "Old <code>security.txt</code> doesn't exist."
 msgstr "Oude <code>security.txt</code> bestaat niet."
 
-#: admin/class-generate-security-txt-admin.php:1323
+#: admin/class-generate-security-txt-admin.php:1373
 msgid "Deleting old <code>security.txt</code>.."
 msgstr "Oude <code>security.txt</code> verwijderen .."
 
-#: admin/class-generate-security-txt-admin.php:1324
+#: admin/class-generate-security-txt-admin.php:1374
 msgid "Deleted old <code>security.txt</code> successfully."
 msgstr "Oude <code>security.txt</code> met succes verwijderd."
 
-#: admin/class-generate-security-txt-admin.php:1325
+#: admin/class-generate-security-txt-admin.php:1375
 msgid "Failed to delete old <code>security.txt</code>."
 msgstr "Kan oude <code>security.txt</code> niet verwijderen."
 
-#: admin/class-generate-security-txt-admin.php:1335
+#: admin/class-generate-security-txt-admin.php:1385
 msgid "Creating <code>security.txt</code> content.."
 msgstr "Maken van <code>security.txt</code> inhoud.."
 
-#: admin/class-generate-security-txt-admin.php:1336
+#: admin/class-generate-security-txt-admin.php:1386
 msgid "Content for <code>security.txt</code> successfully created."
 msgstr "Inhoud voor <code>security.txt</code> succesvol gemaakt."
 
-#: admin/class-generate-security-txt-admin.php:1337
+#: admin/class-generate-security-txt-admin.php:1387
 msgid "Failed to content for <code>security.txt</code>."
 msgstr "Probleem met maken van inhoud van  <code>security.txt</code>."
 
-#: admin/class-generate-security-txt-admin.php:1347
+#: admin/class-generate-security-txt-admin.php:1397
 msgid "Saving <code>security.txt</code> file.."
 msgstr "<code>security.txt</code> bestand opslaan.."
 
-#: admin/class-generate-security-txt-admin.php:1348
+#: admin/class-generate-security-txt-admin.php:1398
 msgid "Saved <code>security.txt</code> successfully."
 msgstr "<code>security.txt</code> succesvol opgeslagen."
 
-#: admin/class-generate-security-txt-admin.php:1349
+#: admin/class-generate-security-txt-admin.php:1399
 msgid "Failed to save <code>security.txt</code>."
 msgstr "Probleem met opslaan van <code>security.txt</code>."
 
-#: admin/class-generate-security-txt-admin.php:1359
+#: admin/class-generate-security-txt-admin.php:1409
 msgid "Checking for encryption availability.."
 msgstr "Controleren op beschikbaarheid van versleuteling.."
 
-#: admin/class-generate-security-txt-admin.php:1360
+#: admin/class-generate-security-txt-admin.php:1410
 msgid ""
 "Encryption is available. <code>PHP-extension 'gnupg'</code> is installed."
 msgstr ""
 "Versleuteling is beschikbaar. <code>PHP-extension 'gnupg'</code> is "
 "geïnstalleerd."
 
-#: admin/class-generate-security-txt-admin.php:1361
+#: admin/class-generate-security-txt-admin.php:1411
 msgid ""
 "Encryption not available, skipping encryption. Ask your webhosting about the "
 "<code>PHP-extension 'gnupg'</code>."
@@ -470,42 +489,42 @@ msgstr ""
 "Versleuteling niet beschikbaar, versleuteling wordt overgeslagen. Informeer "
 "bij jouw webhosting naar de <code>PHP-extension 'gnupg'</code>."
 
-#: admin/class-generate-security-txt-admin.php:1383
+#: admin/class-generate-security-txt-admin.php:1433
 msgid "Generating keys and signing <code>security.txt</code>.."
 msgstr "Sleutels genereren en ondertekenen van <code>security.txt</code>.."
 
-#: admin/class-generate-security-txt-admin.php:1384
+#: admin/class-generate-security-txt-admin.php:1434
 msgid "Successfully generated keys and signed <code>security.txt</code>."
 msgstr ""
 "Succesvol gegenereerde sleutels en ondertekend <code>security.txt</code>."
 
-#: admin/class-generate-security-txt-admin.php:1385
+#: admin/class-generate-security-txt-admin.php:1435
 msgid "Failed to generate keys and/or couldn't sign <code>security.txt</code>."
 msgstr ""
 "Kan geen sleutels genereren en/of kan <code>security.txt</code> niet "
 "ondertekenen."
 
-#: admin/class-generate-security-txt-admin.php:1395
+#: admin/class-generate-security-txt-admin.php:1445
 msgid "Finishing.."
 msgstr "Afronden.."
 
-#: admin/class-generate-security-txt-admin.php:1396
+#: admin/class-generate-security-txt-admin.php:1446
 msgid "Finished succesfully."
 msgstr "Succesvol afgerond."
 
-#: admin/class-generate-security-txt-admin.php:1437
+#: admin/class-generate-security-txt-admin.php:1487
 msgid "Invalid nonce.. Stopping."
 msgstr "Ongeldige nonce.. Gestopt."
 
-#: admin/class-generate-security-txt-admin.php:1605
+#: admin/class-generate-security-txt-admin.php:1655
 msgid "A problem occured."
 msgstr "Er is een probleem opgetreden."
 
-#: admin/class-generate-security-txt-admin.php:1761
+#: admin/class-generate-security-txt-admin.php:1811
 msgid "Plugin data cleared."
 msgstr "Plug-in gegevens gewist."
 
-#: admin/class-generate-security-txt-admin.php:2080
+#: admin/class-generate-security-txt-admin.php:2130
 msgid "Finished creating new security.txt."
 msgstr "Klaar met het maken van nieuwe security.txt."
 
