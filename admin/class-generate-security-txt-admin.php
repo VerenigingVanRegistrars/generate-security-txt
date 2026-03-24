@@ -184,7 +184,7 @@ class Generate_Security_Txt_Admin {
             'tools.php',
             __( 'Generate Security.txt', 'generate-security-txt'),
             __( 'Generate Security.txt', 'generate-security-txt'),
-            'manage_options',
+            apply_filters('generate_security_txt_capability', 'manage_options'),
             'security_txt_generator',
             array(&$this, 'admin_security_txt_generator_page_callback')
         );
