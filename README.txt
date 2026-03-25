@@ -47,6 +47,8 @@ Your security.txt file will not be valid without URIs starting with 'https://'. 
 == Changelog ==
 
 = 1.0.11 =
+New 1 month reminder email feature
+Bugfix with for wrong canonical and security check when installation base url is not domain root
 Updated dependencies
 
 = 1.0.10 =
