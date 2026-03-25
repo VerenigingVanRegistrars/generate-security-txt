@@ -83,6 +83,61 @@ class Generate_Security_Txt_Admin {
         return plugin_dir_url( __FILE__ );
     }
 
+	/**
+	 * Return the root/origin URL without any WordPress subdirectory.
+	 *
+	 * Example:
+	 * home_url() = https://dev.geusmedia.nl/securitytxtdemo
+	 * returns     https://dev.geusmedia.nl/
+	 *
+	 * @return string
+	 */
+	private function get_root_url(): string {
+		$parsed = wp_parse_url( home_url( '/' ) );
+
+		if ( empty( $parsed['scheme'] ) || empty( $parsed['host'] ) ) {
+			return trailingslashit( home_url( '/' ) );
+		}
+
+		$url = $parsed['scheme'] . '://' . $parsed['host'];
+
+		if ( ! empty( $parsed['port'] ) ) {
+			$url .= ':' . $parsed['port'];
+		}
+
+		return trailingslashit( $url );
+	}
+
+	/**
+	 * Return the webroot path where /.well-known/ should exist.
+	 * Falls back to ABSPATH if DOCUMENT_ROOT is unavailable.
+	 *
+	 * @return string
+	 */
+	private function get_webroot_path(): string {
+		$path = ! empty( $_SERVER['DOCUMENT_ROOT'] ) ? $_SERVER['DOCUMENT_ROOT'] : ABSPATH;
+
+		return untrailingslashit( wp_normalize_path( $path ) );
+	}
+
+	/**
+	 * Return the filesystem path to the .well-known directory.
+	 *
+	 * @return string
+	 */
+	private function get_wellknown_path(): string {
+		return trailingslashit( $this->get_webroot_path() ) . '.well-known/';
+	}
+
+	/**
+	 * Return the filesystem path to the public key file.
+	 *
+	 * @return string
+	 */
+	private function get_pubkey_path(): string {
+		return trailingslashit( $this->get_webroot_path() ) . 'pubkey.txt';
+	}
+
 
     /**
      * Add a custom link to the management admin page
@@ -457,23 +512,18 @@ class Generate_Security_Txt_Admin {
      * Get contents file contents
      */
 	public function get_securitytxt_file_contents() {
-		global $wp_filesystem;
+        global $wp_filesystem;
 
-		// Initialize the WP_Filesystem
-		if ( ! WP_Filesystem() ) {
-			return false;
-		}
+        if ( ! WP_Filesystem() ) {
+            return false;
+        }
 
-		// Check if the file exists
-		if ( $this->check_securitytxt() ) {
-			$well_known_path = trailingslashit( ABSPATH ) . '.well-known/';
-			$file_path       = $well_known_path . 'security.txt';
+        if ( $this->check_securitytxt() ) {
+            $file_path = $this->get_securitytxt_uri();
+            return $wp_filesystem->get_contents( $file_path );
+        }
 
-			// Return the contents of the local file as a string
-			return $wp_filesystem->get_contents( $file_path );
-		} else {
-			return false;
-		}
+        return false;
 	}
 
 
@@ -523,11 +573,7 @@ class Generate_Security_Txt_Admin {
      */
     public function get_pubkey_url(): string
     {
-        $base_url = home_url();
-
-        // Add the path to security.txt
-        // Output or use $securitytxt_url as needed
-        return trailingslashit($base_url) . 'pubkey.txt';
+        return $this->get_root_url() . 'pubkey.txt';
     }
 
 
@@ -538,11 +584,7 @@ class Generate_Security_Txt_Admin {
      */
     public function get_securitytxt_url(): string
     {
-        $base_url = home_url();
-
-        // Add the path to security.txt
-        // Output or use $securitytxt_url as needed
-        return trailingslashit($base_url) . '.well-known/security.txt';
+        return $this->get_root_url() . '.well-known/security.txt';
     }
 
 
@@ -553,7 +595,7 @@ class Generate_Security_Txt_Admin {
      */
     public function get_securitytxt_uri(): string
     {
-        return ABSPATH . '.well-known/security.txt';
+        return $this->get_wellknown_path() . 'security.txt';
     }
 
 
@@ -658,6 +700,9 @@ class Generate_Security_Txt_Admin {
      * @return array[]
      */
     public function admin_security_text_generator_fields() {
+        $root_url = $this->get_root_url();
+        $securitytxt_url = $this->get_securitytxt_url();
+        $pubkey_url = $this->get_pubkey_url();
 
         $securitytxt_fields = [
             'contact' => [
@@ -757,8 +802,8 @@ class Generate_Security_Txt_Admin {
                 'multiple' => true,
                 'disabled' => false,
                 'advanced' => true,
-                'placeholder' => trailingslashit(home_url()) . '.well-known/security.txt',
-                'prefill' => trailingslashit(home_url()) . '.well-known/security.txt',
+                'placeholder' => $securitytxt_url,
+                'prefill' => $securitytxt_url,
                 'prefix' => '',
                 'type' => 'text',
                 'class' => '',
@@ -810,7 +855,7 @@ class Generate_Security_Txt_Admin {
                 'required' => false,
                 'multiple' => true,
                 'advanced' => true,
-                'placeholder' => trailingslashit(home_url()) . '.well-known/csaf/provider-metadata.json',
+                'placeholder' => $root_url . '.well-known/csaf/provider-metadata.json',
                 'prefill' => false,
                 'prefix' => '',
                 'type' => 'text',
@@ -1275,7 +1320,7 @@ class Generate_Security_Txt_Admin {
 
             // Translate and format the mail content
             // translators: a link to the admin page for this plugins on plugin's website
-            $mail_content = sprintf(__('<h2>Security.txt Alert Notice</h2><p>This is an alert from your WordPress website on %1$s.</p><p>Your security.txt failed to verify its contents during a routine check.</p><p>We recommend manually checking the file contents as soon as possible on <a href="%2$s">%2$s</a>. If the file has information that was not entered by you through the plugin and the file was not changed by you, please make sure your FTP and/or webhosting access is not compromised.</p><hr><p>This message was sent at <code>%3$s</code> by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p><p>If you keep receiving this email and there is nothing incorrect about the security.txt, please contact the plugin developer through the WordPress plugin page.</p><hr><p>This message was sent at <code>%3$s</code> by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>', 'generate-security-txt'), $website, $this->get_securitytxt_url(), $today->format('Y-m-d H:i:s'));
+            $mail_content = sprintf(__('<h2>Security.txt Alert Notice</h2><p>This is an alert from your WordPress website on %1$s.</p><p>Your security.txt failed to verify its contents during a routine check.</p><p>We recommend manually checking the file contents as soon as possible on <a href="%2$s">%2$s</a>. If the file has information that was not entered by you through the plugin and the file was not changed by you, please make sure your FTP and/or webhosting access is not compromised.</p><p>If you keep receiving this email and there is nothing incorrect about the security.txt, please contact the plugin developer through the WordPress plugin page.</p><hr><p>This message was sent at <code>%3$s</code> by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>', 'generate-security-txt'), $website, $this->get_securitytxt_url(), $today->format('Y-m-d H:i:s'));
 
             // Send the email
             $sent = wp_mail($to_email, $mail_title, $mail_content, ['Content-Type: text/html; charset=UTF-8']);
@@ -1588,8 +1633,7 @@ class Generate_Security_Txt_Admin {
         $content = '';
 
         // File path
-        $well_known_path = trailingslashit(ABSPATH) . '.well-known/';
-        $file_securitytxt = $well_known_path . 'security.txt';
+        $file_securitytxt = $this->get_securitytxt_uri();
 
         $securitytxt = $this->check_securitytxt();
         $pubkey = $this->check_pubkey();
@@ -1860,16 +1904,7 @@ class Generate_Security_Txt_Admin {
      */
     public function check_wellknown_folder(): bool
     {
-        // TODO Move to own action in later version
-
-        $well_known_path = trailingslashit(ABSPATH) . '.well-known/';
-
-        // Check if the folder exists
-        if (is_dir($well_known_path)) {
-            return true;
-        } else {
-            return false;
-        }
+        return is_dir($this->get_wellknown_path());
     }
 
 
@@ -1881,27 +1916,17 @@ class Generate_Security_Txt_Admin {
     public function create_wellknown_folder() {
         global $wp_filesystem;
 
-        // Initialize the WP_Filesystem
         if ( ! WP_Filesystem() ) {
             return false;
         }
 
-        $well_known_path = trailingslashit(ABSPATH) . '.well-known/';
+        $well_known_path = $this->get_wellknown_path();
 
-        // Check if the folder exists
         if ( $wp_filesystem->is_dir( $well_known_path ) ) {
-            // Folder already exists
             return true;
         }
 
-        // Attempt to create the folder
-        if ( $wp_filesystem->mkdir( $well_known_path, 0755 ) ) {
-            // Folder created successfully
-            return true;
-        } else {
-            // Unable to create the folder
-            return false;
-        }
+        return $wp_filesystem->mkdir( $well_known_path, 0755 );
     }
 
 
@@ -1920,15 +1945,7 @@ class Generate_Security_Txt_Admin {
      * @return bool
      */
     public function check_securitytxt() {
-        $well_known_path = trailingslashit(ABSPATH ) . '.well-known/';
-        $file_to_detect = $well_known_path . 'security.txt';
-
-        // Check if the file exists
-        if (file_exists($file_to_detect)) {
-            return true;
-        } else {
-            return false;
-        }
+        return file_exists($this->get_securitytxt_uri());
     }
 
 
@@ -1939,23 +1956,14 @@ class Generate_Security_Txt_Admin {
      */
     public function delete_securitytxt(): bool
     {
-        $well_known_path = trailingslashit(ABSPATH ) . '.well-known/';
-        $file_to_delete = $well_known_path . 'security.txt';
+        $file_to_delete = $this->get_securitytxt_uri();
 
-        // Check if the file exists before attempting to delete
-	    if ( file_exists( $file_to_delete ) ) {
-		    // Attempt to delete the file
-		    wp_delete_file( $file_to_delete );
+        if ( file_exists( $file_to_delete ) ) {
+            wp_delete_file( $file_to_delete );
+            return ! file_exists( $file_to_delete );
+        }
 
-		    if ( ! file_exists( $file_to_delete ) ) {
-			    return true;
-		    } else {
-			    return false;
-		    }
-	    } else {
-		    // File doesn't exist in the first place
-		    return true;
-	    }
+        return true;
     }
 
 
@@ -1966,15 +1974,7 @@ class Generate_Security_Txt_Admin {
      */
     public function check_pubkey(): bool
     {
-        $well_known_path = trailingslashit(ABSPATH );
-        $file_to_detect = $well_known_path . 'pubkey.txt';
-
-        // Check if the file exists
-        if (file_exists($file_to_detect)) {
-            return true;
-        } else {
-            return false;
-        }
+        return file_exists($this->get_pubkey_path());
     }
 
 
@@ -2004,8 +2004,7 @@ class Generate_Security_Txt_Admin {
 	    }
 
 	    // Continue
-	    $well_known_path  = trailingslashit( ABSPATH ) . '.well-known/';
-	    $file_securitytxt = $well_known_path . 'security.txt';
+        $file_securitytxt = $this->get_securitytxt_uri();
 
 	    // Check if the file exists for some reason, we don't want to throw errors
         if ( ! $wp_filesystem->exists( $file_securitytxt ) ) {
@@ -2091,8 +2090,7 @@ class Generate_Security_Txt_Admin {
             $result = $Securitytxt_Encryption->encrypt_securitytxt($contact_name, $contact_email, $securitytxt_contents, '');
 
             if (!empty($result['signed_message'])) {
-                $well_known_path = trailingslashit(ABSPATH) . '.well-known/';
-                $file_securitytxt = $well_known_path . 'security.txt';
+                $file_securitytxt = $this->get_securitytxt_uri();
 
                 // Write contents to the file
                 if ($wp_filesystem->put_contents($file_securitytxt, $result['signed_message'], FS_CHMOD_FILE)) {
@@ -2104,7 +2102,7 @@ class Generate_Security_Txt_Admin {
             }
 
             if (!empty($result['public_key'])) {
-                $file_pubkey = trailingslashit(ABSPATH) . 'pubkey.txt';
+                $file_pubkey = $this->get_pubkey_path();
 
                 // Write contents to the file
                 if ($wp_filesystem->put_contents($file_pubkey, $result['public_key'], FS_CHMOD_FILE)) {
@@ -2151,22 +2149,14 @@ class Generate_Security_Txt_Admin {
      */
     public function delete_publickey_file(): bool
     {
-        $base_path = trailingslashit(ABSPATH );
-        $file_to_delete = $base_path . 'pubkey.txt';
+        $file_to_delete = $this->get_pubkey_path();
 
-        // Check if the file exists before attempting to delete
         if (file_exists($file_to_delete)) {
-            // Attempt to delete the file
-            wp_delete_file( $file_to_delete );
-
-            if ( ! file_exists( $file_to_delete ) ) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return true;
+            wp_delete_file($file_to_delete);
+            return !file_exists($file_to_delete);
         }
+
+        return true;
     }
 
 
