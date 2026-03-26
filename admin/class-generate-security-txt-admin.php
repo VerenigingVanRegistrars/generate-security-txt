@@ -135,7 +135,7 @@ class Generate_Security_Txt_Admin {
 	 * @return string
 	 */
 	private function get_pubkey_path(): string {
-		return trailingslashit( $this->get_webroot_path() ) . 'pubkey.txt';
+		return $this->get_wellknown_path() . 'pubkey.txt';
 	}
 
 
@@ -574,7 +574,7 @@ class Generate_Security_Txt_Admin {
      */
     public function get_pubkey_url(): string
     {
-        return $this->get_root_url() . 'pubkey.txt';
+        return $this->get_root_url() . '.well-known/pubkey.txt';
     }
 
 
