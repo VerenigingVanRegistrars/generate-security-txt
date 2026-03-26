@@ -92,11 +92,11 @@ class Generate_Security_Txt_Admin {
 	 *
 	 * @return string
 	 */
-	private function get_root_url(): string {
-		$parsed = wp_parse_url( home_url( '/' ) );
+	private function get_root_url(?int $blog_id = null): string {
+		$parsed = wp_parse_url( get_home_url( $blog_id,'/' ) );
 
 		if ( empty( $parsed['scheme'] ) || empty( $parsed['host'] ) ) {
-			return trailingslashit( home_url( '/' ) );
+			return trailingslashit( get_home_url( $blog_id, '/' ) );
 		}
 
 		$url = $parsed['scheme'] . '://' . $parsed['host'];
@@ -149,7 +149,7 @@ class Generate_Security_Txt_Admin {
     function add_custom_plugin_link($links, $file)
     {
         if ($file == generate_security_txt_get_basefile()) {
-            $links[] = '<a href="' . admin_url('tools.php?page=security_txt_generator') . '">' . __('Go to settings', 'generate-security-txt') . '</a>';
+            $links[] = '<a href="' . $this->get_admin_url() . '">' . __('Go to settings', 'generate-security-txt') . '</a>';
         }
 
         return $links;
@@ -183,11 +183,8 @@ class Generate_Security_Txt_Admin {
 	 */
 	public function enqueue_styles() {
 
-        // Get the current admin screen
-        $current_screen = get_current_screen();
-
         // Check if we are on the specific backend template
-        if ($current_screen && $current_screen->id === 'tools_page_security_txt_generator') {
+        if ($this->is_admin_screen()) {
             wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/generate-security-txt-admin.css', [], $this->version, 'all' );
             wp_enqueue_style( $this->plugin_name . '-jquery-ui', plugin_dir_url( __FILE__ ) . 'css/jquery-ui.css', [], $this->version, 'all' );
         }
@@ -201,11 +198,8 @@ class Generate_Security_Txt_Admin {
 	 */
 	public function enqueue_scripts() {
 
-        // Get the current admin screen
-        $current_screen = get_current_screen();
-
-        // Check if we are on the specific backend template
-        if ($current_screen && $current_screen->id === 'tools_page_security_txt_generator') {
+         // Check if we are on the specific backend template
+        if ($this->is_admin_screen()) {
 
             // Enqueue the scripts and styles only for the specific backend template
             wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/generate-security-txt-admin.js', array('jquery'), $this->version, false);
@@ -237,10 +231,10 @@ class Generate_Security_Txt_Admin {
 	 */
 	public function add_menus() {
         add_submenu_page(
-            'tools.php',
+            is_multisite() ? 'settings.php' : 'tools.php',
             __( 'Generate Security.txt', 'generate-security-txt'),
             __( 'Generate Security.txt', 'generate-security-txt'),
-            apply_filters('generate_security_txt_capability', 'manage_options'),
+            $this->get_capability(),
             'security_txt_generator',
             array(&$this, 'admin_security_txt_generator_page_callback')
         );
@@ -255,7 +249,7 @@ class Generate_Security_Txt_Admin {
     function show_admin_notification() {
         // Check if the current screen is the plugin admin page
         $screen = get_current_screen();
-        if ($screen && $screen->id === 'tools_page_security_txt_generator') {
+        if ($this->is_admin_screen()) {
 
             // Display your notification if securitytxy doesn't exist
             if(!$this->check_securitytxt()) {
@@ -271,13 +265,13 @@ class Generate_Security_Txt_Admin {
                 </div>';
             }
 
-            $show_deleted_notification = get_option($this::OPTION_FORM_PREFIX . 'notification_delete', false);
+            $show_deleted_notification = get_site_option($this::OPTION_FORM_PREFIX . 'notification_delete', false);
             if($show_deleted_notification) {
                 echo '<div id="securitytxtNoticeDeleted" class="notice notice-success is-dismissible">
                     <p>All data, files and keys have been deleted.</p>
                 </div>';
 
-                update_option($this::OPTION_FORM_PREFIX . 'notification_delete', false);
+                update_site_option($this::OPTION_FORM_PREFIX . 'notification_delete', false);
             }
         }
 
@@ -305,7 +299,7 @@ class Generate_Security_Txt_Admin {
                 // Check if expiration date is within 1 day or has passed
                 if ($securitytxt_expire_date <= $today->modify('+1 day')) {
                     // translators: the admin URL to this plugin's admin page
-                    echo '<div id="securitytxtNoticeExpiry" class="notice notice-error"><p>' . sprintf(esc_html__('Regenerate your security.txt, the expirydate is very soon or has passed. <a href="%s">Click here</a> to do so.', 'generate-security-txt'), esc_url(admin_url('tools.php?page=security_txt_generator'))) . '</p></div>';
+                    echo '<div id="securitytxtNoticeExpiry" class="notice notice-error"><p>' . sprintf(esc_html__('Regenerate your security.txt, the expirydate is very soon or has passed. <a href="%s">Click here</a> to do so.', 'generate-security-txt'), esc_url($this->get_admin_url())) . '</p></div>';
                 }
             }
         }
@@ -400,7 +394,7 @@ class Generate_Security_Txt_Admin {
                     $clean_values[$key] = $this->inputdate_to_ISOdate($clean_value);
                 }
             }
-            return update_option($this::OPTION_TXT_PREFIX . $field['name'], $clean_values);
+            return update_site_option($this::OPTION_TXT_PREFIX . $field['name'], $clean_values);
         }
 
         return false;
@@ -437,7 +431,7 @@ class Generate_Security_Txt_Admin {
 	 */
 	public function get_datetime_last_expiry_reminder() {
 		// Retrieve the stored date and time option
-		$last_reminder = get_option( $this::OPTION_FORM_PREFIX . 'securitytxt_email_date' );
+		$last_reminder = get_site_option( $this::OPTION_FORM_PREFIX . 'securitytxt_email_date' );
 
 		// Check if the option is set and not empty
 		if ( ! empty( $last_reminder ) ) {
@@ -482,7 +476,7 @@ class Generate_Security_Txt_Admin {
 
         // Loop all fields to retrieve the values
         foreach ($fields as $key => $field) {
-            $values = get_option($this::OPTION_TXT_PREFIX . $key);
+            $values = get_site_option($this::OPTION_TXT_PREFIX . $key);
 
             if(!empty($values) && is_array($values)) {
                 foreach($values as $value) {
@@ -583,9 +577,9 @@ class Generate_Security_Txt_Admin {
      *
      * @return string
      */
-    public function get_securitytxt_url(): string
+    public function get_securitytxt_url($blog_id = null): string
     {
-        return $this->get_root_url() . '.well-known/security.txt';
+        return $this->get_root_url($blog_id) . '.well-known/security.txt';
     }
 
 
@@ -606,7 +600,7 @@ class Generate_Security_Txt_Admin {
      * @return string
      */
     public function get_deletedata_url(): string {
-	    $delete_url = menu_page_url( 'security_txt_generator', false );
+        $delete_url = is_multisite() ? network_admin_url('settings.php?page=security_txt_generator') :  menu_page_url( 'security_txt_generator', false );
 	    $delete_url = add_query_arg( 'action', 'securitytxt_erase', $delete_url );
 
 	    return wp_nonce_url( $delete_url, 'securitytxt_erase' );
@@ -704,6 +698,7 @@ class Generate_Security_Txt_Admin {
         $root_url = $this->get_root_url();
         $securitytxt_url = $this->get_securitytxt_url();
         $pubkey_url = $this->get_pubkey_url();
+
 
         $securitytxt_fields = [
             'contact' => [
@@ -804,7 +799,7 @@ class Generate_Security_Txt_Admin {
                 'disabled' => false,
                 'advanced' => true,
                 'placeholder' => $securitytxt_url,
-                'prefill' => $securitytxt_url,
+                'prefill' => 'canonical',
                 'prefix' => '',
                 'type' => 'text',
                 'class' => '',
@@ -922,12 +917,12 @@ class Generate_Security_Txt_Admin {
      */
     public function create_field_html($field_values) {
 
-        $current_values = get_option($this::OPTION_FORM_PREFIX . $field_values['name']);
+        $current_values = get_site_option($this::OPTION_FORM_PREFIX . $field_values['name']);
 
         // No current value, we check to prefill field
         if(empty($current_values) || $field_values['prefill'] == 'expire_suggest') {
             $current_values = [];
-            $current_values[0] = $this->prefill_value($field_values);
+            $current_values = (array) $this->prefill_value($field_values);
         }
 
         $field_values = $this->maybe_alter_placeholder($field_values);
@@ -1010,7 +1005,7 @@ class Generate_Security_Txt_Admin {
      * Prefill the fields
      *
      * @param $field_name
-     * @return string
+     * @return string|array
      */
     public function prefill_value($field_name) {
 
@@ -1020,7 +1015,7 @@ class Generate_Security_Txt_Admin {
 
         if($field_name['prefill'] == 'admin_mail') {
             // Get the admin e-mailadres
-            $admin_email = get_option('admin_email');
+            $admin_email = get_site_option('admin_email');
 
             // Doublecheck a valid emailadress
             if(is_email($admin_email))
@@ -1056,6 +1051,17 @@ class Generate_Security_Txt_Admin {
             // Doublecheck a valid value
             if(!empty($privacy_policy_url))
                 return $privacy_policy_url;
+        } elseif($field_name['prefill'] == 'canonical') {
+            if ( is_multisite()) {
+                $site_ids = get_sites(['fields' => 'ids', 'public' => 1, 'archived' => 0, 'deleted' => 0]);
+                foreach ($site_ids as $site_id) {
+                    $canonical_urls[] = $this->get_securitytxt_url($site_id);
+                }
+                return $canonical_urls;
+            } else {
+                return $this->get_securitytxt_url();
+            }
+
         }
 
         // Fallback
@@ -1119,8 +1125,8 @@ class Generate_Security_Txt_Admin {
 		$today_plus_1_month = ( clone $now )->modify( '+1 month' );
 
 		// Get email status options
-		$email_sent_monthbefore = (bool) get_option( 'securitytxt_email_sent_monthbefore', false );
-		$email_sent             = (bool) get_option( 'securitytxt_email_sent', false );
+		$email_sent_monthbefore = (bool) get_site_option( 'securitytxt_email_sent_monthbefore', false );
+		$email_sent             = (bool) get_site_option( 'securitytxt_email_sent', false );
 
 		// Decide which reminder should be sent
 		$send_type = '';
@@ -1142,11 +1148,11 @@ class Generate_Security_Txt_Admin {
 		}
 
 		// Send email to website admin
-		$to_email = get_option( 'admin_email' );
+		$to_email = get_site_option( 'admin_email' );
 
 		// Define the variables to be replaced in the mail content
 		$website      = home_url();
-		$generate_url = admin_url( 'tools.php?page=security_txt_generator' );
+		$generate_url = $this->get_admin_url();
 
 		if ( $send_type === 'month' ) {
 			$mail_title = __( 'Security.txt Expiry Reminder (1 Month Notice)', 'generate-security-txt' );
@@ -1187,14 +1193,14 @@ class Generate_Security_Txt_Admin {
 		if ( $sent ) {
 			// Update WordPress option to indicate when email has been sent
 			$current_datetime = current_time( 'mysql' );
-			update_option( $this::OPTION_FORM_PREFIX . 'securitytxt_email_date', $current_datetime );
+			update_site_option( $this::OPTION_FORM_PREFIX . 'securitytxt_email_date', $current_datetime );
 
 			if ( $send_type === 'month' ) {
-				update_option( 'securitytxt_email_sent_monthbefore', true );
+				update_site_option( 'securitytxt_email_sent_monthbefore', true );
 			}
 
 			if ( $send_type === 'day' ) {
-				update_option( 'securitytxt_email_sent', true );
+				update_site_option( 'securitytxt_email_sent', true );
 			}
 		}
 	}
@@ -1222,7 +1228,7 @@ class Generate_Security_Txt_Admin {
 	 */
     function securitytxt_archiveorg_request_url() {
         // Check if the option is set to true
-        $should_run = get_option('securitytxt_archiveorg_request', false) && get_option('blog_public');
+        $should_run = get_site_option('securitytxt_archiveorg_request', false) && get_option('blog_public');
 
         if ($should_run) {
             // Define the URL to call
@@ -1260,7 +1266,7 @@ class Generate_Security_Txt_Admin {
                 ));
 
                 // Reset the option to prevent another request until it's manually set again
-                update_option('securitytxt_archiveorg_request', false);
+                update_site_option('securitytxt_archiveorg_request', false);
             }
         }
     }
@@ -1286,7 +1292,7 @@ class Generate_Security_Txt_Admin {
 	 */
     public function securitytxt_verify_file_contents() {
 	    // Get the saved hash from the WordPress options
-	    $saved_hash = get_option( 'securitytxt_hash', '' );
+	    $saved_hash = get_site_option( 'securitytxt_hash', '' );
 
         // No saved hash yet, possibly after update or after reset
         if( empty($saved_hash) ) {
@@ -1311,12 +1317,11 @@ class Generate_Security_Txt_Admin {
             $this->log_add_entry(esc_html__( 'Security.txt hash failed to verify.', 'generate-security-txt'));
 
              // Send email to website admin
-            $to_email = get_option('admin_email');
+            $to_email = get_site_option('admin_email');
             $mail_title = __('Security.txt Alert Notice', 'generate-security-txt');
 
             // Define the variables to be replaced in the mail content
             $website = home_url();
-            $generate_url = admin_url('tools.php?page=security_txt_generator');
             $today = new DateTime('now');
 
             // Translate and format the mail content
@@ -1337,17 +1342,17 @@ class Generate_Security_Txt_Admin {
 	 * @return false|string
 	 */
     function securitytxt_save_hash() {
-        
+
         if (!$this->check_securitytxt()) {
             return false;
         }
-    
+
         // Generate a hash (SHA256 is secure and efficient)
         $file_hash = hash_file('sha256', $this->get_securitytxt_uri());
-    
+
         // Save the hash in a WordPress option
-        update_option('securitytxt_hash', $file_hash);
-        
+        update_site_option('securitytxt_hash', $file_hash);
+
         return $file_hash;
     }
 
@@ -1528,7 +1533,7 @@ class Generate_Security_Txt_Admin {
         $postdata['form_data'] = $this->sanitize_form_submit_post();
 
 	    // Verify the nonce before proceeding
-	    if ( ! current_user_can('manage_options') || ! check_admin_referer('securitytxt_nonce') ) {
+	    if ( ! current_user_can($this->get_capability()) || ! check_admin_referer('securitytxt_nonce') ) {
 
 		    $finished_text = __( 'Invalid nonce.. Stopping.', 'generate-security-txt' );
 
@@ -1684,7 +1689,7 @@ class Generate_Security_Txt_Admin {
 	    if ( $_SERVER['REQUEST_METHOD'] === 'POST' && ! empty( $postdata ) && is_array( $postdata ) ) {
 
             // Check nonce validity
-		    $nonce_check = current_user_can('manage_options') && check_admin_referer( 'securitytxt_nonce' );
+		    $nonce_check = current_user_can($this->get_capability()) && check_admin_referer( 'securitytxt_nonce' );
 
             echo '<ul class="securitytxt-actionlist">';
 
@@ -1821,7 +1826,7 @@ class Generate_Security_Txt_Admin {
                         $clean_values = [$pubkey_url];
                 }
 
-                update_option($this::OPTION_FORM_PREFIX . $key, $clean_values);
+                update_site_option($this::OPTION_FORM_PREFIX . $key, $clean_values);
                 $this->update_securitytxt_value($allowed_fields[$key], $clean_values);
             }
         }
@@ -1840,12 +1845,9 @@ class Generate_Security_Txt_Admin {
         // Check if the URL parameter 'your_parameter' is set
         if ( isset($_GET['action']) && $_GET['action'] === 'securitytxt_erase' ) {
 
-            if(current_user_can('manage_options') && check_admin_referer( 'securitytxt_erase' )) {
+            if(current_user_can($this->get_capability()) && check_admin_referer( 'securitytxt_erase' )) {
 
-                // Check if the current screen is your plugin admin page
-                $screen = get_current_screen();
-
-                if ( $screen && $screen->id === 'tools_page_security_txt_generator' ) {
+                if ( $this->is_admin_screen() ) {
 
                     // Execute the erase functions when the parameter exists on the backend page
                     $this->delete_all_option_data();
@@ -1856,7 +1858,7 @@ class Generate_Security_Txt_Admin {
                     $this->log_add_entry(esc_html__( 'Plugin data cleared.', 'generate-security-txt'));
 
                     // Queue the notification
-                    update_option($this::OPTION_FORM_PREFIX . 'notification_delete', true);
+                    update_site_option($this::OPTION_FORM_PREFIX . 'notification_delete', true);
 
                     // Optional: Redirect to remove the parameter from the URL
                     wp_safe_redirect(remove_query_arg('action'));
@@ -1876,7 +1878,7 @@ class Generate_Security_Txt_Admin {
      * @return bool
      */
     public function get_expiredate() {
-        return get_option($this::OPTION_TXT_PREFIX . 'expires', '');
+        return get_site_option($this::OPTION_TXT_PREFIX . 'expires', '');
     }
 
 
@@ -1892,8 +1894,8 @@ class Generate_Security_Txt_Admin {
 
         foreach ($allowed_fields as $field) {
             // Delete saved options
-            delete_option($this::OPTION_FORM_PREFIX . $field['name']);
-            delete_option($this::OPTION_TXT_PREFIX . $field['name']);
+            delete_site_option($this::OPTION_FORM_PREFIX . $field['name']);
+            delete_site_option($this::OPTION_TXT_PREFIX . $field['name']);
         }
     }
 
@@ -2072,7 +2074,7 @@ class Generate_Security_Txt_Admin {
         $fields = $this->admin_security_text_generator_fields();
 
         // Retrieve contact email address
-        $contact_email = get_option($this::OPTION_FORM_PREFIX . $fields['contact']['name']);
+        $contact_email = get_site_option($this::OPTION_FORM_PREFIX . $fields['contact']['name']);
 
         // We can't proceed without an email address
         if (empty($contact_email))
@@ -2132,11 +2134,11 @@ class Generate_Security_Txt_Admin {
         $this->securitytxt_save_hash();
 
         // Update WordPress option to indicate that we need an archive.org request this day
-        update_option('securitytxt_archiveorg_request', true);
+        update_site_option('securitytxt_archiveorg_request', true);
 
         // Update WordPress option to indicate that email has to be sent when expiry is close
-        update_option('securitytxt_email_sent_monthbefore', false);
-        update_option('securitytxt_email_sent', false);
+        update_site_option('securitytxt_email_sent_monthbefore', false);
+        update_site_option('securitytxt_email_sent', false);
 
         // Just true for now
         return true;
@@ -2175,7 +2177,7 @@ class Generate_Security_Txt_Admin {
 	 * @return void
 	 */
     function log_add_entry( $message ): void {
-	    $logs = get_option( 'securitytxt_logs', [] );
+	    $logs = get_site_option( 'securitytxt_logs', [] );
 
 	    if ( ! is_array( $logs ) ) {
 		    $logs = [];
@@ -2192,7 +2194,37 @@ class Generate_Security_Txt_Admin {
 		    array_pop( $logs );
 	    }
 
-	    update_option( 'securitytxt_logs', $logs );
+	    update_site_option( 'securitytxt_logs', $logs );
+    }
+
+	public function get_admin_url(?string $tab = ''): string
+	{
+		$base = is_multisite() ? network_admin_url('settings.php') : admin_url('tools.php');
+
+		$admin_url = add_query_arg('page', 'security_txt_generator', $base);
+		if (! empty($tab)) {
+			$admin_url = add_query_arg('tab', $tab, $admin_url);
+		}
+
+		return $admin_url;
+	}
+
+	public function get_capability(): string
+	{
+		return apply_filters('securitytxt_admin_capability', is_multisite() ? 'manage_network_options' : 'manage_options');
+	}
+
+    public function is_admin_screen(): bool
+    {
+        $screen = get_current_screen();
+        if (!$screen) {
+            return false;
+        }
+        if ('tools_page_security_txt_generator' === $screen->id || (is_multisite() && 'settings_page_security_txt_generator-network' === $screen->id)) {
+            return true;
+        }
+
+        return false;
     }
 
 
@@ -2202,7 +2234,7 @@ class Generate_Security_Txt_Admin {
 	 * @return array
 	 */
 	function log_get_entries() {
-		return get_option( 'securitytxt_logs', [] );
+		return get_site_option( 'securitytxt_logs', [] );
 	}
 
 
@@ -2210,6 +2242,6 @@ class Generate_Security_Txt_Admin {
 	 * Clear the plugin log
 	 */
 	public function log_clearall(): void {
-		update_option( 'securitytxt_logs', [] );
+		update_site_option( 'securitytxt_logs', [] );
 	}
 }

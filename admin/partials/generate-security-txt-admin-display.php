@@ -52,9 +52,9 @@ function showMoreRows(event, count) {
     </div>
 
     <nav class="securitytxt-tabs-wrapper hide-if-no-js tab-count-1" aria-label="Secondary menu">
-        <a href="<?php echo esc_url(admin_url('tools.php?page=security_txt_generator')); ?>" class="securitytxt-tab active">Generate</a>
-        <a style="display: none;" href="<?php echo esc_url(admin_url('tools.php?page=security_txt_generator&tab=info')); ?>" class="securitytxt-tab ">Info</a>
-        <a style="display: none;" href="<?php echo esc_url(admin_url('tools.php?page=security_txt_generator&tab=debug')); ?>" class="securitytxt-tab ">Debug</a>
+        <a href="<?php echo esc_url($SecurityTxtAdmin->get_admin_url()); ?>" class="securitytxt-tab active">Generate</a>
+        <a style="display: none;" href="<?php echo esc_url($SecurityTxtAdmin->get_admin_url('info')); ?>" class="securitytxt-tab ">Info</a>
+        <a style="display: none;" href="<?php echo esc_url($SecurityTxtAdmin->get_admin_url('debug')); ?>" class="securitytxt-tab ">Debug</a>
     </nav>
 </div>
 
