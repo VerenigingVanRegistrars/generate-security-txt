@@ -64,8 +64,6 @@ function showMoreRows(event, count) {
 
     <form method="post" action="<?php echo esc_attr(menu_page_url('security_txt_generator', false)); ?>" class="securitytxt-form-wrapper" id="securitytxt-form-main">
 
-        <?php wp_nonce_field( 'securitytxt_nonce' ); ?>
-
         <h2 class="securitytxt-form-title"><?php echo esc_html__( 'Generate security.txt', 'generate-security-txt'); ?></h2>
 
         <p><?php echo esc_html__('On this page you can easily generate a security.txt file. This makes it easier for security researchers to contact you when they find a vulnerability on your site. This plugin puts all the information in the right place!', 'generate-security-txt'); ?></p>

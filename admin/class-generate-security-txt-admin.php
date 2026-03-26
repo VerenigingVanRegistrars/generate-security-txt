@@ -220,7 +220,8 @@ class Generate_Security_Txt_Admin {
                     'first_action' => $first_action['name'],
                     'first_action_text' => $first_action['text_start'],
                     'spinner_url' => esc_url( trailingslashit( includes_url() ) . 'images/spinner.gif' ),
-                    'status_text' => esc_js( __( 'Checking security.txt status', 'generate-security-txt' ) )
+                    'status_text' => esc_js( __( 'Checking security.txt status', 'generate-security-txt' ) ),
+                    'nonce' => wp_create_nonce( 'securitytxt_nonce' )
                 ]
             );
 
@@ -1527,7 +1528,7 @@ class Generate_Security_Txt_Admin {
         $postdata['form_data'] = $this->sanitize_form_submit_post();
 
 	    // Verify the nonce before proceeding
-	    if ( check_admin_referer() ) {
+	    if ( ! current_user_can('manage_options') || ! check_admin_referer('securitytxt_nonce') ) {
 
 		    $finished_text = __( 'Invalid nonce.. Stopping.', 'generate-security-txt' );
 
@@ -1683,7 +1684,7 @@ class Generate_Security_Txt_Admin {
 	    if ( $_SERVER['REQUEST_METHOD'] === 'POST' && ! empty( $postdata ) && is_array( $postdata ) ) {
 
             // Check nonce validity
-		    $nonce_check = check_admin_referer( 'securitytxt_nonce' );
+		    $nonce_check = current_user_can('manage_options') && check_admin_referer( 'securitytxt_nonce' );
 
             echo '<ul class="securitytxt-actionlist">';
 
@@ -1839,7 +1840,7 @@ class Generate_Security_Txt_Admin {
         // Check if the URL parameter 'your_parameter' is set
         if ( isset($_GET['action']) && $_GET['action'] === 'securitytxt_erase' ) {
 
-            if(check_admin_referer( 'securitytxt_erase' )) {
+            if(current_user_can('manage_options') && check_admin_referer( 'securitytxt_erase' )) {
 
                 // Check if the current screen is your plugin admin page
                 $screen = get_current_screen();
