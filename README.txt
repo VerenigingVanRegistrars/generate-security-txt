@@ -3,7 +3,7 @@ Contributors: verenigingvanregistrars
 Tags: security, security.txt, responsible disclosure
 Requires at least: 6.3
 Tested up to: 6.9.4
-Stable tag: 1.0.11
+Stable tag: 1.0.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -45,6 +45,12 @@ Your security.txt file will not be valid without URIs starting with 'https://'. 
 2. /assets/screenshot-2.png
 
 == Changelog ==
+
+= 1.0.12 =
+Capability filter added
+Nonce checks added
+Pubkey store changed to .well-known directory
+Archive.org request only for public websites
 
 = 1.0.11 =
 New 1 month reminder email feature

@@ -87,8 +87,8 @@ class Generate_Security_Txt_Admin {
 	 * Return the root/origin URL without any WordPress subdirectory.
 	 *
 	 * Example:
-	 * home_url() = https://dev.geusmedia.nl/securitytxtdemo
-	 * returns     https://dev.geusmedia.nl/
+	 * home_url() = https://example.com/wp
+	 * returns     https://example.com/
 	 *
 	 * @return string
 	 */
