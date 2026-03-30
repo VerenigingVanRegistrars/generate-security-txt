@@ -23,6 +23,7 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       generate-security-txt
  * Domain Path:       /languages
+ * Network:           true
  */
 
 // If this file is called directly, abort.

@@ -157,7 +157,10 @@ class Generate_Security_Txt {
 		$this->loader->add_action( 'init', $plugin_admin, 'ajax_callbacks' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_menus' );
+
+		$menu_hook = is_multisite() ? 'network_admin_menu' : 'admin_menu';
+
+		$this->loader->add_action( $menu_hook, $plugin_admin, 'add_menus' );
 
         // Add a link to the plugins listing
         $this->loader->add_filter( 'plugin_row_meta', $plugin_admin, 'add_custom_plugin_link', 10, 2 );
