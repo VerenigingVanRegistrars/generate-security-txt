@@ -2,8 +2,8 @@
 Contributors: verenigingvanregistrars
 Tags: security, security.txt, responsible disclosure
 Requires at least: 6.3
-Tested up to: 6.9.4
-Stable tag: 1.0.12
+Tested up to: 7.0
+Stable tag: 1.0.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,6 +46,11 @@ Your security.txt file will not be valid without URIs starting with 'https://'. 
 
 == Changelog ==
 
+= 1.0.13 =
+Security fix: removed direct AJAX access to internal generation actions and added authorization checks to status callbacks.
+Bugfix: expired security.txt reminders now use expired wording instead of future-expiry wording.
+Updated dependencies
+
 = 1.0.12 =
 Capability filter added
 Nonce checks added
@@ -75,6 +80,22 @@ Normalize end of line characters
 * Initial release version
 
 == Upgrade Notice ==
+
+= 1.0.13 =
+Security fix: removed direct AJAX access to internal generation actions and added authorization checks to status callbacks.
+Bugfix: expired security.txt reminders now use expired wording instead of future-expiry wording.
+Updated dependencies
+
+= 1.0.12 =
+Capability filter added
+Nonce checks added
+Pubkey store changed to .well-known directory
+Archive.org request only for public websites
+
+= 1.0.11 =
+New 1 month reminder email feature
+Bugfix with for wrong canonical and security check when installation base url is not domain root
+Updated dependencies
 
 = 1.0.10 =
 Updated dependencies

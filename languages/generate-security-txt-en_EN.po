@@ -286,10 +286,29 @@ msgstr ""
 "plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>"
 
 #: admin/class-generate-security-txt-admin.php:1165
+msgid "Security.txt Expired"
+msgstr "Security.txt Expired"
+
+#: admin/class-generate-security-txt-admin.php:1170
+#, php-format
+msgid ""
+"<h2>Security.txt Expired</h2><p>This is a reminder from your WordPress "
+"website on %1$s.</p><p>Your security.txt file expired on <code>%2$s</code>."
+"</p><p>We recommend regenerating it as soon as possible via %3$s.</p><hr><p>"
+"This message was sent at <code>%4$s</code> by the WordPress plugin "
+"<b>Generate Security.txt</b> by Vereniging van Registrars.</p>"
+msgstr ""
+"<h2>Security.txt Expired</h2><p>This is a reminder from your WordPress "
+"website on %1$s.</p><p>Your security.txt file expired on <code>%2$s</code>."
+"</p><p>We recommend regenerating it as soon as possible via %3$s.</p><hr><p>"
+"This message was sent at <code>%4$s</code> by the WordPress plugin "
+"<b>Generate Security.txt</b> by Vereniging van Registrars.</p>"
+
+#: admin/class-generate-security-txt-admin.php:1181
 msgid "Security.txt Expiry Reminder"
 msgstr "Security.txt Expiry Reminder"
 
-#: admin/class-generate-security-txt-admin.php:1171
+#: admin/class-generate-security-txt-admin.php:1187
 #, php-format
 msgid ""
 "<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress "

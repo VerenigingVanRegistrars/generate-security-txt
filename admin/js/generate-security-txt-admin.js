@@ -269,6 +269,7 @@
 
         var data = {
             action: 'status_loader',
+            _wpnonce: securitytxt.nonce
         };
 
         $.ajax({
@@ -306,6 +307,7 @@
 
         var data = {
             action: 'post_finish',
+            _wpnonce: securitytxt.nonce
         };
 
         $.ajax({

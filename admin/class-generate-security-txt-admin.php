@@ -163,16 +163,9 @@ class Generate_Security_Txt_Admin {
      */
     public function ajax_callbacks() {
 
-        add_action('wp_ajax_init_actionlist', array($this, 'init_actionlist_callback'));
         add_action('wp_ajax_process_actionlist', array($this, 'process_actionlist_callback'));
         add_action('wp_ajax_post_finish', array($this, 'post_finish_callback'));
         add_action('wp_ajax_status_loader', array($this, 'status_loader_callback'));
-
-        // Register all ajax actionlist actions
-        $securitytxt_actions = $this->admin_security_text_generator_actions();
-        foreach($securitytxt_actions as $action) {
-            add_action('wp_ajax_' . $action['name'], array($this, $action['name']));
-        }
     }
 
 
@@ -318,6 +311,10 @@ class Generate_Security_Txt_Admin {
      * @return void
      */
     public function status_loader_callback() {
+	    if ( ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'securitytxt_nonce', false, false ) ) {
+		    wp_send_json_error( [ 'message' => __( 'Unauthorized request.', 'generate-security-txt' ) ], 403 );
+	    }
+
         $status_type = 'no';
         $status_color = 'red';
         $status_text = __('Invalid - Security.txt is missing', 'generate-security-txt');
@@ -1125,8 +1122,14 @@ class Generate_Security_Txt_Admin {
 		// Decide which reminder should be sent
 		$send_type = '';
 
-		if ( $securitytxt_expire_date <= $today_plus_1_day ) {
-			// Expiry is within 1 day or already passed
+		if ( $securitytxt_expire_date <= $now ) {
+			// Expiry has passed. Reuse the final reminder flag to avoid sending both a day-before and an expired notice.
+			if ( ! $ignore_checks && $email_sent ) {
+				return;
+			}
+			$send_type = 'expired';
+		} elseif ( $securitytxt_expire_date <= $today_plus_1_day ) {
+			// Expiry is within 1 day.
 			if ( ! $ignore_checks && $email_sent ) {
 				return;
 			}
@@ -1155,6 +1158,20 @@ class Generate_Security_Txt_Admin {
 			$mail_content = sprintf(
 				__(
 					'<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress website on %1$s.</p><p>Your security.txt file will expire in about one month, on <code>%2$s</code>.</p><p>We recommend regenerating it in time via %3$s.</p><hr><p>This message was sent at <code>%4$s</code> by the WordPress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>',
+					'generate-security-txt'
+				),
+				$website,
+				$securitytxt_expire_date->format( 'Y-m-d H:i:s' ),
+				$generate_url,
+				$now->format( 'Y-m-d H:i:s' )
+			);
+		} elseif ( $send_type === 'expired' ) {
+			$mail_title = __( 'Security.txt Expired', 'generate-security-txt' );
+
+			// translators: 1: website URL, 2: expiration datetime, 3: plugin admin URL, 4: current datetime
+			$mail_content = sprintf(
+				__(
+					'<h2>Security.txt Expired</h2><p>This is a reminder from your WordPress website on %1$s.</p><p>Your security.txt file expired on <code>%2$s</code>.</p><p>We recommend regenerating it as soon as possible via %3$s.</p><hr><p>This message was sent at <code>%4$s</code> by the WordPress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>',
 					'generate-security-txt'
 				),
 				$website,
@@ -1193,7 +1210,7 @@ class Generate_Security_Txt_Admin {
 				update_option( 'securitytxt_email_sent_monthbefore', true );
 			}
 
-			if ( $send_type === 'day' ) {
+			if ( $send_type === 'day' || $send_type === 'expired' ) {
 				update_option( 'securitytxt_email_sent', true );
 			}
 		}
@@ -1631,6 +1648,10 @@ class Generate_Security_Txt_Admin {
      * @return void
      */
     public function post_finish_callback() {
+	    if ( ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'securitytxt_nonce', false, false ) ) {
+		    wp_send_json_error( [ 'message' => __( 'Unauthorized request.', 'generate-security-txt' ) ], 403 );
+	    }
+
         $content = '';
 
         // File path
