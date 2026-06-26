@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -115,7 +119,7 @@ class Generate_Security_Txt_Admin {
 	 * @return string
 	 */
 	private function get_webroot_path(): string {
-		$path = ! empty( $_SERVER['DOCUMENT_ROOT'] ) ? $_SERVER['DOCUMENT_ROOT'] : ABSPATH;
+		$path = ! empty( $_SERVER['DOCUMENT_ROOT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['DOCUMENT_ROOT'] ) ) : ABSPATH;
 
 		return untrailingslashit( wp_normalize_path( $path ) );
 	}
@@ -626,15 +630,15 @@ class Generate_Security_Txt_Admin {
      *
 	 * @return array
 	 */
-    private function sanitize_form_submit_post() {
+    private function sanitize_form_submit_post( $form_data ) {
 
         // Initialize an empty array to hold the sanitized data
         $sanitized_form_data = array();
 
         // Check if form_data is set and not empty
-        if (!empty($_POST['form_data'])) {
+        if ( ! empty( $form_data ) ) {
             // Parse the serialized form data into an associative array
-            parse_str($_POST['form_data'], $form_data_array);
+            parse_str( $form_data, $form_data_array );
 
             // Sanitize email addresses in the 'contact' array
             if (!empty($form_data_array['contact']) && is_array($form_data_array['contact'])) {
@@ -968,7 +972,7 @@ class Generate_Security_Txt_Admin {
                     );
 
                     wp_dropdown_languages($args);
-                    echo '<small class="securitytxt-description">' . esc_html__('Select a language to add the correct code to the field') . '</small>';
+                    echo '<small class="securitytxt-description">' . esc_html__( 'Select a language to add the correct code to the field', 'generate-security-txt' ) . '</small>';
                     ?>
                 <?php endif; ?>
                 <?php if (!empty($field_values['description'])) : ?>
@@ -1154,9 +1158,9 @@ class Generate_Security_Txt_Admin {
 		if ( $send_type === 'month' ) {
 			$mail_title = __( 'Security.txt Expiry Reminder (1 Month Notice)', 'generate-security-txt' );
 
-			// translators: 1: website URL, 2: expiration datetime, 3: plugin admin URL, 4: current datetime
-			$mail_content = sprintf(
-				__(
+				$mail_content = sprintf(
+					// translators: 1: website URL, 2: expiration datetime, 3: plugin admin URL, 4: current datetime.
+					__(
 					'<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress website on %1$s.</p><p>Your security.txt file will expire in about one month, on <code>%2$s</code>.</p><p>We recommend regenerating it in time via %3$s.</p><hr><p>This message was sent at <code>%4$s</code> by the WordPress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>',
 					'generate-security-txt'
 				),
@@ -1168,9 +1172,9 @@ class Generate_Security_Txt_Admin {
 		} elseif ( $send_type === 'expired' ) {
 			$mail_title = __( 'Security.txt Expired', 'generate-security-txt' );
 
-			// translators: 1: website URL, 2: expiration datetime, 3: plugin admin URL, 4: current datetime
-			$mail_content = sprintf(
-				__(
+				$mail_content = sprintf(
+					// translators: 1: website URL, 2: expiration datetime, 3: plugin admin URL, 4: current datetime.
+					__(
 					'<h2>Security.txt Expired</h2><p>This is a reminder from your WordPress website on %1$s.</p><p>Your security.txt file expired on <code>%2$s</code>.</p><p>We recommend regenerating it as soon as possible via %3$s.</p><hr><p>This message was sent at <code>%4$s</code> by the WordPress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>',
 					'generate-security-txt'
 				),
@@ -1183,9 +1187,9 @@ class Generate_Security_Txt_Admin {
 			$mail_title = __( 'Security.txt Expiry Reminder', 'generate-security-txt' );
 
 			// Keep old strings for the existing expiry reminder
-			// translators: a link to the admin page for this plugins on plugin's website
-			$mail_content = sprintf(
-				__(
+				$mail_content = sprintf(
+					// translators: 1: website URL, 2: expiration datetime, 3: plugin admin URL, 4: current datetime.
+					__(
 					'<h2>Security.txt Expiry Notice</h2><p>This is a reminder from your WordPress website on %1$s.</p><p>Your security.txt file will expire on <code>%2$s</code>.</p><p>We recommend regenerating it as soon as possble it on %3$s.</p><hr><p>This message was sent at <code>%4$s</code> by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>',
 					'generate-security-txt'
 				),
@@ -1254,27 +1258,26 @@ class Generate_Security_Txt_Admin {
                 // Time out, it can happen, we try again tomorrow
                 if(str_contains($response->get_error_message(), 'error 28' )) {
 
-                    $this->log_add_entry(sprintf(
-                        esc_html__('Time-out submitting to archive.org - %s. Trying again in 24 hours.', 'generate-security-txt'),
-                        $archive_url,
-                        $response->get_error_message()
-                    ));
-                }
-                else {
-                    // Log the error
-                    error_log('Cron request failed: ' . $response->get_error_message());
-
-                    $this->log_add_entry(sprintf(
-                        esc_html__('Error submitting to archive.org - %s: %s', 'generate-security-txt'),
-                        $archive_url,
-                        $response->get_error_message()
-                    ));
+	                    $this->log_add_entry(sprintf(
+	                        // translators: %s: archive.org URL.
+	                        esc_html__( 'Time-out submitting to archive.org - %s. Trying again in 24 hours.', 'generate-security-txt' ),
+	                        $archive_url
+	                    ));
+	                }
+	                else {
+	                    $this->log_add_entry(sprintf(
+	                        // translators: 1: archive.org URL, 2: error message.
+	                        esc_html__( 'Error submitting to archive.org - %1$s: %2$s', 'generate-security-txt' ),
+	                        $archive_url,
+	                        $response->get_error_message()
+	                    ));
                 }
             } else {
-                $this->log_add_entry(sprintf(
-                    esc_html__( 'Submitted to archive.org - %s.', 'generate-security-txt'),
-                    $archive_url
-                ));
+	                $this->log_add_entry(sprintf(
+	                    // translators: %s: archive.org URL.
+	                    esc_html__( 'Submitted to archive.org - %s.', 'generate-security-txt' ),
+	                    $archive_url
+	                ));
 
                 // Reset the option to prevent another request until it's manually set again
                 update_option('securitytxt_archiveorg_request', false);
@@ -1336,9 +1339,17 @@ class Generate_Security_Txt_Admin {
             $generate_url = admin_url('tools.php?page=security_txt_generator');
             $today = new DateTime('now');
 
-            // Translate and format the mail content
-            // translators: a link to the admin page for this plugins on plugin's website
-            $mail_content = sprintf(__('<h2>Security.txt Alert Notice</h2><p>This is an alert from your WordPress website on %1$s.</p><p>Your security.txt failed to verify its contents during a routine check.</p><p>We recommend manually checking the file contents as soon as possible on <a href="%2$s">%2$s</a>. If the file has information that was not entered by you through the plugin and the file was not changed by you, please make sure your FTP and/or webhosting access is not compromised.</p><p>If you keep receiving this email and there is nothing incorrect about the security.txt, please contact the plugin developer through the WordPress plugin page.</p><hr><p>This message was sent at <code>%3$s</code> by the Wordpress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>', 'generate-security-txt'), $website, $this->get_securitytxt_url(), $today->format('Y-m-d H:i:s'));
+	            // Translate and format the mail content
+	            $mail_content = sprintf(
+		            // translators: 1: website URL, 2: security.txt URL, 3: current date.
+		            __(
+			            '<h2>Security.txt Alert Notice</h2><p>This is an alert from your WordPress website on %1$s.</p><p>Your security.txt failed to verify its contents during a routine check.</p><p>We recommend manually checking the file contents as soon as possible on <a href="%2$s">%2$s</a>. If the file has information that was not entered by you through the plugin and the file was not changed by you, please make sure your FTP and/or webhosting access is not compromised.</p><p>If you keep receiving this email and there is nothing incorrect about the security.txt, please contact the plugin developer through the WordPress plugin page.</p><hr><p>This message was sent at <code>%3$s</code> by the WordPress plugin <b>Generate Security.txt</b> by Vereniging van Registrars.</p>',
+			            'generate-security-txt'
+		            ),
+		            $website,
+		            $this->get_securitytxt_url(),
+		            $today->format('Y-m-d H:i:s')
+	            );
 
             // Send the email
             $sent = wp_mail($to_email, $mail_title, $mail_content, ['Content-Type: text/html; charset=UTF-8']);
@@ -1536,16 +1547,8 @@ class Generate_Security_Txt_Admin {
         $response = '';
         $continue = true;
 
-        $finished_action = isset($_POST['action']) ? sanitize_text_field($_POST['action']) : '';
-        $next_action = isset($_POST['next_action']) ? sanitize_text_field($_POST['next_action']) : '';
-
-        $postdata['action'] = $finished_action;
-        $postdata['next_action'] = $next_action;
-
-        $postdata['form_data'] = $this->sanitize_form_submit_post();
-
-	    // Verify the nonce before proceeding
-	    if ( ! current_user_can('manage_options') || ! check_admin_referer('securitytxt_nonce') ) {
+		    // Verify the nonce before reading or processing submitted data.
+		    if ( ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'securitytxt_nonce', false, false ) ) {
 
 		    $finished_text = __( 'Invalid nonce.. Stopping.', 'generate-security-txt' );
 
@@ -1562,8 +1565,17 @@ class Generate_Security_Txt_Admin {
 
 		    wp_send_json( $response );
 
-		    return;
-	    }
+			    return;
+		    }
+
+	        $finished_action = isset( $_POST['action'] ) ? sanitize_text_field( wp_unslash( $_POST['action'] ) ) : '';
+	        $next_action = isset( $_POST['next_action'] ) ? sanitize_text_field( wp_unslash( $_POST['next_action'] ) ) : '';
+
+	        $postdata['action'] = $finished_action;
+	        $postdata['next_action'] = $next_action;
+
+	        $form_data = isset( $_POST['form_data'] ) ? sanitize_text_field( wp_unslash( $_POST['form_data'] ) ) : '';
+	        $postdata['form_data'] = $this->sanitize_form_submit_post( $form_data );
 
         if(!empty($postdata) && !empty($postdata['next_action'])) {
             $action_list = $this->admin_security_text_generator_actions();
@@ -1702,7 +1714,7 @@ class Generate_Security_Txt_Admin {
         $postdata = null;
 
 	    // Check if this request was a post and if postdata is filled
-	    if ( $_SERVER['REQUEST_METHOD'] === 'POST' && ! empty( $postdata ) && is_array( $postdata ) ) {
+		    if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && ! empty( $postdata ) && is_array( $postdata ) ) {
 
             // Check nonce validity
 		    $nonce_check = current_user_can('manage_options') && check_admin_referer( 'securitytxt_nonce' );

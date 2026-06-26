@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Generate security.txt\n"
+"Project-Id-Version: Generate Security.txt\n"
 "POT-Creation-Date: 2026-03-25 17:12+0100\n"
 "PO-Revision-Date: 2026-03-25 17:12+0100\n"
 "Last-Translator: \n"
@@ -563,11 +563,6 @@ msgstr "Klaar met het maken van nieuwe security.txt."
 #: admin/partials/generate-security-txt-admin-display.php:44
 msgid "Security.txt Status"
 msgstr "Security.txt Status"
-
-#. Plugin Name of the plugin/theme
-#: admin/partials/generate-security-txt-admin-display.php:69
-msgid "Generate security.txt"
-msgstr "Genereer Security.txt"
 
 #: admin/partials/generate-security-txt-admin-display.php:71
 msgid ""

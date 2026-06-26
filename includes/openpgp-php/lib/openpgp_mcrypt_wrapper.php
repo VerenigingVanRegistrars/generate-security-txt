@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if(function_exists('mcrypt_encrypt') && defined('MCRYPT_MODE_CFB')) {
   class MCryptWrapper {
     public $cipher, $key, $iv, $key_size, $block_size;

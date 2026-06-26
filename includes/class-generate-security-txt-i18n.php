@@ -35,13 +35,7 @@ class Generate_Security_Txt_i18n {
 	 * @since    1.0.0
 	 */
 	public function load_plugin_textdomain() {
-
-		load_plugin_textdomain(
-			self::TEXT_DOMAIN,
-			false,
-			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
-		);
-
+		// WordPress.org loads translations for this plugin automatically.
 	}
 
 

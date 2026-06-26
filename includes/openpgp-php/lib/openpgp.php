@@ -1,4 +1,9 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // This is free and unencumbered software released into the public domain.
 /**
  * OpenPGP.php is a pure-PHP implementation of the OpenPGP Message Format
@@ -47,6 +52,7 @@ class OpenPGP {
         ($pos1 = strpos($text, "\n\n", $pos1 += strlen($header))) !== FALSE) {
       $pos2 = strpos($text, "\n=", $pos1 += 2);
       if ($pos2 === FALSE) {
+	    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
         trigger_error("Invalid ASCII armor, missing CRC");
         $pos2 = strpos($text, "-----END");
         if ($pos2 === FALSE) return NULL;

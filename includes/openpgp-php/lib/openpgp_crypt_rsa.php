@@ -1,4 +1,9 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // This is free and unencumbered software released into the public domain.
 /**
  * OpenPGP_Crypt_RSA.php is a wrapper for using the classes from OpenPGP.php with Crypt_RSA

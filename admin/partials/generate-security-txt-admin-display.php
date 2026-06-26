@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 $SecurityTxtAdmin = new Generate_Security_Txt_Admin();
 $Securitytxt_Encryption = new Securitytxt_Encryption();
-$form_fields = $SecurityTxtAdmin->admin_security_text_generator_fields();
+$generate_security_txt_form_fields = $SecurityTxtAdmin->admin_security_text_generator_fields();
 
 //$SecurityTxtAdmin->process_form_submit();
 
@@ -64,14 +64,14 @@ function showMoreRows(event, count) {
 
     <form method="post" action="<?php echo esc_attr(menu_page_url('security_txt_generator', false)); ?>" class="securitytxt-form-wrapper" id="securitytxt-form-main">
 
-        <h2 class="securitytxt-form-title"><?php echo esc_html__( 'Generate security.txt', 'generate-security-txt'); ?></h2>
+        <h2 class="securitytxt-form-title"><?php echo esc_html__( 'Generate Security.txt', 'generate-security-txt'); ?></h2>
 
         <p><?php echo esc_html__('On this page you can easily generate a security.txt file. This makes it easier for security researchers to contact you when they find a vulnerability on your site. This plugin puts all the information in the right place!', 'generate-security-txt'); ?></p>
         <p><?php echo esc_html__('Below are several fields where you can enter (contact) information to be included in the security.txt file. Some fields are required, and some are optional.', 'generate-security-txt'); ?></p>
 
         <div id="securitytxt-site-status-critical" class="securitytxt-form">
 
-            <?php $SecurityTxtAdmin->create_form_html($form_fields); ?>
+            <?php $SecurityTxtAdmin->create_form_html($generate_security_txt_form_fields); ?>
 
             <div class="securitytxt-submit-wrapper px-15em">
                 <div style="display: none;" id="securitytxtNoticeValidationErrors" class="securitytxt-notify notify-error">
@@ -239,28 +239,34 @@ function showMoreRows(event, count) {
 
         <tbody>
         <?php
-            $x = 10;
-            $row_count = 0;
+            $generate_security_txt_visible_log_count = 10;
+            $generate_security_txt_row_count = 0;
         ?>
-	    <?php $log_entries = $SecurityTxtAdmin->log_get_entries(); ?>
-	    <?php $log_count = is_array($log_entries) ? count($log_entries) : 0; ?>
-	    <?php if ( is_array( $log_entries ) && count( $log_entries ) > 0 ) : ?>
-		    <?php foreach ( $log_entries as $log_entry ) : ?>
-                <tr class="<?php echo ($row_count > 5) ? 'extra-log-row' : ''; ?>">
-                    <td><?php echo $log_entry['time']; ?></td>
-                    <td><?php echo $log_entry['message']; ?></td>
+	    <?php $generate_security_txt_log_entries = $SecurityTxtAdmin->log_get_entries(); ?>
+	    <?php $generate_security_txt_log_count = is_array($generate_security_txt_log_entries) ? count($generate_security_txt_log_entries) : 0; ?>
+	    <?php if ( is_array( $generate_security_txt_log_entries ) && count( $generate_security_txt_log_entries ) > 0 ) : ?>
+		    <?php foreach ( $generate_security_txt_log_entries as $generate_security_txt_log_entry ) : ?>
+	                <tr class="<?php echo ( $generate_security_txt_row_count > 5 ) ? 'extra-log-row' : ''; ?>">
+	                    <td><?php echo esc_html( $generate_security_txt_log_entry['time'] ); ?></td>
+	                    <td><?php echo esc_html( $generate_security_txt_log_entry['message'] ); ?></td>
                 </tr>
 
-                <?php if ( $row_count == 5 ) : ?>
+                <?php if ( $generate_security_txt_row_count == 5 ) : ?>
                 <tr class="show-more-row">
                     <td colspan="2" style="text-align: center;">
-                        <a href="#" onclick="showMoreRows(event, <?php echo $x; ?>)">
-                            <?php echo sprintf( esc_html__( 'Show %d more log entries', 'generate-security-txt' ), $log_count - 5 ); ?>
+	                        <a href="#" onclick="showMoreRows(event, <?php echo absint( $generate_security_txt_visible_log_count ); ?>)">
+	                            <?php
+	                            printf(
+	                                // translators: %d: number of hidden log entries.
+	                                esc_html__( 'Show %d more log entries', 'generate-security-txt' ),
+	                                absint( $generate_security_txt_log_count - 5 )
+	                            );
+	                            ?>
                         </a>
                     </td>
                 </tr>
                 <?php endif; ?>
-                <?php $row_count++; ?>
+                <?php $generate_security_txt_row_count++; ?>
             <?php
                 endforeach;
             else :

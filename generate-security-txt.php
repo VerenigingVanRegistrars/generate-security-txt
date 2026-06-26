@@ -13,7 +13,7 @@
  * @package           Generate_Security_Txt
  *
  * @wordpress-plugin
- * Plugin Name:       Generate security.txt
+ * Plugin Name:       Generate Security.txt
  * Plugin URI:        https://wordpress.org/plugins/generate-security-txt/
  * Description:       Generate a PGP signed security.txt file with ease. Go to tools to generate the security.txt file or click below on 'Go to settings' to get started.
  * Version:           1.0.13

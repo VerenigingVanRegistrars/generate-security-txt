@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 function sodium_make_verifier($pk) {
   return function($m, $s) use ($pk) {
     if($pk instanceof OpenPGP_Message) {

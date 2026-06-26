@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if(function_exists('openssl_encrypt')) {
   class OpenSSLWrapper {
     public $cipher, $key, $iv, $key_size, $block_size;
