@@ -1365,17 +1365,17 @@ class Generate_Security_Txt_Admin {
 	 * @return false|string
 	 */
     function securitytxt_save_hash() {
-        
+
         if (!$this->check_securitytxt()) {
             return false;
         }
-    
+
         // Generate a hash (SHA256 is secure and efficient)
         $file_hash = hash_file('sha256', $this->get_securitytxt_uri());
-    
+
         // Save the hash in a WordPress option
         update_option('securitytxt_hash', $file_hash);
-        
+
         return $file_hash;
     }
 
@@ -1803,6 +1803,10 @@ class Generate_Security_Txt_Admin {
      */
     public function save_fields($post_data = null) {
 
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return false;
+        }
+
         if(!empty($post_data)) {
             return $this->save_form_postdata($post_data);
         }
@@ -1818,6 +1822,10 @@ class Generate_Security_Txt_Admin {
      * @return bool
      */
     public function save_form_postdata($postdata = null) {
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return false;
+        }
 
         // Retrieve our fields
         $allowed_fields = $this->admin_security_text_generator_fields();
@@ -1920,6 +1928,10 @@ class Generate_Security_Txt_Admin {
      */
     public function delete_all_option_data(): void
     {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+
         // Retrieve our fields
         $allowed_fields = $this->admin_security_text_generator_fields();
 
@@ -1948,6 +1960,10 @@ class Generate_Security_Txt_Admin {
      * @return bool
      */
     public function create_wellknown_folder() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return false;
+        }
+
         global $wp_filesystem;
 
         if ( ! WP_Filesystem() ) {
@@ -1990,6 +2006,10 @@ class Generate_Security_Txt_Admin {
      */
     public function delete_securitytxt(): bool
     {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return false;
+        }
+
         $file_to_delete = $this->get_securitytxt_uri();
 
         if ( file_exists( $file_to_delete ) ) {
@@ -2018,6 +2038,10 @@ class Generate_Security_Txt_Admin {
      * @return bool
      */
     public function save_securitytxt(): bool {
+	    if ( ! current_user_can( 'manage_options' ) ) {
+		    return false;
+	    }
+
 	    global $wp_filesystem;
 
 	    // Initialize the WP Filesystem
@@ -2087,6 +2111,10 @@ class Generate_Security_Txt_Admin {
      * @return array|bool
      */
     public function encrypt_securitytxt() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return false;
+        }
+
         global $wp_filesystem;
 
         // Initialize the WP Filesystem
@@ -2159,6 +2187,10 @@ class Generate_Security_Txt_Admin {
      */
     public function finish() {
 
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return false;
+        }
+
         $this->log_add_entry(esc_html__( 'Finished creating new security.txt.', 'generate-security-txt'));
 
         // Save the new hash
@@ -2183,6 +2215,10 @@ class Generate_Security_Txt_Admin {
      */
     public function delete_publickey_file(): bool
     {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return false;
+        }
+
         $file_to_delete = $this->get_pubkey_path();
 
         if (file_exists($file_to_delete)) {
