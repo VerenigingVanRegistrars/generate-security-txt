@@ -1,18 +1,21 @@
 {
-    "name": "yard/generate-security-txt",
-    "type": "wordpress-plugin",
-    "config": {
-        "platform": {
-            "php": "7.4"
-        }
-    },
-    "require": {
-        "php": ">=7.4",
-        "phpseclib/phpseclib": "^3.0",
-        "singpolyma/openpgp-php": "^0.7.0"
-    },
-    "require-dev": {
-        "yard/php-cs-fixer-rules": "^1.0",
-        "php-stubs/wordpress-stubs": "^7.0"
-    }
+	"name": "yard/generate-security-txt",
+	"type": "wordpress-plugin",
+	"config": {
+		"platform": {
+			"php": "7.4"
+		}
+	},
+	"require": {
+		"php": ">=7.4",
+		"phpseclib/phpseclib": "^3.0",
+		"singpolyma/openpgp-php": "^0.7.0"
+	},
+	"require-dev": {
+		"yard/php-cs-fixer-rules": "^1.0",
+		"php-stubs/wordpress-stubs": "^7.0"
+	},
+	"scripts": {
+		"format": "vendor/bin/php-cs-fixer fix"
+	}
 }

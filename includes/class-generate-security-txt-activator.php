@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Fired during plugin activation
  *
@@ -16,12 +18,14 @@
  * This class defines all code necessary to run during the plugin's activation.
  *
  * @since      1.0.0
+ *
  * @package    Generate_Security_Txt
  * @subpackage Generate_Security_Txt/includes
+ *
  * @author     Brian de Geus <wordpress@verenigingvanregistrars.nl>
  */
-class Generate_Security_Txt_Activator {
-
+class Generate_Security_Txt_Activator
+{
 	/**
 	 * Short Description. (use period)
 	 *
@@ -29,8 +33,7 @@ class Generate_Security_Txt_Activator {
 	 *
 	 * @since    1.0.0
 	 */
-	public static function activate() {
-
+	public static function activate()
+	{
 	}
-
 }
